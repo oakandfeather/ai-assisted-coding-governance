@@ -22,10 +22,10 @@ Every tool ends up covered no matter how you install, so this table is really "w
 | Your AI tool | Entry file it auto-loads | Easiest install path |
 | --- | --- | --- |
 | **Claude Code** | `CLAUDE.md` (which imports `AGENTS.md`) | **Path A** — the `/govern-init` skill |
-| **OpenAI Codex, Cursor, Windsurf, VS Code agent, or Copilot *agent* workflows** | `AGENTS.md` | **Path B** — copy the files by hand |
-| **GitHub Copilot** repository-wide custom instructions (Chat, inline, and supported features) | `.github/copilot-instructions.md` | **Path B** — copy the files by hand |
+| **OpenAI Codex, Cursor, Windsurf, VS Code agent, or Copilot *agent* workflows** | `AGENTS.md` | **Path B** — hand your agent the procedure |
+| **GitHub Copilot** repository-wide custom instructions (Chat, inline, and supported features) | `.github/copilot-instructions.md` | **Path C** — copy the files by hand |
 
-Use **Path A** if anyone on the team runs Claude Code — it scaffolds all three entry files in one pass. If nobody does, **Path B** is your primary route (not a fallback) and lands the identical file set.
+All three land the identical file set; they differ only in who does the work. **Path A** is a one-time setup that buys you a slash command. **Path B** needs no setup at all — you paste one instruction into any agent that can read and write files, which is the fastest route if you're not on Claude Code (and works in Claude Code too, without installing the skill). **Path C** is you, a file manager, and ten minutes; take it when no agent is in the loop.
 
 One honest caveat, whichever path you take: **Claude Code's `@import` reliably pulls `AGENTS.md` into context; Copilot and Codex load their entry file but do not reliably pull the relative-linked `ai-governance/*.md` files in the same way.** That is why each entry file restates the non-negotiable core inline and tells the agent, in imperative terms, to open `core-rules.md` before any task (and `coding-rules.md` / `writing-rules.md` before code / content). The core binds regardless; the full rules bind reliably on Claude and depend on the agent following the link elsewhere. Human review before merge (below) is the backstop.
 
@@ -45,7 +45,10 @@ cd ai-assisted-coding-governance
 # 2. Install the skills where Claude Code finds them. Personal, not per-project:
 #    you run /govern-init inside the target repo, which has no governance
 #    files yet — a project-level install would have to already be there.
+#    Delete first: `cp -r` into an existing directory nests a copy inside it
+#    rather than replacing it, so a re-run would leave the old skill in place.
 mkdir -p ~/.claude/skills
+rm -rf ~/.claude/skills/govern-init ~/.claude/skills/govern-update
 cp -r ai-docs/skills/govern-init   ~/.claude/skills/govern-init
 cp -r ai-docs/skills/govern-update ~/.claude/skills/govern-update
 
@@ -64,8 +67,12 @@ source "$PROFILE"
 git clone https://github.com/oakandfeather/ai-assisted-coding-governance.git
 Set-Location ai-assisted-coding-governance
 
-# 2. Install the skills where Claude Code finds them.
+# 2. Install the skills where Claude Code finds them. Delete first: -Force does
+#    NOT replace an existing directory, it nests a copy inside it, so a re-run
+#    would leave the old skill in place and silently keep running it.
 New-Item -ItemType Directory -Force "$HOME\.claude\skills" | Out-Null
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue `
+    "$HOME\.claude\skills\govern-init", "$HOME\.claude\skills\govern-update"
 Copy-Item -Recurse -Force ai-docs\skills\govern-init   "$HOME\.claude\skills\govern-init"
 Copy-Item -Recurse -Force ai-docs\skills\govern-update "$HOME\.claude\skills\govern-update"
 
@@ -78,11 +85,25 @@ Restart Claude Code afterwards so it picks up both the skills and the environmen
 
 **Per engagement:** `cd` to the target repository's **root**, then run `/govern-init`.
 
-The rules live in exactly one place — this repo's `ai-docs/`. The skill copies from `$AI_GOVERNANCE_PATH` rather than carrying its own copy, so `git pull` here is what keeps the **rule files** a new scaffold receives current. If it can't find the source package it stops and says so; it will not reconstruct the rule files from memory, because a paraphrased safety rule is not the safety rule.
+The rules live in exactly one place — this repo's `ai-docs/`. So does the procedure, at [`ai-docs/procedures/govern-init.md`](./ai-docs/procedures/govern-init.md): the installed skill is a ~20-line **launcher** that finds `$AI_GOVERNANCE_PATH` and reads that file fresh on every run. `git pull` here therefore keeps both the rule files *and* the procedure a new scaffold receives current. If the launcher can't find the source package it stops and says so; it will not reconstruct the rule files from memory, because a paraphrased safety rule is not the safety rule.
 
-**`git pull` does not update the skill itself.** Step 2 copies `SKILL.md` into `~/.claude/skills/`, and that copy is a point-in-time snapshot: it goes on running its old **procedure** — which files to copy, where they land, which sections to strip — however current `ai-docs/` is. A stale skill will scaffold the wrong shape out of perfectly current rules. **Re-run step 2 after any `git pull` that touches `ai-docs/skills/`.**
+**One thing `git pull` still doesn't update: the launcher.** `~/.claude/skills/` is a one-shot copy. But the launcher rarely changes, and when it *is* out of date it fails loudly rather than quietly — it looks for `ai-docs/procedures/govern-init.md` in the source, and stops with a re-deploy prompt if it isn't there. (Before the procedure was split out, the whole 130-line body lived in `~/.claude/skills/` and a stale copy would silently scaffold the wrong shape out of perfectly current rules. That is the failure this split removes.) Still: **re-run step 2 after any `git pull` that touches `ai-docs/skills/`.**
 
-### Path B — copy the files by hand (any OS, any tool)
+### Path B — hand the procedure to any agent (any OS, any tool)
+
+The installer and updater are plain Markdown procedures with no tool calls in them, so any agent that can read and write files can run one. Nothing to install: clone this repo, then paste the instruction.
+
+**To install the package** into a target repo, open your agent *in that repo* and give it:
+
+> Read `<path-to-this-repo>/ai-docs/procedures/govern-init.md` and follow it exactly. That repository is the source package; this repository is the target.
+
+**To refresh an existing install** in a repo that already has an `ai-governance/` directory:
+
+> Read `<path-to-this-repo>/ai-docs/procedures/govern-update.md` and follow it exactly. That repository is the source package; this repository is the target.
+
+The agent needs read access to this repo and write access to the target. Both procedures will interview you — for the placeholders and the client profile on install, for a per-tier approval on update — so stay in the loop rather than firing and forgetting. Both stop rather than guess if they can't read a source file.
+
+### Path C — copy the files by hand (any OS, any tool)
 
 This path is **pure file-copying — no scripts, identical on macOS, Linux, and Windows.** Put the three entry files where each tool looks for them and the rest in an `ai-governance/` directory beside them, renaming the templates:
 
@@ -101,7 +122,7 @@ This path is **pure file-copying — no scripts, identical on macOS, Linux, and 
 
 The three entry files go at their locations above; the six companion files and `client-profiles/` travel together into `ai-governance/`. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` imports `AGENTS.md`, `.github/copilot-instructions.md` links back with `../`, and the files inside `ai-governance/` link each other with relative `./` paths — so keep them together; separating them breaks the chain. Then fill in the italicized `*(placeholders)*` **in `AGENTS.md`** (the thin companions carry none), and write the active client's profile into `ai-governance/client-profiles/`. **Unfilled placeholders mean the repo is unconfigured:** ask before assuming a stack, client, or command. Never guess a client's rules — no profile at all is safer than an invented one, because `core-rules.md` §8 only falls back to sensitive-by-default when the profile is *absent*.
 
-`human-docs/` stays here. It is not copied into client repos. The copied `AGENTS.md` carries a short "For the humans on this project" note pointing developers back to it — that travels automatically, no extra copy step. To put the same pointer where people look first, add a block like this to the target repo's `README.md` (or `CONTRIBUTING.md`) — `govern-init` offers this automatically; a Copilot/Codex-only team does it by hand:
+`human-docs/` stays here. It is not copied into client repos. The copied `AGENTS.md` carries a short "For the humans on this project" note pointing developers back to it — that travels automatically, no extra copy step. To put the same pointer where people look first, add a block like this to the target repo's `README.md` (or `CONTRIBUTING.md`) — the install procedure offers this automatically on Paths A and B; on Path C you add it by hand:
 
 ```markdown
 ## AI-assisted development
@@ -111,17 +132,19 @@ agents follow live in `./ai-governance/` — start at `AGENTS.md`. Developer onb
 and the full guideline live in the AI-governance source repository.
 ```
 
-Curious what the result of either path actually looks like? `build/` in this repo is a ready-made example of it — the package fully assembled and filled in for the sample client (ESU), regenerated on demand via `scripts/build.ps1`. For the generic, unconfigured shape instead — no client, `AGENTS.md` placeholders left as-is — see `empty-build/`, regenerated via `scripts/build-empty.ps1`. Both are gitignored, not something you copy from.
+Curious what the result of any of these paths actually looks like? `build/` in this repo is a ready-made example of it — the package fully assembled and filled in for the sample client (ESU), regenerated on demand via `scripts/build.ps1`. For the generic, unconfigured shape instead — no client, `AGENTS.md` placeholders left as-is — see `empty-build/`, regenerated via `scripts/build-empty.ps1`. Both are gitignored, not something you copy from.
 
 ### Keeping an install current
 
-Either path leaves a **copy** in the client repo, and a copy drifts: when `core-rules.md` gains a section or the precedence chain changes here, nothing propagates on its own.
+Every path leaves a **copy** in the client repo, and a copy drifts: when `core-rules.md` gains a section or the precedence chain changes here, nothing propagates on its own.
 
-**Claude Code:** run `/govern-update` from the target repo's root. It shows you what changed before changing anything, then works in tiers — the five portable rule files and the two thin entry files are replaced outright, while `AGENTS.md` and `ai-governance/client-profiles.md` are **merged**, because those two carry local content an overwrite would destroy. `ai-governance/client-profiles/` is never touched at all.
+**Claude Code:** run `/govern-update` from the target repo's root. **Any other agent:** the Path B instruction above, pointed at [`ai-docs/procedures/govern-update.md`](./ai-docs/procedures/govern-update.md) — same procedure, no setup.
 
-**By hand** (any tool), the same split is what matters. Safe to re-copy straight from `ai-docs/`: `core-rules.md`, `coding-rules.md`, `writing-rules.md`, `coding-patterns.md`, `agent-workflow.md`, and the two thin entry files (`CLAUDE.md`, `.github/copilot-instructions.md` — re-strip their banners). **Do not re-copy** `AGENTS.md` or `ai-governance/client-profiles.md`: bring the upstream changes into them by hand instead, keeping your filled placeholders, your `Active client` value — it appears **twice**, in the header *and* inside the mandatory-rules block — and your active-client list. Leave `ai-governance/client-profiles/` alone.
+Either way it shows you what changed before changing anything, then works in tiers — the five portable rule files and the two thin entry files are replaced outright, while `AGENTS.md` and `ai-governance/client-profiles.md` are **merged**, because those two carry local content an overwrite would destroy. `ai-governance/client-profiles/` is never touched at all.
 
-One thing neither path can do: a repo scaffolded before the `ai-governance/` restructure (rule files at the root, a since-split `ai-coding-rules.md`) cannot be mechanically updated, because that file's contents were reorganized into three. `/govern-update` detects that shape and refuses rather than guessing; re-install fresh, or migrate with a human reading both versions.
+**By hand** (no agent in the loop), the same split is what matters. Safe to re-copy straight from `ai-docs/`: `core-rules.md`, `coding-rules.md`, `writing-rules.md`, `coding-patterns.md`, `agent-workflow.md`, and the two thin entry files (`CLAUDE.md`, `.github/copilot-instructions.md` — re-strip their banners). **Do not re-copy** `AGENTS.md` or `ai-governance/client-profiles.md`: bring the upstream changes into them by hand instead, keeping your filled placeholders, your `Active client` value — it appears **twice**, in the header *and* inside the mandatory-rules block — and your active-client list. Leave `ai-governance/client-profiles/` alone.
+
+One thing no path can do: a repo scaffolded before the `ai-governance/` restructure (rule files at the root, a since-split `ai-coding-rules.md`) cannot be mechanically updated, because that file's contents were reorganized into three. The update procedure detects that shape and refuses rather than guessing; re-install fresh, or migrate with a human reading both versions.
 
 ## Precedence
 
@@ -135,7 +158,7 @@ The client profiles ship with one **sample** profile — Example State Universit
 
 The rules bind on every task, so they have to load on every task. Every supported tool auto-loads a root entry file each session — `CLAUDE.md` for Claude Code, `AGENTS.md` for Codex / the Copilot agent / Cursor, `.github/copilot-instructions.md` for Copilot in the IDE — whereas a skill only enters context when the model judges its description relevant, and a rule that might not load is not a rule. Copying the files into the client's repo also keeps the governance reviewable in their PRs and auditable by whoever maintains the project next.
 
-This is not in tension with `govern-init` above: that skill is an *installer*. It ships these files and contains no rule text of its own, so nothing depends on it loading. Claude Code continues to use the root `CLAUDE.md` import; Copilot uses the repository-wide custom-instructions file and, for agent workflows, `AGENTS.md`.
+The installer and updater sit outside that argument, because they are *procedures*, not rules: they run when you ask for them, and nothing binds on their being in context. They are files too — [`ai-docs/procedures/`](./ai-docs/procedures/) — for a different reason: a procedure written as prose with no tool calls in it can be handed to **any** agent (Path B), while a skill can only be run by Claude Code. `ai-docs/skills/` holds thin launchers over those same files, so the slash commands stay available without forking the procedure into a second copy. Neither the procedures nor the launchers contain rule text, and neither is installed into a client's repo. Claude Code continues to use the root `CLAUDE.md` import; Copilot uses the repository-wide custom-instructions file and, for agent workflows, `AGENTS.md`.
 
 ## Maintaining this repo
 
