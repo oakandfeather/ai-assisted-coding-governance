@@ -76,7 +76,9 @@ Restart Claude Code afterwards so it picks up both the skill and the environment
 
 **Per engagement:** `cd` to the target repository's **root**, then run `/govern-init`.
 
-The rules live in exactly one place — this repo's `ai-docs/`. The skill copies from `$AI_GOVERNANCE_PATH` rather than carrying its own copy, so `git pull` here is what keeps new scaffolds current. If it can't find the source package it stops and says so; it will not reconstruct the rule files from memory, because a paraphrased safety rule is not the safety rule.
+The rules live in exactly one place — this repo's `ai-docs/`. The skill copies from `$AI_GOVERNANCE_PATH` rather than carrying its own copy, so `git pull` here is what keeps the **rule files** a new scaffold receives current. If it can't find the source package it stops and says so; it will not reconstruct the rule files from memory, because a paraphrased safety rule is not the safety rule.
+
+**`git pull` does not update the skill itself.** Step 2 copies `SKILL.md` into `~/.claude/skills/`, and that copy is a point-in-time snapshot: it goes on running its old **procedure** — which files to copy, where they land, which sections to strip — however current `ai-docs/` is. A stale skill will scaffold the wrong shape out of perfectly current rules. **Re-run step 2 after any `git pull` that touches `ai-docs/skills/`.**
 
 ### Path B — copy the files by hand (any OS, any tool)
 
