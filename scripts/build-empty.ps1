@@ -62,6 +62,18 @@ function Slice-From([string]$content, [string]$anchor, [string]$label) {
     return $content.Substring($idx)
 }
 
+# Replace the paragraph starting at $startAnchor (through the next blank
+# line, or end of content if it's the last paragraph) with $newText.
+function Replace-Paragraph([string]$content, [string]$startAnchor, [string]$newText, [string]$label) {
+    $start = $content.IndexOf($startAnchor)
+    if ($start -lt 0) {
+        throw "Source shape changed - anchor not found for $label : '$startAnchor'"
+    }
+    $end = $content.IndexOf("`n`n", $start)
+    if ($end -lt 0) { $end = $content.Length }
+    return $content.Substring(0, $start) + $newText + $content.Substring($end)
+}
+
 Write-Host "Rebuilding empty-build/ from ai-docs/ ..."
 
 # ---------- clean slate ----------
@@ -107,9 +119,27 @@ Copy-Verbatim (Join-Path $aiDocs 'coding-patterns.md') (Join-Path $buildDir 'ai-
 Copy-Verbatim (Join-Path $aiDocs 'agent-workflow.md')  (Join-Path $buildDir 'ai-governance\agent-workflow.md')
 
 # ---------- ai-governance/client-profiles.md ----------
-# Leave "Active client profiles" as its honest *(none yet)* empty state, and
-# drop the "Sample profile" section since no sample file is bundled here.
+# Drop the "Sample profile" section (no sample file is bundled here) and
+# rewrite the empty state to govern-init's wording, exactly as step 4 of that
+# skill does. The source paragraph cannot be carried over verbatim: it reads
+# "Do not treat the sample below as one" and "there is no live client profile
+# in this package" - a pointer to the section we just stripped, and a
+# statement about the source repo rather than the target. Reproducing it here
+# would make empty-build/ reference something absent and describe the wrong
+# repo, when its whole purpose is to show what a real no-client install looks
+# like. Keep this text in sync with govern-init/SKILL.md step 4.
 $profiles = Read-Text (Join-Path $aiDocs 'client-profiles.md')
+
+# Built from [char] codes to honor this script's ASCII-only invariant: an em
+# dash and a section sign typed literally would be at the mercy of however
+# Windows PowerShell decides to decode this .ps1 file.
+$emDash  = [char]0x2014
+$section = [char]0xA7
+$emptyState = '*(none yet)* ' + $emDash + ' **this repo has no client profile.**' `
+    + ' Do not infer the client''s rules from anything here; ask the engagement lead.' `
+    + ' Per `core-rules.md` ' + $section + '8, treat the client''s data as sensitive by' `
+    + ' default until a profile exists.'
+$profiles = Replace-Paragraph $profiles '*(none yet)*' $emptyState 'client-profiles.md empty state'
 
 $sampleIdx = $profiles.IndexOf('## Sample profile')
 if ($sampleIdx -lt 0) { throw "Source shape changed - '## Sample profile' section not found in client-profiles.md" }
