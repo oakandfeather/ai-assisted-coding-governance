@@ -33,7 +33,7 @@ One honest caveat, whichever path you take: **Claude Code's `@import` reliably p
 
 Run from the target repo's root, `/govern-init` copies the file set in, strips the template banners, interviews you for the `*(placeholders)*`, and authors the active client's profile.
 
-**One-time setup** — the skill isn't installed by default. Clone this repo, install the skill where Claude Code finds it, and point it at the source package. The destination (`~/.claude/skills`) and the steps are the same on every OS; only the shell syntax differs, so use the block for your OS.
+**One-time setup** — the skills aren't installed by default. Clone this repo, install them where Claude Code finds them, and point them at the source package. This installs both `/govern-init` (scaffold a new repo) and `/govern-update` (refresh an existing install); you want both, since the second is how installed repos stop drifting. The destination (`~/.claude/skills`) and the steps are the same on every OS; only the shell syntax differs, so use the block for your OS.
 
 **macOS / Linux** (bash):
 
@@ -42,11 +42,12 @@ Run from the target repo's root, `/govern-init` copies the file set in, strips t
 git clone https://github.com/oakandfeather/ai-assisted-coding-governance.git
 cd ai-assisted-coding-governance
 
-# 2. Install the skill where Claude Code finds skills. Personal, not per-project:
+# 2. Install the skills where Claude Code finds them. Personal, not per-project:
 #    you run /govern-init inside the target repo, which has no governance
 #    files yet — a project-level install would have to already be there.
 mkdir -p ~/.claude/skills
-cp -r ai-docs/skills/govern-init ~/.claude/skills/govern-init
+cp -r ai-docs/skills/govern-init   ~/.claude/skills/govern-init
+cp -r ai-docs/skills/govern-update ~/.claude/skills/govern-update
 
 # 3. Point it at this repo, so it knows where to copy the package FROM.
 #    `export` alone lasts only for the current shell — append it to your
@@ -63,16 +64,17 @@ source "$PROFILE"
 git clone https://github.com/oakandfeather/ai-assisted-coding-governance.git
 Set-Location ai-assisted-coding-governance
 
-# 2. Install the skill where Claude Code finds skills.
+# 2. Install the skills where Claude Code finds them.
 New-Item -ItemType Directory -Force "$HOME\.claude\skills" | Out-Null
-Copy-Item -Recurse -Force ai-docs\skills\govern-init "$HOME\.claude\skills\govern-init"
+Copy-Item -Recurse -Force ai-docs\skills\govern-init   "$HOME\.claude\skills\govern-init"
+Copy-Item -Recurse -Force ai-docs\skills\govern-update "$HOME\.claude\skills\govern-update"
 
 # 3. Point it at this repo. User scope persists across sessions and needs no
 #    admin; a plain `$env:` assignment would die with this shell.
 [Environment]::SetEnvironmentVariable('AI_GOVERNANCE_PATH', $PWD.Path, 'User')
 ```
 
-Restart Claude Code afterwards so it picks up both the skill and the environment variable. Verify with `/govern-init` — if it asks where the source package is, `AI_GOVERNANCE_PATH` didn't take.
+Restart Claude Code afterwards so it picks up both the skills and the environment variable. Verify with `/govern-init` — if it asks where the source package is, `AI_GOVERNANCE_PATH` didn't take.
 
 **Per engagement:** `cd` to the target repository's **root**, then run `/govern-init`.
 
@@ -110,6 +112,16 @@ and the full guideline live in the AI-governance source repository.
 ```
 
 Curious what the result of either path actually looks like? `build/` in this repo is a ready-made example of it — the package fully assembled and filled in for the sample client (ESU), regenerated on demand via `scripts/build.ps1`. For the generic, unconfigured shape instead — no client, `AGENTS.md` placeholders left as-is — see `empty-build/`, regenerated via `scripts/build-empty.ps1`. Both are gitignored, not something you copy from.
+
+### Keeping an install current
+
+Either path leaves a **copy** in the client repo, and a copy drifts: when `core-rules.md` gains a section or the precedence chain changes here, nothing propagates on its own.
+
+**Claude Code:** run `/govern-update` from the target repo's root. It shows you what changed before changing anything, then works in tiers — the five portable rule files and the two thin entry files are replaced outright, while `AGENTS.md` and `ai-governance/client-profiles.md` are **merged**, because those two carry local content an overwrite would destroy. `ai-governance/client-profiles/` is never touched at all.
+
+**By hand** (any tool), the same split is what matters. Safe to re-copy straight from `ai-docs/`: `core-rules.md`, `coding-rules.md`, `writing-rules.md`, `coding-patterns.md`, `agent-workflow.md`, and the two thin entry files (`CLAUDE.md`, `.github/copilot-instructions.md` — re-strip their banners). **Do not re-copy** `AGENTS.md` or `ai-governance/client-profiles.md`: bring the upstream changes into them by hand instead, keeping your filled placeholders, your `Active client` value — it appears **twice**, in the header *and* inside the mandatory-rules block — and your active-client list. Leave `ai-governance/client-profiles/` alone.
+
+One thing neither path can do: a repo scaffolded before the `ai-governance/` restructure (rule files at the root, a since-split `ai-coding-rules.md`) cannot be mechanically updated, because that file's contents were reorganized into three. `/govern-update` detects that shape and refuses rather than guessing; re-install fresh, or migrate with a human reading both versions.
 
 ## Precedence
 
