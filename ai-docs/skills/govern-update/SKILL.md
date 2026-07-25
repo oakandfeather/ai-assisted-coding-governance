@@ -43,17 +43,21 @@ So, before anything else: diff the skill you are running (`~/.claude/skills/gove
 
 Adopt `build.ps1`'s failure posture too — **if an anchor is not found in the file you are operating on, stop and report it.** A missing anchor means the shape changed underneath you; a best-effort merge at that point produces a mangled governance file that still looks plausible.
 
+**One limit on that:** `build.ps1` *assembles from source* — it never merges into an existing install, so its anchors are **source-side only**. Locating the corresponding region in an already-installed target is this skill's own problem, and a source anchor can be legitimately absent there. Steps 5 and 6 each say which anchors to use on the target side; use those, and do not assume a source anchor transfers.
+
 ### 3. Classify every file into a tier
 
 | Tier | Files | Treatment |
 | --- | --- | --- |
 | **A — verbatim** | `ai-governance/core-rules.md`, `coding-rules.md`, `writing-rules.md`, `coding-patterns.md`, `agent-workflow.md` | Replace wholesale from source. |
-| **B — banner-stripped** | `CLAUDE.md`, `.github/copilot-instructions.md` | Re-derive from the template (slice the banner per step 2), then replace. They carry no placeholders, so nothing local is at risk. |
+| **B — banner-stripped** | `CLAUDE.md`, `.github/copilot-instructions.md` | Re-derive from the template (slice the banner per step 2), then replace — but diff first, and gate it separately. See below. |
 | **C — merge** | `AGENTS.md` | Replace **only** the mandatory-rules block. See step 5. |
 | **D — merge** | `ai-governance/client-profiles.md` | Preserve the active-client paragraph. See step 6. |
 | **E — never touch** | `ai-governance/client-profiles/*.md` | Leave alone entirely. Report as untouched. |
 
 **Tier E is absolute.** These files are client-authored and often summarize a client's own AI policy. You do not need their contents to do this job, so do not read them — list them to report them and nothing more.
+
+**Tier B carries no placeholders, but that is not what makes a file safe to replace.** The risk to `CLAUDE.md` is **appended local content**: it is the natural place for a team to add Claude-specific project notes beneath the `@AGENTS.md` import, and `govern-init` step 1 already refuses to overwrite a pre-existing `CLAUDE.md` for exactly that reason. So give tier B **its own diff and its own gate** rather than folding it into the tier-A batch. If the target holds anything the incoming template does not, treat it as local customization: surface it and ask. Silently dropping a team's notes inside a batch nobody reads is the worst of both.
 
 **In tiers A and D, preserve a locally-filled `Owner:`.** The source repo ships those headers with `*(your company)*` unfilled; an adopting organization may have filled theirs in. Compare, and if the target's value differs from the source's, carry the target's value across into the replacement.
 
@@ -66,7 +70,7 @@ Adopt `build.ps1`'s failure posture too — **if an anchor is not found in the f
 
 Show the user what will change before changing it: per file, whether it is identical, updated, added, or removed, and for updated files the `Version:` / `Last reviewed:` delta from their headers. Those header fields are the readable narrative of what moved; content comparison is what actually detects it, so **trust the content diff, not the version number** — an upstream edit that forgot to bump its version still needs to land.
 
-Then apply with **one approval per tier, not per file.** Tiers A and B go as a single batch — five full rule-file diffs are unreadable, and a gate nobody reads is not a safety measure. Tiers C and D are merges, so each gets its own gate and its own diff.
+Then apply with **one approval per tier, not per file.** Tier A goes as a single batch — five full rule-file diffs are unreadable, and a gate nobody reads is not a safety measure. Tier B gets its own gate (it may hold appended local content), and tiers C and D are merges, so each gets its own gate and its own diff.
 
 Note that without an install manifest there is no baseline, so "the target differs from the source" is genuinely ambiguous: it may be an upstream change or a deliberate local edit. Treat every difference as needing confirmation, and say plainly that you cannot tell the two apart.
 
@@ -103,7 +107,9 @@ Under `## Active client profiles` there are two paragraphs, and they have differ
 - **The first paragraph is the target's** — the engagement's client list, or the honest "no profile yet" empty state. **Preserve it verbatim.** This is the pointer that makes `core-rules.md` §8's client-override chain resolve; overwrite it and either the client's rules stop being findable, or a repo with no profile starts claiming one.
 - **The paragraph beginning "Add each client as…" is the package's** generic guidance. Take it from the source.
 
-So: start from the source file, strip the `## Sample profile` section outright (it points at the fictional sample, which is never copied into a real repo), then splice the target's first paragraph back in under `## Active client profiles`. `build.ps1`'s `Replace-Paragraph` operates on exactly this seam — use its anchors.
+**Locate the target's region by its two bounding anchors — not by `build.ps1`'s.** `build.ps1` finds this paragraph in the *source* by the literal `*(none yet)*`, and that string is correctly **absent** from any configured target, where the region instead begins `- **<Client>**:`. Search a configured repo for `*(none yet)*` and you will halt a perfectly valid update. Instead take everything **between the `## Active client profiles` heading and the paragraph beginning "Add each client as"**. Both anchors are stable, and the span survives a multi-client list with blank lines between entries — which "the first paragraph, up to the next blank line" would silently truncate, dropping clients out of the override chain.
+
+So: start from the source file, strip the `## Sample profile` section outright (it points at the fictional sample, which is never copied into a real repo), then splice the target's bounded region back in under `## Active client profiles`.
 
 ### 7. Hand off
 
