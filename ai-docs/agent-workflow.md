@@ -1,14 +1,14 @@
 # Agent Workflow
 
-*How an AI agent should work in this project to be effective: the work loop, when to ask vs. proceed, how to verify, how to hand off, and when to stop iterating and attack your own work. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus [`coding-patterns.md`](./coding-patterns.md) (engineering craft). Where anything here tensions with those: **a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over everything, safety wins over speed, and correctness wins over throughput.***
+*How an AI agent should work in this project to be effective: the work loop, when to ask vs. proceed, how to verify, how to hand off, when to stop iterating and attack your own work, and where to spend effort. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus [`coding-patterns.md`](./coding-patterns.md) (engineering craft). Where anything here tensions with those: **a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over everything, safety wins over speed, and correctness wins over throughput.***
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.2 · **Last reviewed:** 2026-07-26 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Owner:** *(your company)* — Engineering · **Version:** 1.3 · **Last reviewed:** 2026-07-26 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
 ## 1. The work loop
 
-Run every non-trivial task through this loop. Skipping steps is how plausible-but-wrong code ships.
+Run every non-trivial task through this loop. Skipping steps is how plausible-but-wrong code ships. Scale its depth to the change — §7 governs how, and what may never be scaled down.
 
 1. **Understand the requirement.** Restate it to yourself in one sentence. If you can't, the requirement is ambiguous — see §2. Where a second plausible reading exists, name it: if it would produce materially different work, that's a §2 stop-and-ask, not an assumption you get to record in the hand-off.
 2. **Read before you write.** Search the existing material — code, documents, prior deliverables — for utilities, helpers, patterns, sources, and prior wording that already solve part of the problem. Reusing what exists beats writing new; extending an established pattern beats inventing one.
@@ -78,6 +78,29 @@ Verification (§3) tells you whether the work is right. This section governs the
 - **The pass must produce output.** What it finds is fixed, or it goes in **Flags** (§4). A pass that reports "looks good" every time is not being run — if it genuinely finds nothing, say what you checked.
 
 **Scale this to the blast radius,** as `core-rules.md` does for its checklist. A typo, a comment, or a one-word wording fix does not earn a cold requirement-first re-read. Anything design-bearing, security-touching, multi-file, or fact-asserting does — and say in your hand-off that you ran it.
+
+## 7. Economy of effort
+
+Working efficiently means putting effort where it buys correctness, not doing less of the work that catches defects. Everything below is reallocation: the precedence at the top of this file still holds — safety wins over speed, correctness over throughput.
+
+**The floor — what efficiency never buys:**
+
+- **`core-rules.md` TL;DR items 1 and 2** (secrets, data). Unconditional, at any size of change.
+- **Honest verification claims (§3).** Compressing a check is a choice you are allowed to make; describing an uncompressed check you didn't run is not.
+- **The confirm-before-irreversible gate (`core-rules.md` §5).**
+- **The falsification pass (§6)** on anything design-bearing, security-touching, multi-file, or fact-asserting.
+
+Under time pressure, cut scope and say so in the hand-off. Cutting one of these quietly is the failure this section exists to prevent.
+
+**The levers, in rough order of payoff:**
+
+- **The scarce resource is the human's review time, not yours.** A change costs what it costs to review. Small scoped diffs, a hand-off with no filler (§4), and no unrequested refactors or drive-by reformatting (`core-rules.md` §2) are efficiency measures, not just courtesy.
+- **Load the rules module your task needs, not all of them.** `core-rules.md`, the one task module your work calls for — `coding-rules.md` for code, `writing-rules.md` for content — and the active profile from `client-profiles.md`. Reach for `coding-patterns.md` when you are writing non-trivial code, not to fix a typo. Reading everything on every task crowds out what you actually have to reason over: the requirement and the existing material.
+- **Gather context in one deliberate pass, not by discovery.** Work out what you need to read and read it together; issue independent searches and reads at once rather than one at a time; don't re-read what is already in front of you. Note the asymmetry: under-reading is the more expensive error. This budgets §1 step 2 — it does not waive it.
+- **Scale the whole loop to the blast radius,** the way §6 and the `core-rules.md` checklist already scale their own steps. A small, reversible change with no design or security surface earns a proportionally shorter path through §1 — with the floor above still intact.
+- **Narrow check per increment, wide gate once.** §3's narrow-then-wide ordering is about feedback speed; the corollary is that the full gate belongs before hand-off, not after every edit.
+- **Batch the interrupts.** One round of questions carrying a recommendation (§2) beats three serial ones, and describing the whole set of actions you intend costs the human one answer instead of several. Bundling never means acting on something you didn't describe (`core-rules.md` §5).
+- **Spend what you save on §6 and §5.** The falsification pass and writing down what you had to work out are the two steps that compound — the last things to cut, not the first.
 
 ---
 
