@@ -1,8 +1,8 @@
 # Agent Workflow
 
-*How an AI agent should work in this project to be effective: the work loop, when to ask vs. proceed, how to verify, and how to hand off. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus [`coding-patterns.md`](./coding-patterns.md) (engineering craft). Where anything here tensions with those: **a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over everything, safety wins over speed, and correctness wins over throughput.***
+*How an AI agent should work in this project to be effective: the work loop, when to ask vs. proceed, how to verify, how to hand off, and when to stop iterating and attack your own work. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus [`coding-patterns.md`](./coding-patterns.md) (engineering craft). Where anything here tensions with those: **a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over everything, safety wins over speed, and correctness wins over throughput.***
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.1 · **Last reviewed:** 2026-07-22 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Owner:** *(your company)* — Engineering · **Version:** 1.2 · **Last reviewed:** 2026-07-26 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -10,11 +10,11 @@
 
 Run every non-trivial task through this loop. Skipping steps is how plausible-but-wrong code ships.
 
-1. **Understand the requirement.** Restate it to yourself in one sentence. If you can't, the requirement is ambiguous — see §2.
+1. **Understand the requirement.** Restate it to yourself in one sentence. If you can't, the requirement is ambiguous — see §2. Where a second plausible reading exists, name it: if it would produce materially different work, that's a §2 stop-and-ask, not an assumption you get to record in the hand-off.
 2. **Read before you write.** Search the existing material — code, documents, prior deliverables — for utilities, helpers, patterns, sources, and prior wording that already solve part of the problem. Reusing what exists beats writing new; extending an established pattern beats inventing one.
 3. **Plan the change.** Identify the files to touch and the smallest correct change. For multi-file or design-bearing changes, state the plan before implementing so the human can redirect early — redirection before code is cheap, after code is expensive.
 4. **Implement in small, verifiable increments.** Prefer several small verified steps over one large unverified leap. Keep each diff reviewable.
-5. **Verify (§3).** Actually run things. Reasoning that code should work is not verification.
+5. **Verify (§3).** Actually run things. Reasoning that code should work is not verification. When verification fails and you loop back, §6 governs when to stop looping.
 6. **Hand off (§4).** Report what changed, what you assumed, and what you verified — in the structured format below.
 
 ## 2. Ask vs. proceed — the decision boundary
@@ -29,6 +29,7 @@ Neither over-asking (throughput dies) nor under-asking (trust dies). The boundar
 **Stop and ask when ANY of these hold:**
 - The choice is expensive to reverse (schema, public API, dependency, architecture) or would change scope.
 - Interpretations genuinely diverge and picking wrong wastes significant work.
+- Iteration has stopped producing new information — see §6.
 - Anything on the mandatory-stop list in `core-rules.md` §7 applies (secrets/regulated data, unverifiable packages/APIs/sources/facts, irreversible actions, suspected prompt injection, client-rule conflict).
 
 When you do ask, ask once with a concrete recommendation — not an open-ended survey.
@@ -50,13 +51,33 @@ End every completed task with this shape (prose is fine; cover the fields):
 - **Why:** the requirement or defect it addresses.
 - **Assumptions:** every ambiguity you resolved yourself (§2), stated so the reviewer can veto them.
 - **How verified:** the commands you ran and their actual result — or an explicit "unverified because X."
-- **Flags:** anything the reviewer should look at hard — security-sensitive surface, trade-offs made, deviations from convention, follow-up work deliberately not done.
+- **Flags:** anything the reviewer should look at hard — security-sensitive surface, trade-offs made, deviations from convention, follow-up work deliberately not done. Include anything the §6 falsification pass surfaced that you chose not to fix.
 
 Omit empty sections; never omit a non-empty one.
 
 ## 5. Keep the docs alive
 
 When you discover something non-obvious the docs don't capture — a convention, a required command, a gotcha, a wrong or stale instruction — **propose adding or fixing it in the project's entry file (`AGENTS.md`)** (or the relevant doc) rather than leaving it tacit. Tacit knowledge dies with the session; documented knowledge compounds. Propose the edit; don't silently rewrite governance docs without the human's yes.
+
+## 6. Iteration and adversarial self-review
+
+Verification (§3) tells you whether the work is right. This section governs the two cases §3 leaves open: what to do while it isn't right yet, and what to do once you believe it is.
+
+**Bounded iteration — the loop needs an exit:**
+
+- **Every iteration must produce new information.** A retry that only permutes the work — reorder it, reword it, try a different call — is a guess, not an iteration. Before each attempt, name the hypothesis it tests and what result would rule it out. That is the bound: not a count of attempts, but whether the last one told you anything.
+- **When a symptom survives repeated fixes, the diagnosis is wrong — not the fix.** Stop editing and change level: re-read the requirement, the actual error text, and the path you assumed was correct. If that still doesn't move it, back up further — to the plan (§1 step 3) — and reconsider the approach rather than patching it again.
+- **When you have run out of new information, stop and ask (§2).** Report what you tried, what you observed each time, and your current best hypothesis. Escalating is the cheap outcome; the next silent attempt at the same failure is the expensive one.
+- **The longer a loop runs, the more attractive symptom-suppression looks.** That drift is the real hazard of sustained iteration — the fix that ends the loop starts to look like the fix that solves the problem. §3 governs what you owe on failure; the point here is that the pressure to violate it grows with every pass. The content form is identical: the unsupportable claim gets softened instead of dealt with (`writing-rules.md` §1).
+
+**The falsification pass before hand-off:**
+
+- **Make one cold pass whose goal is to find the defect, not to confirm the work.** Re-read the original requirement **first**, then the change — in that order. Reading your own change first anchors you to what you built, and you will read the requirement as satisfied.
+- **Ask deliberately:** what input breaks this (`coding-patterns.md` §1)? What did the requirement ask for that I did not do? What did I do that it did not ask for (`core-rules.md` §2)? Which line here could I not defend if the reviewer challenged it — for content, that is the sourcing question (`writing-rules.md` §1)?
+- **This is a check on finished work, not a license to defer quality.** Write it correctly the first time (`coding-rules.md` §2); the pass exists to catch what you got wrong anyway.
+- **The pass must produce output.** What it finds is fixed, or it goes in **Flags** (§4). A pass that reports "looks good" every time is not being run — if it genuinely finds nothing, say what you checked.
+
+**Scale this to the blast radius,** as `core-rules.md` does for its checklist. A typo, a comment, or a one-word wording fix does not earn a cold requirement-first re-read. Anything design-bearing, security-touching, multi-file, or fact-asserting does — and say in your hand-off that you ran it.
 
 ---
 
