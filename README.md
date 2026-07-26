@@ -116,7 +116,7 @@ This path is **pure file-copying — no scripts, identical on macOS, Linux, and 
 | `ai-docs/coding-rules.md` | `ai-governance/coding-rules.md` | Code-specific rules: dependencies, security, testing, accessibility. |
 | `ai-docs/writing-rules.md` | `ai-governance/writing-rules.md` | Content-specific rules: grounding, citations, confidentiality, voice, accessible docs. |
 | `ai-docs/coding-patterns.md` | `ai-governance/coding-patterns.md` | Engineering-craft patterns. |
-| `ai-docs/agent-workflow.md` | `ai-governance/agent-workflow.md` | How to work: loop, ask-vs-proceed, verification, hand-off, iteration and self-review, economy of effort. |
+| `ai-docs/agent-workflow.md` | `ai-governance/agent-workflow.md` | How to work: loop, ask-vs-proceed, verification, hand-off, iteration and self-review, economy of effort, subagent delegation. |
 | `ai-docs/client-profiles.md` | `ai-governance/client-profiles.md` | Index of per-client overrides. |
 | `ai-docs/client-profiles/` | `ai-governance/client-profiles/` | The profiles themselves — **excluding `example-university.md`**, which is a fictional sample and must never land in a real client's repo. |
 
