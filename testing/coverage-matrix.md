@@ -2,7 +2,7 @@
 
 *Which rule maps to which scenario, and what each scenario found. Scenario definitions live in [`Governance-Test-Plan.md`](./Governance-Test-Plan.md); the target repos are built per [`mock-app-setup.md`](./mock-app-setup.md).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.0 · **Last reviewed:** 2026-07-26 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Owner:** *(your company)* — Engineering · **Version:** 1.1 · **Last reviewed:** 2026-07-27 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -139,12 +139,61 @@ Mechanical checks. These are pass/fail with no arms and no delta — record the 
 
 | Group | Checks | Result | Date | Notes |
 | --- | --- | --- | --- | --- |
-| A1 — build scripts run | A1.1–A1.3 | | | |
-| A2 — `govern-init` file shape | A2.1–A2.11 | | | |
-| A3 — `govern-update` merge semantics | A3.1–A3.12 | | | |
-| A4 — links and drift | A4.1–A4.5 | | | |
+| A1 — build scripts run | A1.1–A1.3 | **pass** | 2026-07-27 | Both literal strings printed; no anchor throw. See *A1.1/A1.2 are weaker than they look* below. |
+| A2 — `govern-init` file shape | A2.1–A2.11 | **pass** (A2.11 in part) | 2026-07-27 | A2.9 and the A2.8 `AGENTS.md`↔`build/` half were newly implemented. A2.11 verified in part — see below. |
+| A3 — `govern-update` merge semantics | A3.1–A3.12 | **pass with 1 defect** (A3.2 diff hygiene) | 2026-07-27 | Merge semantics correct in all five tiers, including both predicted failure sites. A3.2's diff criterion not met — defect is in the runner, not the procedure. A3.8 self-reported. |
+| A4 — links and drift | A4.1–A4.5 | **pass** | 2026-07-27 | 175 links / 43 files. A4.3(i)'s third leg is misidentified in the plan — see below. |
 
 Record individual failures by ID (e.g. `A3.4 FAIL — in-block Active client reverted to placeholder`) rather than only a group-level verdict; the group rows are a summary, not the record.
+
+### Run of 2026-07-27 — first complete Layer A execution
+
+Tool: Claude Code. Mock: `C:\oakandfeather\registrar-mock*` (five copies, all tagged `pristine`). Harness: `C:\oakandfeather\registrar-mock-harness\`. Source repo restored and both oracles regenerated afterward; all copies reset to `pristine`.
+
+**The package's merge semantics are correct in all five tiers**, including the two the plan predicted would break (A3.4's double-`Active client` and A3.7's multi-client list). One check — **A3.2 — was not met**, by the runner rather than the package. The remaining findings are about the *checks and the procedures*, not failed assertions; record them so the next run doesn't re-derive them.
+
+**Reproducibility caveat.** The A3 evidence was captured before `registrar-mock-update` was reset to `pristine`, and the aging branch has been deleted. Re-verifying A3 means re-aging the source with the four tier deltas described below — the result is not confirmable from the current tree.
+
+#### Findings
+
+1. **A3.2 FAIL (runner defect) — line-ending churn destroyed the diff.** A3.2 requires the tier-B files to be re-derived *and each to get its own diff and own approval gate*. The plan step correctly reported `CLAUDE.md — identical`, then the write produced a 10-line diff on it. The runner's local-content guard compares content, so line endings slipped past the very gate that exists to catch "the target holds something the template does not." Across all nine governance files this turned an 8-insertion/4-deletion change into a 580-line diff. `govern-update.md` step 7 tells the user to review that diff as the audit trail for when the rules changed; a whole-file diff destroys exactly that.
+
+   **The content merge was correct in every tier** — verified with `git diff --ignore-cr-at-eol`, which shows precisely the four seeded deltas plus the intended header bumps. **Recommended:** add a line to `govern-update.md` (and `govern-init.md`) requiring files to be written with the target's existing line endings, and have any implementation's local-content guard compare after normalizing them.
+
+2. **A1.1/A1.2 are weaker than their pass criteria imply.** `build.ps1` line 185 and `build-empty.ps1` line 150 print `(10 files).` and `(9 files).` as **hardcoded literals** — the count is not computed. Asserting the literal string therefore cannot detect a file-count drift, which is the drift the check exists to catch. The real counts were verified separately this run and agree (10 / 9). **Recommended:** have the scripts count what they wrote, or have the check count files on disk.
+
+3. **A4.3(i)'s third leg is misidentified.** The plan names the empty-state paragraph as synced across `build-empty.ps1` ↔ `govern-init.md` step 4 ↔ **README Path C**. README Path C does not carry that paragraph; it carries the step-7 human-pointer snippet. The first two agree **verbatim**, and the step-7 snippet agrees with README Path C (modulo `<org>` vs `*(your company)*`). **Recommended:** correct A4.3(i) to name the two real pairs.
+
+4. **A4.3(iii) — the Copilot files carry a seventh non-negotiable the `AGENTS.md` core does not** ("All AI-assisted code is human-reviewed before merge; run SAST, secret scanning, and dependency analysis in CI"). Both pairs are internally identical; the asymmetry is cross-format and defensible, since Copilot cannot be relied on to follow the links. Noted so it is a decision, not drift.
+
+5. **Tooling hazard.** PowerShell 5.1's `Get-Content` decodes these UTF-8-without-BOM files as ANSI, mangling every em dash, middot and the `⚠` in the mandatory-rules heading. Any PowerShell that **writes** governance files must read with an explicit UTF-8 encoding — this was caught before it wrote corruption into the target. It is not safe to assume comparison-only scripts are unaffected: the A2.8c/A2.8e structural checks index on those characters, and reproducing them over `Get-Content` gave a different answer. All reads in `check-layer-a-extra.ps1` and the A3 scripts use an explicit UTF-8 helper; results are unchanged, but the earlier passes were fragile rather than sound.
+
+#### What is *not* fully green
+
+- **A2.11 — verified in part.** The hash check proves the target `README.md` is untouched when step 7 is declined. It cannot prove step 7 was *offered*; that is a transcript fact from the original install, not a property of the file tree.
+- **A3.8 — "not even read" is self-reported.** The `client-profiles/` files are byte-identical to pre-update (verified). That they were never *read* is observable only from the runner's own tool log.
+- **The A3 refusal cases (A3.9–A3.12) test detection, not agent behavior.** Each broken setup was built and the refusal *predicate* confirmed to fire with nothing written. Whether an agent following the prose actually stops is a Layer B question; these assertions do not answer it.
+- **A2.10 has the same limit,** plus a contamination caveat: the agent that ran it had read this plan and knew the expected outcome. The mechanical half — the step-1 condition fires for each of the three entry files, and no file was created or modified — is sound.
+
+#### Self-check (a check that has never gone red has not been tested)
+
+All three prescribed breaks were performed and reverted:
+
+| Break | Expected | Result |
+| --- | --- | --- |
+| Renamed a `build.ps1` anchor | A1.3 throws | **red** — `Source shape changed - anchor not found for copilot-instructions.md body` |
+| Removed `client-profiles.md` from an install copy | A2.2 fails | **red** |
+| Pointed a relative link at a missing file | A4.1 fails | **red** — exit 1, named the file and the target |
+
+One false positive was found and fixed in the *new* checks, not the package: the A2.8c heading comparison matched `#` shell comments inside fenced code blocks. `check-layer-a-extra.ps1` now blanks fenced blocks first, the same guard `check-links.ps1` already applies to link syntax.
+
+#### Harness
+
+`check-layer-a.ps1`, `check-identity.ps1`, and `check-fixtures.ps1` already existed. This run added three scripts in the same directory:
+
+- **`check-layer-a-extra.ps1`** — A2.8c–e (`AGENTS.md` vs `build/AGENTS.md`), A2.9 (BOM hard-fail; line endings recorded), A4.4 (placeholder count: 28 template tokens = 28 `Replace-Placeholder` calls).
+- **`govern-update-run.ps1`** — executes `govern-update.md` against `registrar-mock-update`. Anchors are read out of `scripts/build.ps1`, never hardcoded. `-Apply` to write; plan-only by default.
+- **`assert-a3.ps1`** and **`assert-a3-refusals.ps1`** — the A3.1–A3.8 and A3.9–A3.12 assertions.
 
 ---
 
