@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.4 · **Last reviewed:** 2026-07-26 · **Active client:** none (internal repository)
+**Owner:** *(your company)* — Engineering · **Version:** 1.5 · **Last reviewed:** 2026-07-26 · **Active client:** none (internal repository)
 
 Guidance for AI agents working in this repository — the source repo for the AI-assisted coding governance package. This repo applies its own rules to itself.
 
@@ -22,18 +22,22 @@ An installed copy of this package keeps its rule files in an `ai-governance/` di
 
 ## What this repository is
 
-This is a **documentation-only repository** — a governance/policy set for AI-assisted software development on client engagements. There is no application code, no tests, and no package manager. Everything here is Markdown except the PowerShell scripts in `scripts/` (see below) that assemble reference copies of the package. Do not invent other build/lint/test commands; there are none to run.
+This is a **documentation-only repository** — a governance/policy set for AI-assisted software development on client engagements. There is no application code and no package manager. Everything here is Markdown except the PowerShell scripts in `scripts/` (see below) that assemble reference copies of the package. Do not invent other build/lint/test commands; there are none to run.
+
+There is no automated test suite either — but there *is* a test plan. [`testing/`](./testing/) holds the plan for validating the package against a mock application; see *The testing track* below. Its checks are executed against a mock repo built outside this one, not by a runner in here.
 
 This repo is a git repository (tracked on GitHub via `origin`). Normal git operations apply, same as any other project.
 
 ## Commands
 
-Run from the repo root. There is no install step, no test suite, and no linter.
+Run from the repo root. There is no install step, no test runner, and no linter.
 
 ```powershell
 .\scripts\build.ps1        # regenerate build/       — package assembled for the sample client (ESU)
 .\scripts\build-empty.ps1  # regenerate empty-build/ — package assembled with no client
 ```
+
+These two are the only executable commands in the repository. The checks described in [`testing/`](./testing/) are run by hand (Layer A) or as agent sessions against a mock repo (Layer B) — there is no command here that runs them.
 
 ## Verification contract — definition of done
 
@@ -43,6 +47,7 @@ A change here is **done** only when all of the following hold (see [`agent-workf
 - The counterpart file in the other track was checked for drift (`ai-docs/` ↔ `human-docs/`), and the rule you changed still lives in exactly one owning file.
 - Every relative Markdown link you touched still resolves from the file it lives in.
 - Any governed document you materially edited has its *Last reviewed* updated, and its *Version* bumped for substantive changes.
+- **Layer A of [`testing/Governance-Test-Plan.md`](./testing/Governance-Test-Plan.md) was re-run** if you materially edited anything under `ai-docs/`. Layer A is the mechanical half — build scripts, install/update file shape, link and drift checks — and it is quick. **Layer B (the behavioral scenarios) is deliberately *not* in this contract:** it is dozens of agent sessions, so requiring it per-edit would put a check here that nobody performs, which is exactly the failure [`agent-workflow.md`](./ai-docs/agent-workflow.md) §7 names. Run Layer B before a release of the package, or when the specific rule it covers changes substantively.
 
 Report verification results honestly in the hand-off: what you ran, and what actually happened.
 
@@ -56,6 +61,18 @@ The same governance content is maintained in two parallel tracks for two readers
 `README.md` at the root is the entry point for both: it states the two tracks, the exact file set to copy into a target repo, and the precedence rule. It points at the owning files rather than restating them — keep it that way.
 
 When you change a rule in one track, check whether its counterpart in the other track needs the same change. They are intentionally redundant and drift is the main maintenance hazard here.
+
+## The testing track
+
+[`testing/`](./testing/) is a **third** top-level directory, and it is neither of the two tracks above: it is not copied into client repos and it is not onboarding material. It holds the plan for verifying that this package installs correctly and that its rules actually change agent behavior.
+
+- **[`testing/Governance-Test-Plan.md`](./testing/Governance-Test-Plan.md)** — the plan. Split into **Layer A** (mechanical: build scripts, `govern-init` / `govern-update` file shape and merge semantics, link and drift checks — deterministic and scriptable) and **Layer B** (behavioral: baited scenarios run against an agent to see whether the rules bind).
+- **[`testing/coverage-matrix.md`](./testing/coverage-matrix.md)** — rule → scenario → result. Coverage is **complete** against the TL;DR checklists of `core-rules.md`, `coding-rules.md`, and `writing-rules.md`, and explicitly **representative, not exhaustive**, for `agent-workflow.md` and `coding-patterns.md`. Don't let that distinction erode — a new rule added to one of the three complete-coverage files needs a new scenario, or the claim stops being true.
+- **[`testing/mock-app-setup.md`](./testing/mock-app-setup.md)** — how to build the mock target repo. Deliberately a single file rather than a `testing/mock-app/` directory: scaffolding a mock *inside* this repo would make `govern-init` create the `ai-governance/` directory this repo forbids.
+
+Two design points worth preserving. **Every behavioral scenario runs against an ungoverned control copy as well** — an agent with no governance installed already declines to hardcode secrets, so a scenario without a baseline measures the model rather than the package, and the finding is the delta. And **scenarios are baited, not interviewed**: the violation has to be the path of least resistance, or the test proves nothing.
+
+The mock application itself lives **outside this repository** and is not tracked here.
 
 ## How the ai-docs files chain together
 

@@ -1,6 +1,6 @@
 # AI-Assisted Coding Governance
 
-This repository provides policy and guidance for AI-assisted software development for yourself or clients. This repository is documentation only — there is no application code, no build, and no tests.
+This repository provides policy and guidance for AI-assisted software development for yourself or clients. This repository is documentation only — there is no application code, no build, and no test runner.
 
 ---
 
@@ -10,6 +10,8 @@ The same governance is maintained for two different readers - AI agents and peop
 
 - **[`ai-docs/`](./ai-docs/)** — for AI agents (coding and content work). Terse, imperative, rule-shaped. These are the files you copy into a client project.
 - **[`human-docs/`](./human-docs/)** — for people. Onboarding, the full developer guideline, and the authoritative client policy.
+
+Alongside them, **[`testing/`](./testing/)** holds the plan for verifying that this package actually works — that it installs correctly, and that its rules change how an agent behaves. It is a third directory rather than a third track: it ships to nobody and is not onboarding material. See [`testing/Governance-Test-Plan.md`](./testing/Governance-Test-Plan.md).
 
 ## Adopting this in a client project
 
