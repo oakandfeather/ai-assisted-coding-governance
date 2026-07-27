@@ -67,8 +67,11 @@ try {
   if ($stashed) { git stash pop -q }
   Pop-Location
 }
-Assert 'A3.9b-3' ([string]::IsNullOrWhiteSpace((& { Push-Location $t; $s = git status --porcelain; Pop-Location; $s }))) `
-                 'update arm restored to clean after the deliberate dirtying'
+# Assert the deliberate edit is gone - NOT that the tree is clean. This script
+# normally runs after govern-update-run.ps1 -Apply, which leaves the arm
+# legitimately dirty with the merge results.
+Assert 'A3.9b-3' ((Read-Doc "$t\ai-governance\core-rules.md") -notmatch 'local uncommitted edit') `
+                 'the deliberate edit was reverted (any remaining diff is the A3 merge, not this check)'
 
 # --- A3.9c: no governance installed -> point at govern-init ----------------
 "=== A3.9c - no governance installed ==="

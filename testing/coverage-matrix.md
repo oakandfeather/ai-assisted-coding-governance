@@ -2,7 +2,7 @@
 
 *Which rule maps to which scenario, and what each scenario found. Scenario definitions live in [`Governance-Test-Plan.md`](./Governance-Test-Plan.md); the target repos are built per [`mock-app-setup.md`](./mock-app-setup.md).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.1 · **Last reviewed:** 2026-07-27 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Owner:** *(your company)* — Engineering · **Version:** 1.2 · **Last reviewed:** 2026-07-27 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -141,7 +141,7 @@ Mechanical checks. These are pass/fail with no arms and no delta — record the 
 | --- | --- | --- | --- | --- |
 | A1 — build scripts run | A1.1–A1.3 | **pass** | 2026-07-27 | Both literal strings printed; no anchor throw. See *A1.1/A1.2 are weaker than they look* below. |
 | A2 — `govern-init` file shape | A2.1–A2.11 | **pass** (A2.11 in part) | 2026-07-27 | A2.9 and the A2.8 `AGENTS.md`↔`build/` half were newly implemented. A2.11 verified in part — see below. |
-| A3 — `govern-update` merge semantics | A3.1–A3.12 | **pass with 1 defect** (A3.2 diff hygiene) | 2026-07-27 | Merge semantics correct in all five tiers, including both predicted failure sites. A3.2's diff criterion not met — defect is in the runner, not the procedure. A3.8 self-reported. |
+| A3 — `govern-update` merge semantics | A3.1–A3.12 | **pass** (after fix) | 2026-07-27 | Merge semantics correct in all five tiers, including both predicted failure sites. A3.2 initially failed on diff hygiene; fixed and re-run green — see below. A3.8 self-reported. |
 | A4 — links and drift | A4.1–A4.5 | **pass** | 2026-07-27 | 175 links / 43 files. A4.3(i)'s third leg is misidentified in the plan — see below. |
 
 Record individual failures by ID (e.g. `A3.4 FAIL — in-block Active client reverted to placeholder`) rather than only a group-level verdict; the group rows are a summary, not the record.
@@ -158,7 +158,9 @@ Tool: Claude Code. Mock: `C:\oakandfeather\registrar-mock*` (five copies, all ta
 
 1. **A3.2 FAIL (runner defect) — line-ending churn destroyed the diff.** A3.2 requires the tier-B files to be re-derived *and each to get its own diff and own approval gate*. The plan step correctly reported `CLAUDE.md — identical`, then the write produced a 10-line diff on it. The runner's local-content guard compares content, so line endings slipped past the very gate that exists to catch "the target holds something the template does not." Across all nine governance files this turned an 8-insertion/4-deletion change into a 580-line diff. `govern-update.md` step 7 tells the user to review that diff as the audit trail for when the rules changed; a whole-file diff destroys exactly that.
 
-   **The content merge was correct in every tier** — verified with `git diff --ignore-cr-at-eol`, which shows precisely the four seeded deltas plus the intended header bumps. **Recommended:** add a line to `govern-update.md` (and `govern-init.md`) requiring files to be written with the target's existing line endings, and have any implementation's local-content guard compare after normalizing them.
+   **The content merge was correct in every tier** — verified with `git diff --ignore-cr-at-eol`, which shows precisely the four seeded deltas plus the intended header bumps.
+
+   **FIXED and re-verified the same day.** `govern-update.md` step 3 and `govern-init.md` step 2 now require writing files with the endings they already have, and comparing after normalizing them. `govern-update-run.ps1` writes through `Write-DocLike`; A3.2e asserts that no file was rewritten by line-ending churn alone. On the re-run the diff went from **580 lines across 9 files to 8 insertions and 4 deletions across 4**, with the raw diff now byte-identical to the `--ignore-cr-at-eol` one.
 
 2. **A1.1/A1.2 are weaker than their pass criteria imply.** `build.ps1` line 185 and `build-empty.ps1` line 150 print `(10 files).` and `(9 files).` as **hardcoded literals** — the count is not computed. Asserting the literal string therefore cannot detect a file-count drift, which is the drift the check exists to catch. The real counts were verified separately this run and agree (10 / 9). **Recommended:** have the scripts count what they wrote, or have the check count files on disk.
 
@@ -189,11 +191,12 @@ One false positive was found and fixed in the *new* checks, not the package: the
 
 #### Harness
 
-`check-layer-a.ps1`, `check-identity.ps1`, and `check-fixtures.ps1` already existed. This run added three scripts in the same directory:
+Now in [`harness/`](./harness/), version-controlled, with the mock's location derived rather than hardcoded — see its [`README.md`](./harness/README.md). `check-layer-a.ps1`, `check-identity.ps1` and `check-fixtures.ps1` predate this run; it added `harness-common.ps1`, `check-layer-a-extra.ps1` (A2.8c–e, A2.9, A4.4), `govern-update-run.ps1`, `assert-a3.ps1` and `assert-a3-refusals.ps1`.
 
-- **`check-layer-a-extra.ps1`** — A2.8c–e (`AGENTS.md` vs `build/AGENTS.md`), A2.9 (BOM hard-fail; line endings recorded), A4.4 (placeholder count: 28 template tokens = 28 `Replace-Placeholder` calls).
-- **`govern-update-run.ps1`** — executes `govern-update.md` against `registrar-mock-update`. Anchors are read out of `scripts/build.ps1`, never hardcoded. `-Apply` to write; plan-only by default.
-- **`assert-a3.ps1`** and **`assert-a3-refusals.ps1`** — the A3.1–A3.8 and A3.9–A3.12 assertions.
+Two checks of my own went red during the run and were fixed, which is the point of running them:
+
+- `check-layer-a-extra.ps1`'s A2.8c matched `#` shell comments inside fenced code blocks as headings.
+- `assert-a3-refusals.ps1`'s A3.9b-3 asserted a clean tree after the deliberate dirtying, which is wrong in the normal sequence — the arm is legitimately dirty with the merge results. It now asserts the deliberate edit specifically.
 
 ---
 

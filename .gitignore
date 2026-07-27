@@ -1,2 +1,6 @@
 /build/
 /empty-build/
+
+# Written by testing/harness/govern-update-run.ps1 -Apply so assert-a3.ps1 can
+# prove tier E was untouched. A per-run artifact, not source.
+/testing/harness/.tier-e-snapshot.json
