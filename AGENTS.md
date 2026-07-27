@@ -30,14 +30,15 @@ This repo is a git repository (tracked on GitHub via `origin`). Normal git opera
 
 ## Commands
 
-Run from the repo root. There is no install step, no test runner, and no linter.
+Run from the repo root. There is no install step and no test runner.
 
 ```powershell
 .\scripts\build.ps1        # regenerate build/       — package assembled for the sample client (ESU)
 .\scripts\build-empty.ps1  # regenerate empty-build/ — package assembled with no client
+.\scripts\check-links.ps1  # verify every relative Markdown link resolves from its own file
 ```
 
-These two are the only executable commands in the repository. The checks described in [`testing/`](./testing/) are run by hand (Layer A) or as agent sessions against a mock repo (Layer B) — there is no command here that runs them.
+These three are the only executable commands in the repository. `check-links.ps1` exits non-zero on a broken link, so it works as a gate; **run `build.ps1` first**, since it verifies the `*.template.md` files' `ai-governance/` links against the `build/` snapshot (that directory doesn't exist here, and must not). The rest of [`testing/`](./testing/) is run by hand (Layer A) or as agent sessions against a mock repo (Layer B) — there is no command here that runs those.
 
 ## Verification contract — definition of done
 
@@ -45,7 +46,7 @@ A change here is **done** only when all of the following hold (see [`agent-workf
 
 - If you materially edited anything under `ai-docs/`, `scripts/build.ps1` and `scripts/build-empty.ps1` both ran to completion from the repo root and printed their file counts. A script that throws is a stop signal — it means a template's structure no longer matches the anchors it slices on; fix the script alongside the edit rather than working around it.
 - The counterpart file in the other track was checked for drift (`ai-docs/` ↔ `human-docs/`), and the rule you changed still lives in exactly one owning file.
-- Every relative Markdown link you touched still resolves from the file it lives in.
+- Every relative Markdown link you touched still resolves from the file it lives in — `.\scripts\check-links.ps1` checks this for the whole repo and exits non-zero if any link is broken.
 - Any governed document you materially edited has its *Last reviewed* updated, and its *Version* bumped for substantive changes.
 - **Layer A of [`testing/Governance-Test-Plan.md`](./testing/Governance-Test-Plan.md) was re-run** if you materially edited anything under `ai-docs/`. Layer A is the mechanical half — build scripts, install/update file shape, link and drift checks — and it is quick. **Layer B (the behavioral scenarios) is deliberately *not* in this contract:** it is dozens of agent sessions, so requiring it per-edit would put a check here that nobody performs, which is exactly the failure [`agent-workflow.md`](./ai-docs/agent-workflow.md) §7 names. Run Layer B before a release of the package, or when the specific rule it covers changes substantively.
 

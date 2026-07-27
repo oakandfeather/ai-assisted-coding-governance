@@ -84,18 +84,20 @@ These close the two verification-contract bullets that are currently uncheckable
 
 | ID | Check | How |
 | --- | --- | --- |
-| A4.1 | Every relative Markdown link resolves **from the file it lives in** | Walk every `.md` under `ai-docs/`, `human-docs/`, `testing/`, the repo root, and both build directories; resolve each relative link against its own directory, not the repo root. **Two expected exceptions — see below** |
+| A4.1 | Every relative Markdown link resolves **from the file it lives in** | **Implemented: `.\scripts\check-links.ps1`.** Walks every `.md` in the repo and resolves each relative link against its own directory, not the repo root. Exits non-zero on a break. Run `build.ps1` first — see the carve-outs below |
 | A4.2 | Same, in the installed mock | The `./` paths inside `ai-governance/` and the `../` paths in `.github/copilot-instructions.md` must resolve after the copy |
 | A4.3 | Hand-synced duplications still agree | (i) the empty-state paragraph — `build-empty.ps1` ↔ `govern-init.md` step 4 ↔ README Path C; (ii) the file-set table — `govern-init.md` step 2 ↔ README Path C ↔ root `AGENTS.md`; (iii) the always-on core — `AGENTS.template.md` ↔ `copilot-instructions.template.md` ↔ root `AGENTS.md` ↔ `.github/copilot-instructions.md` |
 | A4.4 | Placeholder-count invariant | Placeholder-token count in `AGENTS.template.md` after slicing equals the `Replace-Placeholder` call count in `build.ps1` |
 | A4.5 | Section numbering is append-only | The `agent-workflow.md` §3 and §5 citations in an installed `AGENTS.md` still point at the right sections, and `govern-init.md` step 4 still exists — `build-empty.ps1` cites it by number |
 
-**A4.1's two expected exceptions.** A naive link walker reports these as broken. They are correct, and a check that flags them will be ignored within a week:
+**A4.1's two carve-outs.** A naive link walker reports these as broken. They are correct, and a check that flags them gets disregarded within a week. Both are implemented in `check-links.ps1`; don't remove them:
 
-1. **`ai-docs/AGENTS.template.md` and `ai-docs/copilot-instructions.template.md`** point at `./ai-governance/…` and `../ai-governance/…`. That directory does not exist in this repo and must not — the templates resolve only once installed in a target repo. Allow-list both files, or resolve their links against `build/` instead of against their own directory.
-2. **Inline code spans that quote link syntax.** Prose in this very file describes the `](./…)` pattern inside backticks; that is documentation, not a link. Strip fenced blocks and inline code spans before matching.
+1. **`ai-docs/AGENTS.template.md` and `ai-docs/copilot-instructions.template.md`** point at `./ai-governance/…` and `../ai-governance/…`. That directory does not exist in this repo and must not — those links resolve only once the template is installed in a target repo. The script resolves them against `build/ai-governance/` instead, which is where they land in real use. This is a **real check, not an allow-list**: deleting a rule file from `build/` turns it red.
+2. **Code spans and fenced blocks that quote link syntax.** Prose in this very file describes the `](./…)` pattern inside backticks; that is documentation, not a link. The script blanks fenced blocks and inline code spans before matching, preserving line breaks so reported positions still line up.
 
-A checker without these two carve-outs produces two guaranteed false positives on a clean tree, which trains everyone to disregard its output.
+Because the walk includes `build/` and `empty-build/`, it also verifies that the **installed** shape's internal links resolve — the repo-side half of A4.2.
+
+**The script must be exercised, not just run.** Both carve-outs and the main path were verified by deliberately breaking each one and confirming it goes red: a link pointed at a missing file, and a rule file removed from `build/ai-governance/`. Re-do that after any change to the script.
 
 ---
 
