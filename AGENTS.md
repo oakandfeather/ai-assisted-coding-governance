@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.5 · **Last reviewed:** 2026-07-26 · **Active client:** none (internal repository)
+**Owner:** *(your company)* — Engineering · **Version:** 1.6 · **Last reviewed:** 2026-07-27 · **Active client:** none (internal repository)
 
 Guidance for AI agents working in this repository — the source repo for the AI-assisted coding governance package. This repo applies its own rules to itself.
 
@@ -22,7 +22,7 @@ An installed copy of this package keeps its rule files in an `ai-governance/` di
 
 ## What this repository is
 
-This is a **documentation-only repository** — a governance/policy set for AI-assisted software development on client engagements. There is no application code and no package manager. Everything here is Markdown except the PowerShell scripts in `scripts/` (see below) that assemble reference copies of the package. Do not invent other build/lint/test commands; there are none to run.
+This is a **documentation-only repository** — a governance/policy set for AI-assisted software development on client engagements. There is no application code and no package manager. Everything here is Markdown except two sets of PowerShell scripts: `scripts/` (see below), which assembles reference copies of the package, and [`testing/harness/`](./testing/harness/), which runs Layer A of the test plan against a mock repo built outside this one. Do not invent other build/lint/test commands; there are none to run.
 
 There is no automated test suite either — but there *is* a test plan. [`testing/`](./testing/) holds the plan for validating the package against a mock application; see *The testing track* below. Its checks are executed against a mock repo built outside this one, not by a runner in here.
 
@@ -38,7 +38,16 @@ Run from the repo root. There is no install step and no test runner.
 .\scripts\check-links.ps1  # verify every relative Markdown link resolves from its own file
 ```
 
-These three are the only executable commands in the repository. `check-links.ps1` exits non-zero on a broken link, so it works as a gate; **run `build.ps1` first**, since it verifies the `*.template.md` files' `ai-governance/` links against the `build/` snapshot (that directory doesn't exist here, and must not). The rest of [`testing/`](./testing/) is run by hand (Layer A) or as agent sessions against a mock repo (Layer B) — there is no command here that runs those.
+`check-links.ps1` exits non-zero on a broken link, so it works as a gate; **run `build.ps1` first**, since it verifies the `*.template.md` files' `ai-governance/` links against the `build/` snapshot (that directory doesn't exist here, and must not).
+
+Layer A of the test plan is scripted too, in [`testing/harness/`](./testing/harness/) — it runs against a mock repo built **outside** this one, so it needs that mock to exist first (see [`testing/harness/README.md`](./testing/harness/README.md)):
+
+```powershell
+cd testing\harness
+.\check-identity.ps1; .\check-fixtures.ps1; .\check-layer-a.ps1; .\check-layer-a-extra.ps1
+```
+
+Each exits non-zero on failure. The A3 scripts in that directory are stateful and need the source aged first — the harness README says how. Layer B is agent sessions; there is no command here that runs those.
 
 ## Verification contract — definition of done
 
@@ -48,7 +57,7 @@ A change here is **done** only when all of the following hold (see [`agent-workf
 - The counterpart file in the other track was checked for drift (`ai-docs/` ↔ `human-docs/`), and the rule you changed still lives in exactly one owning file.
 - Every relative Markdown link you touched still resolves from the file it lives in — `.\scripts\check-links.ps1` checks this for the whole repo and exits non-zero if any link is broken.
 - Any governed document you materially edited has its *Last reviewed* updated, and its *Version* bumped for substantive changes.
-- **Layer A of [`testing/Governance-Test-Plan.md`](./testing/Governance-Test-Plan.md) was re-run** if you materially edited anything under `ai-docs/`. Layer A is the mechanical half — build scripts, install/update file shape, link and drift checks — and it is quick. **Layer B (the behavioral scenarios) is deliberately *not* in this contract:** it is dozens of agent sessions, so requiring it per-edit would put a check here that nobody performs, which is exactly the failure [`agent-workflow.md`](./ai-docs/agent-workflow.md) §7 names. Run Layer B before a release of the package, or when the specific rule it covers changes substantively.
+- **Layer A of [`testing/Governance-Test-Plan.md`](./testing/Governance-Test-Plan.md) was re-run** if you materially edited anything under `ai-docs/`. Layer A is the mechanical half — build scripts, install/update file shape, link and drift checks — and it is **scripted in [`testing/harness/`](./testing/harness/)**, so it takes seconds for everything except the stateful A3 group. **Layer B (the behavioral scenarios) is deliberately *not* in this contract:** it is dozens of agent sessions, so requiring it per-edit would put a check here that nobody performs, which is exactly the failure [`agent-workflow.md`](./ai-docs/agent-workflow.md) §7 names. Run Layer B before a release of the package, or when the specific rule it covers changes substantively.
 
 Report verification results honestly in the hand-off: what you ran, and what actually happened.
 
@@ -69,6 +78,7 @@ When you change a rule in one track, check whether its counterpart in the other 
 
 - **[`testing/Governance-Test-Plan.md`](./testing/Governance-Test-Plan.md)** — the plan. Split into **Layer A** (mechanical: build scripts, `govern-init` / `govern-update` file shape and merge semantics, link and drift checks — deterministic and scriptable) and **Layer B** (behavioral: baited scenarios run against an agent to see whether the rules bind).
 - **[`testing/coverage-matrix.md`](./testing/coverage-matrix.md)** — rule → scenario → result. Coverage is **complete** against the TL;DR checklists of `core-rules.md`, `coding-rules.md`, and `writing-rules.md`, and explicitly **representative, not exhaustive**, for `agent-workflow.md` and `coding-patterns.md`. Don't let that distinction erode — a new rule added to one of the three complete-coverage files needs a new scenario, or the claim stops being true.
+- **[`testing/harness/`](./testing/harness/)** — the scripted half of Layer A, and the only PowerShell outside `scripts/`. It runs against the mock built per `mock-app-setup.md`, resolving that mock's location relative to this repo (override with `GOVERNANCE_MOCK_ROOT`). Two conventions there are load-bearing and easy to undo by accident: **read and write through the UTF-8 helpers in `harness-common.ps1`**, never bare `Get-Content` — PowerShell 5.1 decodes these files as ANSI and mangles every em dash and middot, which the structural checks index on — and **keep the scripts themselves pure ASCII**, since `.ps1` source is decoded the same way. See its [`README.md`](./testing/harness/README.md).
 - **[`testing/mock-app-setup.md`](./testing/mock-app-setup.md)** — how to build the mock target repo. Deliberately a single file rather than a `testing/mock-app/` directory: scaffolding a mock *inside* this repo would make `govern-init` create the `ai-governance/` directory this repo forbids.
 
 Two design points worth preserving. **Every behavioral scenario runs against an ungoverned control copy as well** — an agent with no governance installed already declines to hardcode secrets, so a scenario without a baseline measures the model rather than the package, and the finding is the delta. And **scenarios are baited, not interviewed**: the violation has to be the path of least resistance, or the test proves nothing.

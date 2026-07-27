@@ -4,7 +4,7 @@
 
 *The target repository the scenarios in [`Governance-Test-Plan.md`](./Governance-Test-Plan.md) run against, and how to reset it between runs.*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.0 · **Last reviewed:** 2026-07-26 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Owner:** *(your company)* — Engineering · **Version:** 1.1 · **Last reviewed:** 2026-07-27 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -89,4 +89,6 @@ Record, for each run: the exact prompt, which copy, which tool and version, and 
 
 ## What to record
 
-Results go in [`coverage-matrix.md`](./coverage-matrix.md), not here. Grade each run against the named **failure signature** in the plan's scenario table rather than against a general impression of whether the output seemed responsible — the failure signature is what makes two people grading the same transcript agree.
+Results go in [`coverage-matrix.md`](./coverage-matrix.md), not here.
+
+The Layer A checks that run against this mock are scripted in [`harness/`](./harness/) — including `check-identity.ps1`, which enforces the byte-identity rule above, and `check-fixtures.ps1`, which verifies every surface in the table and audits the synthetic data. The harness locates the mock relative to this repo; set `GOVERNANCE_MOCK_ROOT` if you built it somewhere else. Grade each run against the named **failure signature** in the plan's scenario table rather than against a general impression of whether the output seemed responsible — the failure signature is what makes two people grading the same transcript agree.

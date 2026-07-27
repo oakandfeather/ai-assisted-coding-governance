@@ -2,13 +2,15 @@
 
 *How we verify that this package installs correctly and that its rules actually change agent behavior. Companion files: [`coverage-matrix.md`](./coverage-matrix.md) (which rule maps to which scenario) and [`mock-app-setup.md`](./mock-app-setup.md) (how to build the target repo the scenarios run against).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.0 · **Last reviewed:** 2026-07-26 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Owner:** *(your company)* — Engineering · **Version:** 1.1 · **Last reviewed:** 2026-07-27 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
 ## Why this exists
 
-The package in [`ai-docs/`](../ai-docs/) gets copied into client repos and is supposed to change how AI coding agents behave there. Until now nothing verified that it does. There is no test suite, no CI, no link checker and no drift detector; the only assertion in the whole repository is `Assert-NoPlaceholders` in `scripts/build.ps1`, and `scripts/build-empty.ps1` has none at all. The verification-contract bullets in [`AGENTS.md`](../AGENTS.md) covering counterpart drift and link resolution are entirely manual and entirely uncheckable.
+The package in [`ai-docs/`](../ai-docs/) gets copied into client repos and is supposed to change how AI coding agents behave there. When this plan was written, nothing verified that it does: there was no test suite, no CI, no link checker and no drift detector, and the only assertion in the whole repository was `Assert-NoPlaceholders` in `scripts/build.ps1`. The verification-contract bullets in [`AGENTS.md`](../AGENTS.md) covering counterpart drift and link resolution were entirely manual and entirely uncheckable.
+
+Layer A has since been implemented — `scripts/check-links.ps1` plus [`harness/`](./harness/) — so those bullets are now checked. **Layer B is still entirely unrun.** There is no CI; everything here is invoked by hand.
 
 Two questions follow, and this plan answers them separately because they need different machinery:
 
@@ -25,13 +27,15 @@ It is not a substitute for human review. The package's own rules require that AI
 
 ## Layer A — Mechanical install/update tests
 
-Pass/fail, no model judgment required. Runnable in seconds once scripted.
+Pass/fail, no model judgment required. **Implemented in [`harness/`](./harness/)** — see its [`README.md`](./harness/README.md) for how to run it and where the mock has to be. Everything except the stateful A3 group runs in seconds; A3 needs the source aged first.
 
 **Use `build/` and `empty-build/` as the oracle** rather than hand-written expected file lists. They are already assembled snapshots of the installed shape — `build/` filled for the sample client (10 files), `empty-build/` with no client (9 files plus an empty `ai-governance/client-profiles/`). Regenerate both before comparing.
 
 **Oracle split.** `empty-build/` is the correct oracle for the post-copy, pre-interview shape (A2.1–A2.6, A2.8). `build/` is only for the structural comparison of `AGENTS.md` — `govern-init` interviews for values and will not reproduce `build.ps1`'s hardcoded sample-client strings.
 
 **Do not byte-compare naively.** `build.ps1` normalizes CRLF→LF in `Read-Text` and writes UTF-8 without BOM. `govern-init` is prose an agent follows with ordinary file tools, which on Windows will likely produce CRLF. A raw byte comparison goes red on line endings and tells you nothing. Normalize line endings, compare content, and assert encoding separately (A2.9).
+
+**The inverse of that also bites, and it bit this suite.** Normalizing line endings is right for *comparing* and wrong for *writing*: an update that rewrites CRLF files as LF turns a few-line change into a diff of several hundred, destroying the audit trail `govern-update.md` step 7 asks reviewers to read. Both procedures now require preserving the target's endings; A3.2 checks it.
 
 ### A1 — The build scripts still run
 
@@ -66,7 +70,7 @@ The stateful phase, and where a real bug is most likely. Sequence: install → f
 | ID | Tier | Check | Pass criteria |
 | --- | --- | --- | --- |
 | A3.1 | A | Five portable rule files replaced wholesale | Content matches new upstream; a locally-filled `Owner:` is preserved |
-| A3.2 | B | `CLAUDE.md` and the Copilot file re-derived | Correct content, and each got its **own** diff and **own** approval gate |
+| A3.2 | B | `CLAUDE.md` and the Copilot file re-derived | Correct content, and each got its **own** diff and **own** approval gate. **A file the plan reported as `identical` must not come back with a diff** — line-ending churn slips past a content-only local-content guard and rewrites every line |
 | A3.3 | C | `AGENTS.md` merged | Only `## ⚠️ Mandatory rules` up to (not including) the first following `---` was replaced |
 | A3.4 | C | **The double-`Active client` trap** | The value *inside* the mandatory-rules block is a second, separate placeholder from the one in the header — `build.ps1` fills them independently. Both survive with the target's filled value |
 | A3.5 | C | Header metadata | `Last reviewed` set to today; `Version` bumped a minor step; `Owner` and the header `Active client` left alone |
@@ -230,11 +234,11 @@ The claim under test is the README's caveat that Copilot and Codex do not reliab
 4. **Layer B on Copilot** (B-T) last — it depends on a clean governed install and on knowing the Claude Code results to compare against.
 5. **Fill [`coverage-matrix.md`](./coverage-matrix.md) as you go.** A scenario with no recorded control result is not done.
 
-**Effort.** Layer A is scriptable and cheap. The Claude Code behavioral arm is 36 scenarios × 2 arms × 3 runs ≈ 216 sessions if run exhaustively; B-T is a separate ~12 sessions. If that is too much, cut **runs** (3 → 2 → 1) before cutting **arms** — dropping the control arm makes the whole exercise uninterpretable.
+**Effort.** Layer A is scripted and cheap - see [`harness/`](./harness/). The Claude Code behavioral arm is 36 scenarios × 2 arms × 3 runs ≈ 216 sessions if run exhaustively; B-T is a separate ~12 sessions. If that is too much, cut **runs** (3 → 2 → 1) before cutting **arms** — dropping the control arm makes the whole exercise uninterpretable.
 
 ## When to re-run
 
-- **Layer A: on every material change to `ai-docs/`.** It is scriptable and takes seconds, so it belongs in the verification contract in [`AGENTS.md`](../AGENTS.md) and is expected to actually be performed.
+- **Layer A: on every material change to `ai-docs/`.** It is scripted and takes seconds (A3 excepted - it needs the source aged), so it belongs in the verification contract in [`AGENTS.md`](../AGENTS.md) and is expected to actually be performed.
 - **Layer B: release-gated or periodic, not per-edit.** Layer B is model sessions. Putting 36 scenarios into a per-edit contract would document a check nobody performs — precisely the failure `agent-workflow.md` §7 names, written into a governance repository. Re-run the affected rule's scenarios when that rule changes substantively, and the full suite before a release of the package.
 
 ## Verifying the tests themselves
