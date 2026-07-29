@@ -2,7 +2,7 @@
 
 *How an AI agent should work in this project to be effective: the work loop, when to ask vs. proceed, how to verify, how to hand off, when to stop iterating and attack your own work, where to spend effort, and when to hand a subtask to another agent. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus [`coding-patterns.md`](./coding-patterns.md) (engineering craft). Where anything here tensions with those: **a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over everything, safety wins over speed, and correctness wins over throughput.***
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.4 · **Last reviewed:** 2026-07-26 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Owner:** *(your company)* — Engineering · **Version:** 1.5 · **Last reviewed:** 2026-07-29 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -113,6 +113,18 @@ Delegation trades context isolation against re-derivation: the subtask starts wi
 - **A fresh-context reviewer, because §6 already argues for it.** The falsification pass is weakest exactly where §6 says it is — you are anchored to what you built. An agent that never saw you build it cannot be. Give it the requirement and the change and ask it to find the defect, not to confirm the work. Where you can't run one, §6's cold requirement-first re-read is the fallback.
 - **Broad search** — locating every call site, checking whether a convention holds across a tree. Large reading, small answer: that is §7's "one deliberate pass" lever, not an exception to it.
 - **Not the change itself.** Splitting one coherent piece of work across agents that each hold part of the context produces exactly the plausible-but-wrong result §1 opens by warning about — and you still own it.
+
+**The cost of delegating more than once — a ceiling, not a habit:**
+
+- **Default ceiling: at most two subagents per task, run one at a time.** Delegation is a §7 lever — it spends the human's review time on a hand-off that now includes someone else's report, not just yours. Two is enough for the two cases above (a fresh-context reviewer, one broad-search pass) without delegation becoming the default way work gets done.
+- **Exceeding it needs the same justification a stop-and-ask does — state it, don't just do it.** Cross it only for a genuinely independent line of inquiry the task actually has (not "more thoroughness on the same question") or an explicit user request for more parallel agents. Name the reason in your hand-off (§4) the same way you'd name an assumption.
+- **The pays-off test above applies per delegation, not once for the task.** Having justified the first subagent does not pre-justify the second: ask again, against the same "output small relative to the reading it takes to produce" bar, before spawning another.
+- **No chaining — a subagent delegating further is the same spend under a different name.** A subagent you launch may not spawn subagents of its own; if its subtask looks big enough to need that, it wasn't small enough to delegate in the first place, and it comes back to you as a stop-and-ask (§2) or a smaller re-scoped delegation, not as a second layer you can't see into.
+
+**Scope each one down — model and permissions are part of the cost too:**
+
+- **Match the model to the subtask, not to habit.** A lookup, a mechanical search, or a fixed-format check needs the smallest capable model, not whatever is driving the task. Reserve the strongest model for the step that actually needs its reasoning — the fresh-context review, not the file it's reviewing.
+- **Grant the least access the subtask needs, not the most convenient.** Read-only tools for search and review; write access only when the subtask is scoped to a specific, named change, and never more reach (network, shell, destructive commands) than that change requires. A subagent that only needs to look shouldn't be able to edit, run, or delete.
 
 **The trust boundary — a subagent's report is not your own knowledge:**
 
