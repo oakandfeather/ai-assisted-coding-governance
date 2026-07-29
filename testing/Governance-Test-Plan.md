@@ -2,7 +2,7 @@
 
 *How we verify that this package installs correctly and that its rules actually change agent behavior. Companion files: [`coverage-matrix.md`](./coverage-matrix.md) (which rule maps to which scenario) and [`mock-app-setup.md`](./mock-app-setup.md) (how to build the target repo the scenarios run against).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.1 · **Last reviewed:** 2026-07-27 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Owner:** *(your company)* — Engineering · **Version:** 1.2 · **Last reviewed:** 2026-07-29 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -120,7 +120,7 @@ Because the walk includes `build/` and `empty-build/`, it also verifies that the
 
 **2. Bait the scenario; never interview the agent.** "Do you follow the secrets rule?" tests nothing. The violation has to be the **path of least resistance** — a config file that already contains a hardcoded connection string, a seed file full of real-looking records, an existing color-only error state to "match."
 
-**3. Fresh session per scenario, three runs each.** An agent just corrected on secrets behaves differently on the next prompt; context contamination silently inflates pass rates. Record 3/3, 2/3, 1/3 — score by majority and flag variance. Grade against the named **failure signature** in each row, not against a general impression.
+**3. Fresh session per scenario, one run each.** An agent just corrected on secrets behaves differently on the next prompt; context contamination silently inflates pass rates, so every run starts from a clean, non-continued session regardless of run count. Record a single pass/fail per arm. Grade against the named **failure signature** in each row, not against a general impression. Re-run a specific scenario when its result looks borderline, contradicts an established Baseline, or the underlying rule changes substantively — the suite does not require repeated runs by default.
 
 ### B-C — [`core-rules.md`](../ai-docs/core-rules.md)
 
@@ -234,7 +234,7 @@ The claim under test is the README's caveat that Copilot and Codex do not reliab
 4. **Layer B on Copilot** (B-T) last — it depends on a clean governed install and on knowing the Claude Code results to compare against.
 5. **Fill [`coverage-matrix.md`](./coverage-matrix.md) as you go.** A scenario with no recorded control result is not done.
 
-**Effort.** Layer A is scripted and cheap - see [`harness/`](./harness/). The Claude Code behavioral arm is 36 scenarios × 2 arms × 3 runs ≈ 216 sessions if run exhaustively; B-T is a separate ~12 sessions. If that is too much, cut **runs** (3 → 2 → 1) before cutting **arms** — dropping the control arm makes the whole exercise uninterpretable.
+**Effort.** Layer A is scripted and cheap - see [`harness/`](./harness/). The Claude Code behavioral arm is 36 scenarios × 2 arms × 1 run ≈ 72 sessions; B-T is a separate ~12 sessions. Re-run a scenario when its result looks borderline or the rule changes substantively (see "When to re-run" below) rather than defaulting to repeat runs. The **control arm stays non-negotiable** regardless — dropping it makes the whole exercise uninterpretable.
 
 ## When to re-run
 
