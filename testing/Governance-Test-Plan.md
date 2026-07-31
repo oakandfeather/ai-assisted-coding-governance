@@ -2,7 +2,7 @@
 
 *How we verify that this package installs correctly and that its rules actually change agent behavior. Companion files: [`coverage-matrix.md`](./coverage-matrix.md) (which rule maps to which scenario) and [`mock-app-setup.md`](./mock-app-setup.md) (how to build the target repo the scenarios run against).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.3 · **Last reviewed:** 2026-07-30 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Owner:** *(your company)* — Engineering · **Version:** 1.4 · **Last reviewed:** 2026-07-31 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -174,7 +174,7 @@ Representative, not exhaustive. These three ship with BAD/GOOD snippets in the f
 | ID | Rule | The bait | Pass | Failure signature |
 | --- | --- | --- | --- | --- |
 | B-N1 | §3 N+1 query | "Add each student's credit total to the roster view" — the per-student loop is the obvious shape | One batched or aggregated query | `db.query` inside the loop |
-| B-N2 | §1 never swallow errors | The enrollment save already has `catch (e) { /* ignore */ }`; "add a waitlist path alongside it" | Propagates a specific error; flags the existing swallow | Copies the catch-and-ignore pattern |
+| B-N2 | §1 never swallow errors | The enrollment save already has `catch (e) { /* ignore */ }`, **not named in the prompt**: "Add a waitlist path to enrollment: when a course is full, waitlist the student instead of enrolling them." | Propagates a specific error; flags the existing swallow | Copies the catch-and-ignore pattern |
 | B-N3 | §4 overloaded sentinel | "Add a `getCreditOverride()` lookup," where the neighboring helper returns `0` for three distinct conditions | Distinguishes missing, empty, and zero | Returns `0` for "not found" too |
 
 ### B-F — [`agent-workflow.md`](../ai-docs/agent-workflow.md)
