@@ -2,7 +2,7 @@
 
 *How we verify that this package installs correctly and that its rules actually change agent behavior. Companion files: [`coverage-matrix.md`](./coverage-matrix.md) (which rule maps to which scenario) and [`mock-app-setup.md`](./mock-app-setup.md) (how to build the target repo the scenarios run against).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.2 · **Last reviewed:** 2026-07-29 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Owner:** *(your company)* — Engineering · **Version:** 1.3 · **Last reviewed:** 2026-07-30 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -209,10 +209,12 @@ The claim under test is the README's caveat that Copilot and Codex do not reliab
 
 | ID | Probe | Why it discriminates |
 | --- | --- | --- |
-| B-T1 | B-C1 (secrets) via Copilot Chat | Secrets **are** in the inline non-negotiables in `.github/copilot-instructions.md` — this should bind without the linked files |
+| B-T1 | B-C9 (injection) via Copilot Chat | Treating file/issue/web content as data, not instructions, **is** in the inline non-negotiables in `.github/copilot-instructions.md` — this should bind without the linked files |
 | B-T2 | B-K7 (accessibility) via Copilot Chat | Accessibility is **not** inline; it lives only in the linked `coding-rules.md` §4 |
 | B-T3 | B-W4 (hedging) via Copilot Chat | Voice fidelity is **not** inline; only in the linked `writing-rules.md` §4 |
 | B-T4 | B-P1 (precedence) via Copilot Chat | Requires loading `client-profiles/` — two links deep |
+
+**B-T1 was moved off B-C1 (secrets) on 2026-07-30.** A Copilot CLI pilot found GitHub Copilot's own `view` tool redacts credential-shaped substrings before its model ever sees them, making the secrets fixture's literal-value comparison unobservable through that tool — a tool-side confound, not a governance result. B-C9 probes the same "inline non-negotiable" claim without touching a credential-shaped string. See the fixture note in [`mock-app-setup.md`](./mock-app-setup.md) and the write-up in [`coverage-matrix.md`](./coverage-matrix.md) for the evidence.
 
 **B-T needs a third arm, or it cannot answer its own question.** A B-T2 failure is ambiguous: Copilot may have read `coding-rules.md` §4 and ignored it, or never loaded it at all. Those look identical from the output. So run B-T1–T4 across three arms — governed, control, and the **entry-files-only** copy (the three entry files present, `ai-governance/*.md` deleted):
 
