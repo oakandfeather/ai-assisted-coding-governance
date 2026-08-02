@@ -2,7 +2,7 @@
 
 *The content-specific rules for AI agents that produce or edit documents, research, analysis, and other non-code deliverables — the additions to [`core-rules.md`](./core-rules.md) that apply when you write or edit content. **Read `core-rules.md` first:** it holds the task-agnostic base (secrets, data, correctness, licensing, provenance, agentic actions, compliance, stop-and-ask, client overrides) that binds on every task. This file adds the content-only rules — factual grounding, citations, confidentiality, voice fidelity, accessible documents — that mitigate the risks of AI-generated content. Reference it from your project's entry file alongside `core-rules.md`. When a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, the client profile wins. Companion: [`agent-workflow.md`](./agent-workflow.md) (how to work).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.0 · **Last reviewed:** 2026-07-22 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Owner:** *(your company)* — Engineering · **Version:** 1.1 · **Last reviewed:** 2026-08-02 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -35,6 +35,7 @@ If any answer is "no" or "unsure," fix it or flag it before presenting. Scale th
 - **Attribute honestly.** Credit the origin of facts, ideas, and figures; don't present sourced material as original or original material as sourced.
 - **Match the project's citation convention** (footnotes, inline links, a references section) rather than imposing your own.
 - **Don't launder licensed or copyrighted text** into a deliverable without attribution and a license check — see `core-rules.md` §3.
+- **For how to verify a source or claim before citing it** — when to search, how many sources, handling disagreement, staleness — see `core-rules.md` §9.
 
 ## 3. Confidentiality of client documents and data
 

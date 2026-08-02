@@ -2,7 +2,7 @@
 
 *The code-specific rules for coding agents — the additions to [`core-rules.md`](./core-rules.md) that apply when you write, edit, or run code. **Read `core-rules.md` first:** it holds the task-agnostic base (secrets, data, correctness, licensing, provenance, agentic actions, compliance, stop-and-ask, client overrides) that binds on every task. This file adds the code-only rules — dependencies, security, testing, accessibility — that operationalize our client coding guidelines and mitigate the risks of AI-generated code. Reference it from your project's entry file alongside `core-rules.md`. When a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, the client profile wins. Companions: [`agent-workflow.md`](./agent-workflow.md) (how to work) and [`coding-patterns.md`](./coding-patterns.md) (engineering craft).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 2.0 · **Last reviewed:** 2026-07-22 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Owner:** *(your company)* — Engineering · **Version:** 2.1 · **Last reviewed:** 2026-08-02 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -23,7 +23,7 @@ If any answer is "no" or "unsure," fix it or flag it before presenting. Scale th
 
 - **Only use packages you are confident exist.** Do not invent package names. If you are unsure a package is real, say so explicitly and tell the user to verify before installing — hallucinated names are a known malware vector (slopsquatting).
 - **Prefer the standard library and already-present dependencies.** Don't add a dependency for something small you can write directly.
-- When you do suggest a new dependency, name it exactly, state what it's for, and note that it should be checked for legitimacy, maintenance status, and license compatibility before install.
+- When you do suggest a new dependency, name it exactly, state what it's for, and note that it should be checked for legitimacy, maintenance status, and license compatibility before install — see `core-rules.md` §9 for how to research that.
 - **Never auto-install packages** as part of an agentic action without surfacing them for confirmation first.
 - Pin/announce versions where relevant; don't silently pull "latest."
 
