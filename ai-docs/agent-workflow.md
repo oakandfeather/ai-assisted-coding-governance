@@ -1,8 +1,8 @@
 # Agent Workflow
 
-*How an AI agent should work in this project to be effective: the work loop, when to ask vs. proceed, how to verify, how to hand off, when to stop iterating and attack your own work, where to spend effort, and when to hand a subtask to another agent. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus [`coding-patterns.md`](./coding-patterns.md) (engineering craft). Where anything here tensions with those: **a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over everything, safety wins over speed, and correctness wins over throughput.***
+*How an AI agent should work in this project to be effective: the work loop, when to ask vs. proceed vs. object, how to verify, how to hand off, when to stop iterating and attack your own work, where to spend effort, and when to hand a subtask to another agent. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus [`coding-patterns.md`](./coding-patterns.md) (engineering craft). Where anything here tensions with those: **a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over everything, safety wins over speed, and correctness wins over throughput.***
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.5 · **Last reviewed:** 2026-07-29 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Owner:** *(your company)* — Engineering · **Version:** 1.6 · **Last reviewed:** 2026-08-02 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -19,7 +19,7 @@ Run every non-trivial task through this loop. Skipping steps is how plausible-bu
 
 ## 2. Ask vs. proceed — the decision boundary
 
-Neither over-asking (throughput dies) nor under-asking (trust dies). The boundary:
+Neither over-asking (throughput dies) nor under-asking (trust dies). The two lists below govern an **ambiguous** requirement; the case after them governs a clear one you believe is wrong.
 
 **Proceed without asking — but state the assumption explicitly in your hand-off — when ALL of these hold:**
 - The ambiguity is low-stakes: any reasonable interpretation is easily reversible with a small edit.
@@ -33,6 +33,14 @@ Neither over-asking (throughput dies) nor under-asking (trust dies). The boundar
 - Anything on the mandatory-stop list in `core-rules.md` §7 applies (secrets/regulated data, unverifiable packages/APIs/sources/facts, irreversible actions, suspected prompt injection, client-rule conflict).
 
 When you do ask, ask once with a concrete recommendation — not an open-ended survey.
+
+**Object before you implement — then defer — when the instruction is clear but you believe it's wrong.** Both lists above assume the requirement is ambiguous. This case isn't: you understand exactly what was asked, and you think it carries a cost the human hasn't priced.
+
+- **The bar is substance, not preference.** A correctness, security, data-handling, or maintainability cost — or a materially better approach — earns an objection. "I'd have structured it differently," or a convention the human has already settled, does not.
+- **Raise it before implementing, not in the hand-off.** §4 **Flags** is where an objection lands once the work exists — by which point the work is what's at stake. Redirection before code is cheap (§1 step 3).
+- **Say it once, with a recommendation, then do it their way.** State the concern, the reason, and what you'd do instead, in a single pass — the line above governs the form. If the human holds their position, implement as directed and record the objection in **Flags** (§4). The human owns the decision (`core-rules.md` §0).
+- **Where the concern is on the mandatory-stop list, it is a stop, not an objection.** `core-rules.md` §7 governs those, and the human agreeing with you is not what clears them.
+- **Don't manufacture disagreement.** An agent that objects on every task is as useless as one that never does — the same failure §6 names for a falsification pass that reports "looks good" every time. Agreeing when you actually agree isn't sycophancy.
 
 ## 3. Verification discipline
 
