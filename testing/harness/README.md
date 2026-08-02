@@ -2,7 +2,7 @@
 
 *The scripted half of [`../Governance-Test-Plan.md`](../Governance-Test-Plan.md). Layer A is mechanical and belongs in the verification contract, so it has to be fast enough that people actually run it.*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.0 · **Last reviewed:** 2026-07-27 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Owner:** *(your company)* — Engineering · **Version:** 1.1 · **Last reviewed:** 2026-08-02 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -55,6 +55,25 @@ Afterwards, reset the arms and discard the scratch branch:
 ```powershell
 git reset --hard pristine; git clean -fd      # -fd, NOT -fdx: node_modules is untracked
 ```
+
+## Refreshing the arms when `ai-docs/` moves ahead
+
+The arms hold a governance copy installed at a point in time. Once this repo's rule files move past it, **A2.8 / A2.8b / A2.8e go red on staleness rather than on a defect** — the arms are behind, not wrong. Clear that by running the updater against them:
+
+```powershell
+.\govern-update-run.ps1 -Arm governed -Apply
+.\govern-update-run.ps1 -Arm unconfigured -Apply
+```
+
+Then re-sync `…-entryfiles-only/`'s three entry files from `…-governed/` (that arm holds no `ai-governance/`, so the updater can't run there, and B-T only discriminates while its entry files match the governed arm's). Finally commit each refreshed arm and move its tag — the hygiene check asserts `tag=pristine, tree clean`:
+
+```powershell
+git add -A; git commit -m "Refresh installed governance to upstream (govern-update)"; git tag -f pristine
+```
+
+**Never refresh `…-update/`.** It is deliberately aged, and A3 has nothing to pull once it matches the source. `-Arm` defaults to `update` precisely so the A3 invocations above stay untouched; the maintenance values are opt-in, and only the `update` arm writes the tier-E snapshot `assert-a3.ps1` reads.
+
+Distinguishing the two cases matters: a check that was **green before your edit and red after** is never staleness. A2.8e in particular oracles the tier-C mandatory-rules block that `govern-update` merges, so an edit inside `AGENTS.template.md`'s mandatory-rules block turns it red until the arms are refreshed — expected, but only alongside a deliberate refresh, never worked around.
 
 ## Two traps these scripts exist to avoid
 

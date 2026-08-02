@@ -1,4 +1,11 @@
-# A3 - executes ai-docs/procedures/govern-update.md against the update arm.
+# A3 - executes ai-docs/procedures/govern-update.md against a mock arm.
+#
+# -Arm selects the target and defaults to 'update', the A3 arm. The other two
+# values exist for FIXTURE MAINTENANCE, not for A3: when this repo's ai-docs/
+# move ahead of the arms, A2.8/A2.8b/A2.8e go red on staleness rather than on a
+# real defect, and refreshing is how you clear that. Never refresh the update
+# arm this way - it is deliberately aged, and A3 has nothing to pull once it
+# matches the source.
 #
 # Anchors are READ OUT OF scripts/build.ps1 (procedure step 2), never restated
 # here: a third copy alongside the two build scripts is exactly the drift this
@@ -10,14 +17,19 @@
 #
 # Plan-only by default. Pass -Apply to write.
 
-param([switch]$Apply)
+param(
+  [switch]$Apply,
+  [ValidateSet('update','governed','unconfigured')][string]$Arm = 'update'
+)
 
 . "$PSScriptRoot\harness-common.ps1"
 Reset-Harness
 Assert-MockPresent
 
 $src = $RepoRoot
-$tgt = $MockArms.update
+$tgt = $MockArms[$Arm]
+"TARGET ARM: $Arm  ($tgt)"
+""
 
 # ---- step 2: learn the anchors from build.ps1 ------------------------------
 $bp = Read-Doc "$src\scripts\build.ps1"
@@ -89,7 +101,13 @@ foreach ($b in $tierB) {
 "--- Tier D: merge ai-governance/client-profiles.md ---"
 "--- Tier E: NEVER TOUCH (listed, not read) ---"
 $tierEDir = "$tgt\ai-governance\client-profiles"
-Get-ChildItem $tierEDir -File | ForEach-Object { "    $($_.Name)" }
+# The unconfigured arm has no client-profiles/ directory - the interview that
+# authors a profile was never run there. Absent is correct, not a failure.
+if (Test-Path -LiteralPath $tierEDir) {
+  Get-ChildItem $tierEDir -File | ForEach-Object { "    $($_.Name)" }
+} else {
+  "    (no client-profiles/ directory in this arm)"
+}
 
 "--- added / removed upstream ---"
 $srcSet = (Get-ChildItem "$src\ai-docs" -File -Filter '*.md' | ForEach-Object { $_.Name }) | Where-Object { $_ -notmatch '\.template\.md$' }
@@ -102,10 +120,17 @@ if ($removed) { $removed | ForEach-Object { "    REMOVED upstream: $_  -> REPORT
 if (-not $Apply) { ""; "PLAN ONLY - nothing written. Re-run with -Apply."; exit 0 }
 
 # ---- snapshot tier E so assert-a3.ps1 can prove it was untouched -----------
-$snapshot = @{}
-Get-ChildItem $tierEDir -File | ForEach-Object { $snapshot[$_.Name] = (Get-FileHash $_.FullName -Algorithm SHA256).Hash }
+# Only for the update arm: assert-a3.ps1 reads this one path, so writing it
+# during a maintenance refresh of another arm would silently swap the baseline
+# out from under the next A3 run.
 $snapPath = Join-Path $PSScriptRoot '.tier-e-snapshot.json'
-$snapshot | ConvertTo-Json | Set-Content -LiteralPath $snapPath -Encoding utf8
+if ($Arm -eq 'update') {
+  $snapshot = @{}
+  Get-ChildItem $tierEDir -File | ForEach-Object { $snapshot[$_.Name] = (Get-FileHash $_.FullName -Algorithm SHA256).Hash }
+  $snapshot | ConvertTo-Json | Set-Content -LiteralPath $snapPath -Encoding utf8
+} else {
+  "  (tier-E snapshot skipped - only the update arm feeds assert-a3.ps1)"
+}
 
 # ---- apply -----------------------------------------------------------------
 ""
@@ -206,4 +231,5 @@ Write-DocLike $cpPath $merged $cpPath
 "--- Tier E ---"
 "  ai-governance/client-profiles/ : UNTOUCHED (listed only, contents not read)"
 ""
-"APPLY COMPLETE. Tier-E snapshot written to $snapPath"
+if ($Arm -eq 'update') { "APPLY COMPLETE. Tier-E snapshot written to $snapPath" }
+else { "APPLY COMPLETE (arm '$Arm' refreshed; no tier-E snapshot written)." }
