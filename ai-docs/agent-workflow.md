@@ -2,7 +2,7 @@
 
 *How an AI agent should work in this project to be effective: the work loop, when to ask vs. proceed vs. object, how to verify, how to hand off, when to stop iterating and attack your own work, where to spend effort, and when to hand a subtask to another agent. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus [`coding-patterns.md`](./coding-patterns.md) (engineering craft). Where anything here tensions with those: **a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over everything, safety wins over speed, and correctness wins over throughput.***
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.6 · **Last reviewed:** 2026-08-02 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Owner:** *(your company)* — Engineering · **Version:** 1.7 · **Last reviewed:** 2026-08-03 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -12,7 +12,7 @@ Run every non-trivial task through this loop. Skipping steps is how plausible-bu
 
 1. **Understand the requirement.** Restate it to yourself in one sentence. If you can't, the requirement is ambiguous — see §2. Where a second plausible reading exists, name it: if it would produce materially different work, that's a §2 stop-and-ask, not an assumption you get to record in the hand-off.
 2. **Read before you write.** Search the existing material — code, documents, prior deliverables — for utilities, helpers, patterns, sources, and prior wording that already solve part of the problem. Reusing what exists beats writing new; extending an established pattern beats inventing one.
-3. **Plan the change.** Identify the files to touch and the smallest correct change. For multi-file or design-bearing changes, state the plan before implementing so the human can redirect early — redirection before code is cheap, after code is expensive.
+3. **Plan the change.** Identify the files to touch and the smallest correct change. For multi-file or design-bearing changes, state the plan before implementing so the human can redirect early — redirection before code is cheap, after code is expensive. Where that plan has separable parts, give it as an ordered list of small steps rather than a prose sketch, so the human can reorder or drop individual items instead of accepting or rejecting the whole thing.
 4. **Implement in small, verifiable increments.** Prefer several small verified steps over one large unverified leap. Keep each diff reviewable.
 5. **Verify (§3).** Actually run things. Reasoning that code should work is not verification. When verification fails and you loop back, §6 governs when to stop looping.
 6. **Hand off (§4).** Report what changed, what you assumed, and what you verified — in the structured format below.
