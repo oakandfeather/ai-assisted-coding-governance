@@ -8,7 +8,7 @@
 >
 > **Last step.** Retitle the copy to `# AGENTS.md` and delete this banner — everything from the `(template)` title down to the `Owner:` line. It describes the template, not the project, and its `../CLAUDE.md` link does not resolve outside this repo.
 
-**Owner:** *(repo owner / team)* · **Version:** 1.3 · **Last reviewed:** *(date)* · **Active client:** *(client name)*
+**Owner:** *(repo owner / team)* · **Version:** 1.4 · **Last reviewed:** *(date)* · **Active client:** *(client name)*
 
 Guidance for AI agents working in this repository.
 
@@ -16,7 +16,7 @@ Guidance for AI agents working in this repository.
 
 **Before any task, read and follow [`core-rules.md`](./ai-governance/core-rules.md)** — the non-negotiable base that applies to every task (secrets, data, correctness, licensing, provenance, safe agentic actions, compliance, stop-and-ask, client overrides). Then read the module for your task: **[`coding-rules.md`](./ai-governance/coding-rules.md) before writing, editing, or running code** (dependencies, security, testing, accessibility), and **[`writing-rules.md`](./ai-governance/writing-rules.md) before producing or editing documents and content** (factual grounding, citations, confidentiality, voice fidelity, accessible documents). If anything below conflicts with these, the stricter rule wins.
 
-**Work the way [`agent-workflow.md`](./ai-governance/agent-workflow.md) describes** (work loop, ask-vs-proceed boundary, verification, structured hand-off, bounded iteration and adversarial self-review, economy of effort, subagent delegation), and for code apply the engineering-quality patterns in [`coding-patterns.md`](./ai-governance/coding-patterns.md). Where craft meets safety, safety and correctness win.
+**Work the way [`agent-workflow.md`](./ai-governance/agent-workflow.md) describes** (work loop, ask-vs-proceed-vs-object boundary, verification, structured hand-off, bounded iteration and adversarial self-review, economy of effort, subagent delegation), and for code apply the engineering-quality patterns in [`coding-patterns.md`](./ai-governance/coding-patterns.md). Where craft meets safety, safety and correctness win.
 
 **Active client:** *(fill in)* → follow that client's profile in [`client-profiles.md`](./ai-governance/client-profiles.md). Where the client profile is stricter than anything here, the client profile governs.
 

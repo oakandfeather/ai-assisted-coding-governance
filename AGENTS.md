@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.4 · **Last reviewed:** 2026-07-26 · **Active client:** none (internal repository)
+**Owner:** *(your company)* — Engineering · **Version:** 1.8 · **Last reviewed:** 2026-08-02 · **Active client:** none (internal repository)
 
 Guidance for AI agents working in this repository — the source repo for the AI-assisted coding governance package. This repo applies its own rules to itself.
 
@@ -8,7 +8,7 @@ Guidance for AI agents working in this repository — the source repo for the AI
 
 **Before any task, read and follow [`core-rules.md`](./ai-docs/core-rules.md)** — the non-negotiable base that applies to every task (secrets, data, correctness, licensing, provenance, safe agentic actions, compliance, stop-and-ask, client overrides). Then read the module for your task: **[`writing-rules.md`](./ai-docs/writing-rules.md) before producing or editing documents and content** (factual grounding, citations, confidentiality, voice fidelity, accessible documents) — the module that applies to nearly everything here, since this repository is Markdown — and **[`coding-rules.md`](./ai-docs/coding-rules.md) before writing, editing, or running code** (dependencies, security, testing, accessibility), which covers the PowerShell scripts in `scripts/`. If anything below conflicts with these, the stricter rule wins.
 
-**Work the way [`agent-workflow.md`](./ai-docs/agent-workflow.md) describes** (work loop, ask-vs-proceed boundary, verification, structured hand-off, bounded iteration and adversarial self-review, economy of effort, subagent delegation), and for code apply the engineering-quality patterns in [`coding-patterns.md`](./ai-docs/coding-patterns.md). Where craft meets safety, safety and correctness win.
+**Work the way [`agent-workflow.md`](./ai-docs/agent-workflow.md) describes** (work loop, ask-vs-proceed-vs-object boundary, verification, structured hand-off, bounded iteration and adversarial self-review, economy of effort, subagent delegation), and for code apply the engineering-quality patterns in [`coding-patterns.md`](./ai-docs/coding-patterns.md). Where craft meets safety, safety and correctness win.
 
 **Active client:** none — this is an internal governance repository, not a client engagement, so there is no profile to load from [`client-profiles.md`](./ai-docs/client-profiles.md). Per `core-rules.md` §8, treat any client material you encounter here (see *Client material in this repo* below) as sensitive by default and ask rather than inferring a client's rules.
 
@@ -22,18 +22,32 @@ An installed copy of this package keeps its rule files in an `ai-governance/` di
 
 ## What this repository is
 
-This is a **documentation-only repository** — a governance/policy set for AI-assisted software development on client engagements. There is no application code, no tests, and no package manager. Everything here is Markdown except the PowerShell scripts in `scripts/` (see below) that assemble reference copies of the package. Do not invent other build/lint/test commands; there are none to run.
+This is a **documentation-only repository** — a governance/policy set for AI-assisted software development on client engagements. There is no application code and no package manager. Everything here is Markdown except two sets of PowerShell scripts: `scripts/` (see below), which assembles reference copies of the package, and [`testing/harness/`](./testing/harness/), which runs Layer A of the test plan against a mock repo built outside this one. Do not invent other build/lint/test commands; there are none to run.
+
+There is no automated test suite either — but there *is* a test plan. [`testing/`](./testing/) holds the plan for validating the package against a mock application; see *The testing track* below. Its checks are executed against a mock repo built outside this one, not by a runner in here.
 
 This repo is a git repository (tracked on GitHub via `origin`). Normal git operations apply, same as any other project.
 
 ## Commands
 
-Run from the repo root. There is no install step, no test suite, and no linter.
+Run from the repo root. There is no install step and no test runner.
 
 ```powershell
 .\scripts\build.ps1        # regenerate build/       — package assembled for the sample client (ESU)
 .\scripts\build-empty.ps1  # regenerate empty-build/ — package assembled with no client
+.\scripts\check-links.ps1  # verify every relative Markdown link resolves from its own file
 ```
+
+`check-links.ps1` exits non-zero on a broken link, so it works as a gate; **run `build.ps1` first**, since it verifies the `*.template.md` files' `ai-governance/` links against the `build/` snapshot (that directory doesn't exist here, and must not).
+
+Layer A of the test plan is scripted too, in [`testing/harness/`](./testing/harness/) — it runs against a mock repo built **outside** this one, so it needs that mock to exist first (see [`testing/harness/README.md`](./testing/harness/README.md)):
+
+```powershell
+cd testing\harness
+.\check-identity.ps1; .\check-fixtures.ps1; .\check-layer-a.ps1; .\check-layer-a-extra.ps1
+```
+
+Each exits non-zero on failure. The A3 scripts in that directory are stateful and need the source aged first — the harness README says how. Layer B is agent sessions; there is no command here that runs those.
 
 ## Verification contract — definition of done
 
@@ -41,8 +55,9 @@ A change here is **done** only when all of the following hold (see [`agent-workf
 
 - If you materially edited anything under `ai-docs/`, `scripts/build.ps1` and `scripts/build-empty.ps1` both ran to completion from the repo root and printed their file counts. A script that throws is a stop signal — it means a template's structure no longer matches the anchors it slices on; fix the script alongside the edit rather than working around it.
 - The counterpart file in the other track was checked for drift (`ai-docs/` ↔ `human-docs/`), and the rule you changed still lives in exactly one owning file.
-- Every relative Markdown link you touched still resolves from the file it lives in.
+- Every relative Markdown link you touched still resolves from the file it lives in — `.\scripts\check-links.ps1` checks this for the whole repo and exits non-zero if any link is broken.
 - Any governed document you materially edited has its *Last reviewed* updated, and its *Version* bumped for substantive changes.
+- **Layer A of [`testing/Governance-Test-Plan.md`](./testing/Governance-Test-Plan.md) was re-run** if you materially edited anything under `ai-docs/`. Layer A is the mechanical half — build scripts, install/update file shape, link and drift checks — and it is **scripted in [`testing/harness/`](./testing/harness/)**, so it takes seconds for everything except the stateful A3 group. **Layer B (the behavioral scenarios) is deliberately *not* in this contract:** it is dozens of agent sessions, so requiring it per-edit would put a check here that nobody performs, which is exactly the failure [`agent-workflow.md`](./ai-docs/agent-workflow.md) §7 names. Run Layer B before a release of the package, or when the specific rule it covers changes substantively.
 
 Report verification results honestly in the hand-off: what you ran, and what actually happened.
 
@@ -57,6 +72,19 @@ The same governance content is maintained in two parallel tracks for two readers
 
 When you change a rule in one track, check whether its counterpart in the other track needs the same change. They are intentionally redundant and drift is the main maintenance hazard here.
 
+## The testing track
+
+[`testing/`](./testing/) is a **third** top-level directory, and it is neither of the two tracks above: it is not copied into client repos and it is not onboarding material. It holds the plan for verifying that this package installs correctly and that its rules actually change agent behavior.
+
+- **[`testing/Governance-Test-Plan.md`](./testing/Governance-Test-Plan.md)** — the plan. Split into **Layer A** (mechanical: build scripts, `govern-init` / `govern-update` file shape and merge semantics, link and drift checks — deterministic and scriptable) and **Layer B** (behavioral: baited scenarios run against an agent to see whether the rules bind).
+- **[`testing/coverage-matrix.md`](./testing/coverage-matrix.md)** — rule → scenario → result. Coverage is **complete** against the TL;DR checklists of `core-rules.md`, `coding-rules.md`, and `writing-rules.md`, and explicitly **representative, not exhaustive**, for `agent-workflow.md` and `coding-patterns.md`. Don't let that distinction erode — a new rule added to one of the three complete-coverage files needs a new scenario, or the claim stops being true.
+- **[`testing/harness/`](./testing/harness/)** — the scripted half of Layer A, and the only PowerShell outside `scripts/`. It runs against the mock built per `mock-app-setup.md`, resolving that mock's location relative to this repo (override with `GOVERNANCE_MOCK_ROOT`). Two conventions there are load-bearing and easy to undo by accident: **read and write through the UTF-8 helpers in `harness-common.ps1`**, never bare `Get-Content` — PowerShell 5.1 decodes these files as ANSI and mangles every em dash and middot, which the structural checks index on — and **keep the scripts themselves pure ASCII**, since `.ps1` source is decoded the same way. See its [`README.md`](./testing/harness/README.md).
+- **[`testing/mock-app-setup.md`](./testing/mock-app-setup.md)** — how to build the mock target repo. Deliberately a single file rather than a `testing/mock-app/` directory: scaffolding a mock *inside* this repo would make `govern-init` create the `ai-governance/` directory this repo forbids.
+
+Two design points worth preserving. **Every behavioral scenario runs against an ungoverned control copy as well** — an agent with no governance installed already declines to hardcode secrets, so a scenario without a baseline measures the model rather than the package, and the finding is the delta. And **scenarios are baited, not interviewed**: the violation has to be the path of least resistance, or the test proves nothing.
+
+The mock application itself lives **outside this repository** and is not tracked here.
+
 ## How the ai-docs files chain together
 
 There is a deliberate reference chain, and edits must preserve it:
@@ -64,11 +92,11 @@ There is a deliberate reference chain, and edits must preserve it:
 - **`ai-docs/AGENTS.template.md`** — the **canonical entry template**, NOT documentation of this repo. It is meant to be copied to a *target project's repository root* and renamed to `AGENTS.md` (Codex, the Copilot coding agent/CLI, Cursor, Windsurf, and VS Code's agent read `AGENTS.md` from the root), then have its italicized `*(placeholders)*` filled in. It is the **one full body** — the placeholders live here and nowhere else. Do not treat its placeholders as facts about this repo, and do not confuse it with the root `AGENTS.md` you are reading now (see *The root entry files* below). If you edit it, keep it generic and keep the placeholders italicized. It also ends with a generic "For the humans on this project" signpost that points developers in the target repo back to the central `human-docs/` — keep that **placeholder-free** (an unfilled `*(…)*` there would read as "unconfigured" rather than a working link) and don't hardcode specific `human-docs/` filenames into it.
 - **`ai-docs/CLAUDE.template.md`** and **`ai-docs/copilot-instructions.template.md`** — the two **thin per-tool pointers** that travel with it. `CLAUDE.template.md` → `CLAUDE.md` at the target root is a one-line `@AGENTS.md` import (Claude Code auto-loads `CLAUDE.md` from the root only, not a subfolder, not under the `.template` name, and follows the import). `copilot-instructions.template.md` → `.github/copilot-instructions.md` is what Copilot's in-IDE Chat and inline suggestions read (they do *not* read `AGENTS.md`); Copilot has no import syntax, so this file restates the non-negotiable core inline and links out with `../`. Keep these thin: no placeholders, no restated rules beyond the always-on core — when you change that core, change it in `AGENTS.template.md` and `copilot-instructions.template.md` together.
 - The canonical `AGENTS.md` links to **`core-rules.md`**, **`coding-rules.md`**, **`writing-rules.md`**, **`coding-patterns.md`**, **`agent-workflow.md`**, and **`client-profiles.md`** (which in turn links `client-profiles/`). It sits at the target repo root and links into `./ai-governance/`, where those six files and `client-profiles/` live **together in an `ai-governance/` directory** and link each other with relative `./` paths. Don't break those relative links or separate the files out of `ai-governance/`. When you edit an install instruction, name the *whole* set — the three entry files **and** the seven `ai-governance/` items: omitting `client-profiles.md` silently dead-ends every §8 client-override pointer in the copied package.
-- **`core-rules.md`** — the portable, client-agnostic, **task-agnostic** safety/risk base (§§0–8 plus a TL;DR checklist and a closing self-check): secrets, data, correctness/honesty, licensing, provenance, agentic actions, compliance, stop-and-ask, and the client-override fallback. This is the substance that binds on **every** task, code or not. The two task modules add to it and must not restate it.
+- **`core-rules.md`** — the portable, client-agnostic, **task-agnostic** safety/risk base (§§0–9 plus a TL;DR checklist and a closing self-check): secrets, data, correctness/honesty, licensing, provenance, agentic actions, compliance, stop-and-ask, the client-override fallback, and how to verify a claim. This is the substance that binds on **every** task, code or not. The two task modules add to it and must not restate it.
 - **`coding-rules.md`** — the **code-specific** module (§§1–4): dependencies/supply-chain, security-by-default, testing, UI accessibility. Reads on top of `core-rules.md` and defers everything task-agnostic to it. Still titled "for Coding Agents."
 - **`writing-rules.md`** — the **content-specific** module (§§1–5): factual grounding, citation/source integrity, document confidentiality, voice/tone fidelity, accessible documents. Reads on top of `core-rules.md`; the content analog of `coding-rules.md`.
 - **`coding-patterns.md`** — the **engineering-craft** companion to the rules files: reliability, efficiency, and maintainability patterns, with sparing good/bad micro-examples. Deliberately does *not* duplicate the rules files (defers secrets/licensing to `core-rules.md`, and security/what-makes-a-good-test to `coding-rules.md`). Precedence between them: safety and correctness win over efficiency and elegance.
-- **`agent-workflow.md`** — the **how-to-work** companion: the work loop (understand → reuse → plan → implement small → verify → hand off), the graduated ask-vs-proceed boundary, verification discipline, the structured hand-off format, the keep-the-docs-alive rule, the bounded-iteration and adversarial-self-review discipline, the economy-of-effort section (where to spend effort, and the floor that efficiency never buys), and the subagent-delegation section (when handing a subtask to another agent pays, and why its report is not your own knowledge — written capability-conditional, since most `AGENTS.md` readers can't spawn one). Its **section numbering is load-bearing**: the `§3` and `§5` citations in an installed `AGENTS.md` sit *below* the mandatory-rules block that `govern-update` refreshes (tier C), so renumbering silently repoints every client's citations with no self-heal path — append new sections, never insert.
+- **`agent-workflow.md`** — the **how-to-work** companion: the work loop (understand → reuse → plan → implement small → verify → hand off), the graduated ask-vs-proceed boundary (including when to object to a clear instruction you believe is wrong), verification discipline, the structured hand-off format, the keep-the-docs-alive rule, the bounded-iteration and adversarial-self-review discipline, the economy-of-effort section (where to spend effort, and the floor that efficiency never buys), and the subagent-delegation section (when handing a subtask to another agent pays, the cap on how many you spawn per task and how tightly to scope each one, and why its report is not your own knowledge — written capability-conditional, since most `AGENTS.md` readers can't spawn one). Its **section numbering is load-bearing**: the `§3` and `§5` citations in an installed `AGENTS.md` sit *below* the mandatory-rules block that `govern-update` refreshes (tier C), so renumbering silently repoints every client's citations with no self-heal path — append new sections, never insert.
 - **`client-profiles.md`** — per-client overrides, referenced by `core-rules.md` and the task modules.
 - **`ai-docs/procedures/govern-init.md`** — the installer procedure. It **scaffolds** the package into a target repo (copy → strip banner → fill placeholders); it deliberately does **not** contain any rule text. Keep it that way: rules paraphrased into a procedure are rules that load only when someone runs the procedure, and they leave no auditable trace in the client's repo. If you change the file set or the placeholder list, update this procedure and the template's install note together. Its step 7 also *offers* (opt-in) to add a human-facing pointer to the target repo's `README.md`/`CONTRIBUTING.md`; the same snippet is documented in `README.md`'s by-hand path (Path C) — keep those two in sync. Its **step numbering is load-bearing**: `scripts/build-empty.ps1` cites "step 4" by number.
 - **`ai-docs/procedures/govern-update.md`** — the updater procedure, sibling to the installer and likewise **containing no rule text**. It refreshes an *already-installed* package: it replaces the five portable rule files and the two thin entry files outright, but **merges** `AGENTS.md` (only the mandatory-rules block, preserving the filled `Active client` value inside it) and `ai-governance/client-profiles.md` (preserving the active-client paragraph), and never touches `ai-governance/client-profiles/`. One thing to preserve when editing it: it **reads its anchors out of `scripts/build.ps1`** rather than restating them — a third copy of those anchors alongside the two build scripts is exactly the drift this package exists to prevent.

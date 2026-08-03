@@ -35,7 +35,9 @@ The three entry files land at their tool-specific paths; the other seven items t
 | `client-profiles.md` | `ai-governance/client-profiles.md` |
 | `client-profiles/` | `ai-governance/client-profiles/` *(the directory — see the exclusion below)* |
 
-Do not copy `human-docs/` — it is for people and stays in the governance repo. Do not copy `ai-docs/procedures/` or `ai-docs/skills/` either: this procedure and its launchers are maintenance tooling for the governance repo, not part of the installed package.
+Do not copy `human-docs/` — it is for people and stays in the governance repo. Do not copy `ai-docs/procedures/`, `ai-docs/skills/`, or `testing/` either: this procedure, its launchers, and the governance repo's own test plan are maintenance tooling for that repo, not part of the installed package.
+
+**Copy the bytes, and write them consistently.** These files are UTF-8 without a byte-order mark; keep them that way — a BOM in a Markdown file that Codex or Copilot reads is a real defect, not a cosmetic one. Use one line-ending convention across the whole copied set, matching whatever the target repo already uses (its `.gitattributes` if it has one, otherwise its existing files). Getting this right at install is what lets `govern-update` later produce a small, reviewable diff instead of rewriting every line.
 
 **Never copy `client-profiles/example-university.md`.** It is a fictional sample client that exists only to show a profile's shape; a real client's repo must never contain another client's profile, least of all an invented one. Read it from the governance repo when you need the shape (step 6) — don't land it in `ai-governance/client-profiles/`. If that directory has no real profile yet, it correctly arrives empty.
 
