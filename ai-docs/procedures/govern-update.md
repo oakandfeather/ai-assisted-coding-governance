@@ -83,6 +83,8 @@ The file splits at the first `---` after the mandatory-rules block:
 
 Then, because you materially edited a governed document: set `Last reviewed` in the header to today's date (absolute, e.g. `2026-07-25`) and bump `Version` a minor step. Leave `Owner` and `Active client` in the header exactly as they were.
 
+**One carve-out, on the same logic as the assertion below: if `Last reviewed` is still the unfilled `*(date)*`, leave it.** A repo that never completed `govern-init`'s interview has never been reviewed, and stamping today's date there asserts a review that did not happen — the same false assertion the `Active client` rule refuses to make. Bump `Version` as normal, since it records that the rules moved rather than that anyone read them, and **say in the hand-off that the date is still unfilled**.
+
 **Assert before writing — but assert the right thing.** The invariant is that the merge must not *introduce* a placeholder where the target had a real value. So compare against what the target had:
 
 - Target's in-block `Active client` was **filled**, and the merged block still contains a `*(…)*` token → the substitution failed. **Stop.** Never write a file that reverts a configured repo to unconfigured.

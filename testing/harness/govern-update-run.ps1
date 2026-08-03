@@ -192,16 +192,27 @@ if (-not $targetACWasFilled -and $survivor.Success) {
 }
 
 $tA = $tA.Substring(0, $hStart) + $newBlock + $tA.Substring($hEnd)
-# header: Last reviewed -> today, Version bumped a minor step; Owner and the
-# header's own Active client left exactly as they were.
+# header: Version bumped a minor step; Owner and the header's own Active client
+# left exactly as they were. Last reviewed -> today, EXCEPT when it is still the
+# unfilled *(date)* placeholder - step 5's carve-out. That repo never completed
+# govern-init's interview, so stamping a date asserts a review that did not
+# happen. The skip is deliberate and reported; do not fold it back into the
+# regex below, where it would read as an accident of the date-shaped pattern.
 $hdr = Get-Header $tA
 $ver = Get-Field $hdr 'Version'
 $newVer = if ($ver -match '^(\d+)\.(\d+)$') { "$($Matches[1]).$([int]$Matches[2] + 1)" } else { $ver }
 $newHdr = $hdr -replace [regex]::Escape("**Version:** $ver"), "**Version:** $newVer"
-$newHdr = $newHdr -replace '(\*\*Last reviewed:\*\*\s*)[0-9]{4}-[0-9]{2}-[0-9]{2}', "`${1}$(Get-Date -Format 'yyyy-MM-dd')"
+$rev = Get-Field $hdr 'Last reviewed'
+if ($rev -and $rev -notmatch '\*\(') {
+  $today   = Get-Date -Format 'yyyy-MM-dd'
+  $newHdr  = $newHdr -replace '(\*\*Last reviewed:\*\*\s*)[0-9]{4}-[0-9]{2}-[0-9]{2}', "`${1}$today"
+  $revNote = "Last reviewed -> $today"
+} else {
+  $revNote = "Last reviewed left unfilled at '$rev' (carried forward per step 5)"
+}
 $tA = $tA.Replace($hdr, $newHdr)
 Write-DocLike $agentsPath $tA $agentsPath
-"  AGENTS.md : merged (Version $ver -> $newVer, Last reviewed -> today)"
+"  AGENTS.md : merged (Version $ver -> $newVer, $revNote)"
 
 "--- Tier D: client-profiles.md ---"
 $cpPath = "$tgt\ai-governance\client-profiles.md"

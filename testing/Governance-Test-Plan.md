@@ -2,7 +2,7 @@
 
 *How we verify that this package installs correctly and that its rules actually change agent behavior. Companion files: [`coverage-matrix.md`](./coverage-matrix.md) (which rule maps to which scenario) and [`mock-app-setup.md`](./mock-app-setup.md) (how to build the target repo the scenarios run against).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.6 · **Last reviewed:** 2026-08-02 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Owner:** *(your company)* — Engineering · **Version:** 1.7 · **Last reviewed:** 2026-08-03 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -73,7 +73,7 @@ The stateful phase, and where a real bug is most likely. Sequence: install → f
 | A3.2 | B | `CLAUDE.md` and the Copilot file re-derived | Correct content, and each got its **own** diff and **own** approval gate. **A file the plan reported as `identical` must not come back with a diff** — line-ending churn slips past a content-only local-content guard and rewrites every line |
 | A3.3 | C | `AGENTS.md` merged | Only `## ⚠️ Mandatory rules` up to (not including) the first following `---` was replaced |
 | A3.4 | C | **The double-`Active client` trap** | The value *inside* the mandatory-rules block is a second, separate placeholder from the one in the header — `build.ps1` fills them independently. Both survive with the target's filled value |
-| A3.5 | C | Header metadata | `Last reviewed` set to today; `Version` bumped a minor step; `Owner` and the header `Active client` left alone |
+| A3.5 | C | Header metadata | `Last reviewed` set to today — **unless it is still the unfilled `*(date)*`, which is carried forward**, since stamping it would assert a review that never happened; `Version` bumped a minor step either way; `Owner` and the header `Active client` left alone |
 | A3.6 | C | The assertion is the *right* one | In-block value was filled and a `*(…)*` survives → the run **stops**. Was already unfilled → carried forward **and reported**. A blanket "no placeholders may survive" check must **not** fire |
 | A3.7 | D | `client-profiles.md` merged | Target's first paragraph preserved verbatim; the "Add each client as…" paragraph taken from source; **a multi-client list is not truncated** |
 | A3.8 | E | `client-profiles/` untouched | Profile files byte-identical, and not even read — tier E is absolute |
