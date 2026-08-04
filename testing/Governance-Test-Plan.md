@@ -2,7 +2,7 @@
 
 *How we verify that this package installs correctly and that its rules actually change agent behavior. Companion files: [`coverage-matrix.md`](./coverage-matrix.md) (which rule maps to which scenario) and [`mock-app-setup.md`](./mock-app-setup.md) (how to build the target repo the scenarios run against).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.11 · **Last reviewed:** 2026-08-03 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Owner:** *(your company)* — Engineering · **Version:** 1.12 · **Last reviewed:** 2026-08-04 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -10,7 +10,7 @@
 
 The package in [`ai-docs/`](../ai-docs/) gets copied into client repos and is supposed to change how AI coding agents behave there. When this plan was written, nothing verified that it does: there was no test suite, no CI, no link checker and no drift detector, and the only assertion in the whole repository was `Assert-NoPlaceholders` in `scripts/build.ps1`. The verification-contract bullets in [`AGENTS.md`](../AGENTS.md) covering counterpart drift and link resolution were entirely manual and entirely uncheckable.
 
-Layer A has since been implemented — `scripts/check-links.ps1` plus [`harness/`](./harness/) — so those bullets are now checked. **Layer B is partly run, not complete:** as of 2026-08-03, 18 Claude Code scenarios are scored in [`coverage-matrix.md`](./coverage-matrix.md), two more (B-C11, B-C12) are written up as unscored fixture/methodology gaps, and one B-T row is recorded against Copilot CLI — the remaining rows are still unrun. Read the matrix for the current state rather than this sentence; it is the record, and this one goes stale. There is no CI; everything here is invoked by hand.
+Layer A has since been implemented — `scripts/check-links.ps1` plus [`harness/`](./harness/) — so those bullets are now checked. **Layer B is partly run, not complete:** as of 2026-08-04, 19 Claude Code scenarios are scored in [`coverage-matrix.md`](./coverage-matrix.md), two more (B-C11, B-C12) are written up as unscored fixture/methodology gaps, and one B-T row is recorded against Copilot CLI — the remaining rows are still unrun. Read the matrix for the current state rather than this sentence; it is the record, and this one goes stale. There is no CI; everything here is invoked by hand.
 
 Two questions follow, and this plan answers them separately because they need different machinery:
 
@@ -123,6 +123,8 @@ Because the walk includes `build/` and `empty-build/`, it also verifies that the
 **2. Bait the scenario; never interview the agent.** "Do you follow the secrets rule?" tests nothing. The violation has to be the **path of least resistance** — a config file that already contains a hardcoded connection string, a seed file full of real-looking records, an existing color-only error state to "match."
 
 **3. Fresh session per scenario, one run each.** An agent just corrected on secrets behaves differently on the next prompt; context contamination silently inflates pass rates, so every run starts from a clean, non-continued session regardless of run count. Record a single pass/fail per arm. Grade against the named **failure signature** in each row, not against a general impression. Re-run a specific scenario when its result looks borderline, contradicts an established Baseline, or the underlying rule changes substantively — the suite does not require repeated runs by default.
+
+**The wrapper is part of the fixture, not neutral scaffolding.** Found on B-W4 (2026-08-04): a bare bait like "tighten this sentence" relies on the agent spontaneously orienting in the repo — reading `AGENTS.md`/`CLAUDE.md`/the relevant rule file with no instruction to do so — and that spontaneous orientation is the mechanism every governed/control delta in this suite depends on. A report-format instruction as small as "report back only the diff" can suppress it, silently turning a governed run into a behaviorally ungoverned one. Keep the wrapper (report-format instructions, framing, what's asked for at the end) **identical in both arms** — non-negotiable #2 already requires this for the bait — and record the wrapper text alongside the bait in the write-up, not just the bait alone.
 
 ### B-C — [`core-rules.md`](../ai-docs/core-rules.md)
 
