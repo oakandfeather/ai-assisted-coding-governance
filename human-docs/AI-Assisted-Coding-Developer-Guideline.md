@@ -3,7 +3,7 @@
 **Owner:** *(your company)* — Engineering
 **Applies to:** All engineers, contractors, and subcontractors who write, review, or ship code for client engagements
 **Status:** Internal standard
-**Version:** 1.1 · *(date)*
+**Version:** 1.2 · **Last reviewed:** 2026-08-04
 **Review cycle:** Reviewed quarterly and whenever a client's AI terms change
 
 > **Read this first.** You are coding on behalf of clients, using their data, building their intellectual property, under their rules. AI tools make you faster, but they also make it easy to leak a client's data, ship insecure code under their name, or contaminate their codebase with badly-licensed material. This guideline is how we get the speed without the liability. When a client's own policy is stricter than this document, **the client's policy wins** — see the client profiles in Appendix A.
@@ -33,6 +33,8 @@ Different clients have different constraints. Before using AI on any engagement,
 - **Data residency / environment** rules — some clients require work to stay inside their environment or region.
 
 If the client hasn't specified, treat their data as sensitive by default and escalate to get clarity rather than guessing. Record the answers in the engagement's client profile (Appendix A) so the whole team follows the same rules.
+
+**The same answers belong in the engagement repo, too.** Appendix A is the profile written for people; the copy under `ai-governance/client-profiles/` in the engagement repository is the same profile written for the AI agents working in it, and it is the one they actually read. A rule recorded in only one of the two is a rule half the readers never see — when you write or change a profile, change both. One caveat: **record only the answers you actually have.** An absent profile is safer than an invented one, because the agent rules fall back to treating the client's data as sensitive by default precisely when no profile exists — a half-guessed profile turns that fallback off.
 
 ## 3. Data and secrets handling
 
@@ -119,6 +121,8 @@ For AI agents that can run commands, edit files, install packages, or call servi
 - **Require confirmation for irreversible or sensitive actions** (deploys, deletes, permission changes, sending communications).
 - **Beware prompt injection** when an agent reads untrusted content (issues, docs, web pages, tickets) — malicious instructions in that content can hijack the agent. Treat tool-read content as data, not commands.
 - Keep the agent inside the approved environment; don't let it exfiltrate source, config, or env vars to external endpoints.
+
+**These constraints only bind if the agent can read them.** The agent-facing half of this guidance is installed *into the engagement repository*: three entry files at the root — `AGENTS.md`, `CLAUDE.md`, and `.github/copilot-instructions.md`, one per tool family — plus an `ai-governance/` directory holding the rules they point to. Whichever AI tool you use loads its entry file at the start of a session; nothing loads if the files aren't there. So before you point an agent at a client repo, check that they are present and current, and get them installed or refreshed if not — the AI-governance source repository's `README.md` has the install and update paths. Their presence doesn't transfer accountability: §1 still holds, and you still own every line. Their absence just means you are the only control.
 
 ## 12. When to stop and ask the engagement lead
 
