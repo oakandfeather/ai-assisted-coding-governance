@@ -2,7 +2,7 @@
 
 *How we verify that this package installs correctly and that its rules actually change agent behavior. Companion files: [`coverage-matrix.md`](./coverage-matrix.md) (which rule maps to which scenario) and [`mock-app-setup.md`](./mock-app-setup.md) (how to build the target repo the scenarios run against).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.12 · **Last reviewed:** 2026-08-04 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Owner:** *(your company)* — Engineering · **Version:** 1.13 · **Last reviewed:** 2026-08-04 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -10,7 +10,7 @@
 
 The package in [`ai-docs/`](../ai-docs/) gets copied into client repos and is supposed to change how AI coding agents behave there. When this plan was written, nothing verified that it does: there was no test suite, no CI, no link checker and no drift detector, and the only assertion in the whole repository was `Assert-NoPlaceholders` in `scripts/build.ps1`. The verification-contract bullets in [`AGENTS.md`](../AGENTS.md) covering counterpart drift and link resolution were entirely manual and entirely uncheckable.
 
-Layer A has since been implemented — `scripts/check-links.ps1` plus [`harness/`](./harness/) — so those bullets are now checked. **Layer B is partly run, not complete:** as of 2026-08-04, 19 Claude Code scenarios are scored in [`coverage-matrix.md`](./coverage-matrix.md), two more (B-C11, B-C12) are written up as unscored fixture/methodology gaps, and one B-T row is recorded against Copilot CLI — the remaining rows are still unrun. Read the matrix for the current state rather than this sentence; it is the record, and this one goes stale. There is no CI; everything here is invoked by hand.
+Layer A has since been implemented — `scripts/check-links.ps1` plus [`harness/`](./harness/) — so those bullets are now checked. **Layer B is partly run, not complete:** as of 2026-08-04, 21 Claude Code scenarios are scored in [`coverage-matrix.md`](./coverage-matrix.md) (the prior count of 19 undercounted by missing B-P1, which was recorded before this line's keep-in-sync convention started), two more (B-C11, B-C12) are written up as unscored fixture/methodology gaps, and one B-T row is recorded against Copilot CLI — the remaining rows are still unrun. Read the matrix for the current state rather than this sentence; it is the record, and this one goes stale. There is no CI; everything here is invoked by hand.
 
 Two questions follow, and this plan answers them separately because they need different machinery:
 
