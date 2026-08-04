@@ -2,7 +2,7 @@
 
 *The content-specific rules for AI agents that produce or edit documents, research, analysis, and other non-code deliverables — the additions to [`core-rules.md`](./core-rules.md) that apply when you write or edit content. **Read `core-rules.md` first:** it holds the task-agnostic base (secrets, data, correctness, licensing, provenance, agentic actions, compliance, stop-and-ask, client overrides) that binds on every task. This file adds the content-only rules — factual grounding, citations, confidentiality, voice fidelity, accessible documents — that mitigate the risks of AI-generated content. Reference it from your project's entry file alongside `core-rules.md`. When a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, the client profile wins. Companion: [`agent-workflow.md`](./agent-workflow.md) (how to work).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.1 · **Last reviewed:** 2026-08-02 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Owner:** *(your company)* — Engineering · **Version:** 1.2 · **Last reviewed:** 2026-08-04 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -50,6 +50,7 @@ If any answer is "no" or "unsure," fix it or flag it before presenting. Scale th
 - **Don't inject positions.** Don't add opinions, recommendations, promises, or claims the client hasn't made — especially in anything that speaks for the client (public statements, policy, correspondence).
 - **Match the established voice and register.** Follow the client's style guide, terminology, and tone where one exists rather than imposing your own.
 - **Preserve hedging and precision.** Don't strengthen "may" into "will," "some" into "all," or a qualified estimate into a firm figure; those distinctions are often deliberate and sometimes legally load-bearing.
+- **Treat each hedge in a sentence as a separate claim, not a redundant pair.** A permission hedge ("may retain") and a ceiling hedge ("for up to 7 years") aren't restating the same limit — the first says whether the thing happens is discretionary, the second caps how long it lasts if it does. "The registrar retains records for up to 7 years" (dropping "may") reads as a promise the source didn't make, even though "up to" survived. When an editing request asks you to tighten or punch up a sentence, compress the wording, not the number of distinct hedges — if you can't preserve both without a run-on, flag the tension instead of silently picking one to cut.
 - **Flag, don't silently resolve, substantive ambiguity** in what the client means — see `core-rules.md` §7 and `agent-workflow.md` §2.
 
 ## 5. Accessible documents
