@@ -2,7 +2,7 @@
 
 *A craft guide for content agents: how to produce written deliverables that are clear, useful, and maintainable. This is the companion to the safety/risk rules — [`core-rules.md`](./core-rules.md) (the task-agnostic base: secrets, data, correctness, licensing, provenance) and [`writing-rules.md`](./writing-rules.md) (content-specific: grounding, citations, confidentiality, voice fidelity, accessible documents); this file governs writing quality; [`agent-workflow.md`](./agent-workflow.md) governs how to work. It is the content-track sibling of [`coding-patterns.md`](./coding-patterns.md). Where these overlap or conflict, **accuracy and fidelity win over elegance and concision**, and a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over both.*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.0 · **Last reviewed:** 2026-08-05 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.0 · **Last reviewed:** 2026-08-05 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 

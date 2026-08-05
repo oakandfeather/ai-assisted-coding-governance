@@ -24,7 +24,7 @@ $targetAC = [regex]::Match($oldBlock, '(?m)^\*\*Active client:\*\*\s*(.+?)\s*(?=
 $filled = $targetAC -and ($targetAC -notmatch '\*\(')
 
 $sT = Read-Doc "$src\ai-docs\AGENTS.template.md"
-$sT = $sT.Substring($sT.IndexOf('**Owner:** *(repo owner / team)*'))
+$sT = $sT.Substring($sT.IndexOf('**Version:**'))
 $sT = $sT.Substring(0, $sT.IndexOf("`n---`n*Fill in the italicized placeholders for this repository."))
 $nStart = $sT.IndexOf('## ' + [char]0x26A0)
 $newBlock = $sT.Substring($nStart, $sT.IndexOf("`n---", $nStart) - $nStart)

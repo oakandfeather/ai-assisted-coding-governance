@@ -2,7 +2,7 @@
 
 *The code-specific rules for coding agents — the additions to [`core-rules.md`](./core-rules.md) that apply when you write, edit, or run code. **Read `core-rules.md` first:** it holds the task-agnostic base (secrets, data, correctness, licensing, provenance, agentic actions, compliance, stop-and-ask, client overrides) that binds on every task. This file adds the code-only rules — dependencies, security, testing, accessibility — that operationalize our client coding guidelines and mitigate the risks of AI-generated code. Reference it from your project's entry file alongside `core-rules.md`. When a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, the client profile wins. Companions: [`agent-workflow.md`](./agent-workflow.md) (how to work) and [`coding-patterns.md`](./coding-patterns.md) (engineering craft).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 2.2 · **Last reviewed:** 2026-08-05 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 2.2 · **Last reviewed:** 2026-08-05 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 

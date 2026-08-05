@@ -52,7 +52,11 @@ $aFootnote     = "`n---`n*Fill in the italicized placeholders for this repositor
 $tierA = 'core-rules.md','coding-rules.md','writing-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md'
 
 function Get-Header($t) {
-  $m = [regex]::Match($t, '(?m)^\*\*Owner:\*\*[^\n]*$')
+  # Match the whole line that carries **Version:**, wherever it falls on the
+  # line - an already-installed target may still lead with a field the current
+  # template no longer has (e.g. a pre-existing Owner:), and govern-update never
+  # rewrites header field structure, only the specific values it targets.
+  $m = [regex]::Match($t, '(?m)^.*\*\*Version:\*\*.*$')
   if ($m.Success) { $m.Value } else { '' }
 }
 function Get-Field($h, $f) {
@@ -62,23 +66,20 @@ function Get-Field($h, $f) {
 
 # ---- step 4: the plan ------------------------------------------------------
 "=== PLAN (step 4) ==="
-"--- Tier A: replace wholesale, preserve locally-filled Owner ---"
+"--- Tier A: replace wholesale ---"
 foreach ($f in $tierA) {
   $s = Read-Doc "$src\ai-docs\$f"
   $sv = Get-Field (Get-Header $s) 'Version'
-  $so = Get-Field (Get-Header $s) 'Owner'
   # Added upstream: the procedure says copy it in and report it (never the
-  # reverse of A3.10's never-auto-delete). There is no target Owner to preserve.
+  # reverse of A3.10's never-auto-delete).
   if (-not (Test-Path -LiteralPath "$tgt\ai-governance\$f")) {
     "  {0,-20} {1,-10} (absent) -> v{2}  [new upstream file - will be added]" -f $f, 'ADDED', $sv
     continue
   }
   $t = Read-Doc "$tgt\ai-governance\$f"
   $tv = Get-Field (Get-Header $t) 'Version'
-  $to = Get-Field (Get-Header $t) 'Owner'
   $state = if ($s -eq $t) { 'identical' } else { 'UPDATED' }
-  $ownerNote = if ($so -ne $to) { "  [preserve target Owner: '$to']" } else { '' }
-  "  {0,-20} {1,-10} v{2} -> v{3}{4}" -f $f, $state, $tv, $sv, $ownerNote
+  "  {0,-20} {1,-10} v{2} -> v{3}" -f $f, $state, $tv, $sv
 }
 
 "--- Tier B: re-derive from template, own gate ---"
@@ -149,18 +150,12 @@ if ($Arm -eq 'update') {
 foreach ($f in $tierA) {
   $path = "$tgt\ai-governance\$f"
   $s = Read-Doc "$src\ai-docs\$f"
-  $so = Get-Field (Get-Header $s) 'Owner'
   if (-not (Test-Path -LiteralPath $path)) {
     # New upstream file. Model its line endings on a sibling that is already
     # installed, so it matches the rest of the copied set rather than the OS.
     Write-DocLike $path $s "$tgt\ai-governance\core-rules.md"
     "  $f : ADDED (new upstream file)"
     continue
-  }
-  $to = Get-Field (Get-Header (Read-Doc $path)) 'Owner'
-  if ($so -ne $to -and $to) {
-    $s = $s -replace [regex]::Escape("**Owner:** $so"), "**Owner:** $to"
-    "  $f : preserved local Owner '$to'"
   }
   Write-DocLike $path $s $path
   "  $f : replaced"
@@ -208,8 +203,8 @@ if (-not $targetACWasFilled -and $survivor.Success) {
 }
 
 $tA = $tA.Substring(0, $hStart) + $newBlock + $tA.Substring($hEnd)
-# header: Version bumped a minor step; Owner and the header's own Active client
-# left exactly as they were. Last reviewed -> today, EXCEPT when it is still the
+# header: Version bumped a minor step; the header's own Active client left
+# exactly as it was. Last reviewed -> today, EXCEPT when it is still the
 # unfilled *(date)* placeholder - step 5's carve-out. That repo never completed
 # govern-init's interview, so stamping a date asserts a review that did not
 # happen. The skip is deliberate and reported; do not fold it back into the
@@ -247,11 +242,6 @@ function Get-Region($text) {
 }
 $tr = Get-Region $tC; $sr = Get-Region $sC
 $merged = $sC.Substring(0, $sr[0]) + $tC.Substring($tr[0], $tr[1] - $tr[0]) + $sC.Substring($sr[1])
-$so = Get-Field (Get-Header $sC) 'Owner'; $to = Get-Field (Get-Header $tC) 'Owner'
-if ($so -ne $to -and $to) {
-  $merged = $merged -replace [regex]::Escape("**Owner:** $so"), "**Owner:** $to"
-  "  preserved local Owner '$to'"
-}
 Write-DocLike $cpPath $merged $cpPath
 "  client-profiles.md : merged (target's client list preserved verbatim)"
 

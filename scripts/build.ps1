@@ -106,7 +106,7 @@ New-Item -ItemType Directory -Path (Join-Path $buildDir 'ai-governance\client-pr
 
 # ---------- AGENTS.md ----------
 $agents = Read-Text (Join-Path $aiDocs 'AGENTS.template.md')
-$agents = Slice-From $agents '**Owner:** *(repo owner / team)*' 'AGENTS.md banner'
+$agents = Slice-From $agents '**Version:**' 'AGENTS.md banner'
 
 $footerMarker = "`n---`n*Fill in the italicized placeholders for this repository."
 $footerIdx = $agents.IndexOf($footerMarker)
@@ -114,7 +114,6 @@ if ($footerIdx -lt 0) { throw "Source shape changed - AGENTS.md closing footnote
 $agents = $agents.Substring(0, $footerIdx).TrimEnd() + "`n"
 $agents = "# AGENTS.md`n`n" + $agents
 
-$agents = Replace-Placeholder $agents '*(repo owner / team)*' 'Engagement Team' 'AGENTS.md owner'
 $agents = Replace-Placeholder $agents '*(date)*' '2026-07-17' 'AGENTS.md last reviewed'
 $agents = Replace-Placeholder $agents '*(client name)*' 'Example State University (ESU)' 'AGENTS.md active client (header)'
 $agents = Replace-Placeholder $agents '*(fill in)*' 'Example State University (ESU)' 'AGENTS.md active client (body)'

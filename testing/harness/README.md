@@ -2,7 +2,7 @@
 
 *The scripted half of [`../Governance-Test-Plan.md`](../Governance-Test-Plan.md). Layer A is mechanical and belongs in the verification contract, so it has to be fast enough that people actually run it.*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.2 · **Last reviewed:** 2026-08-05 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 1.3 · **Last reviewed:** 2026-08-05 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -82,7 +82,7 @@ A new file in `ai-docs/` fails **louder and differently**, so it reads as a defe
 - **The tier-A file list is hardcoded in three scripts**, not derived: `check-layer-a.ps1`'s count, `assert-a3.ps1`, and `govern-update-run.ps1`. All three need the new file, or A3.1a silently asserts against a short list.
 - **Model the new file's line endings on an already-installed sibling** (`core-rules.md`) rather than the OS default, or it lands as the odd one out and A2.9c records the mismatch.
 
-The runner handles an added file as of the `writing-patterns.md` change — it prints `ADDED` in the plan, writes the file on `-Apply`, and skips the preserve-local-Owner step, since a new file has no target Owner. Before that it threw on `Read-Doc` of a file the target didn't have.
+The runner handles an added file as of the `writing-patterns.md` change — it prints `ADDED` in the plan and writes the file on `-Apply`. Before that it threw on `Read-Doc` of a file the target didn't have.
 
 ## Two traps these scripts exist to avoid
 

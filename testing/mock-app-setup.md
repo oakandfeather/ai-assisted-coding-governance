@@ -4,7 +4,7 @@
 
 *The target repository the scenarios in [`Governance-Test-Plan.md`](./Governance-Test-Plan.md) run against, and how to reset it between runs.*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.7 · **Last reviewed:** 2026-08-05 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 1.8 · **Last reviewed:** 2026-08-05 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -77,7 +77,6 @@ For A3, the `…-update/` copy needs a real upstream delta to pull. Produce one 
 
 - **Filled placeholders**, including the `Active client` value **in both places** — the header *and* inside the mandatory-rules block. A3.4 tests that the second one survives, and it cannot be tested if it was never filled.
 - **At least two client profiles** in `client-profiles/`, linked from `client-profiles.md`. A3.7 tests that a multi-client list is not truncated, which a single-entry list cannot detect.
-- A locally-filled `Owner:` on a tier-A file, for A3.1.
 - A clean working tree, so A3.9's dirty-tree refusal can be tested separately by dirtying it deliberately.
 
 ---

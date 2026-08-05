@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.12 · **Last reviewed:** 2026-08-05 · **Active client:** none (internal repository)
+**Version:** 1.13 · **Last reviewed:** 2026-08-05 · **Active client:** none (internal repository)
 
 Guidance for AI agents working in this repository — the source repo for the AI-assisted coding governance package. This repo applies its own rules to itself.
 
@@ -165,8 +165,7 @@ The sample profile's content lives in **three** places (`ai-docs/client-profiles
 
 ## Editing conventions in this repo
 
-- Most files carry an **Owner / Version / Last reviewed / Review cycle** header. Update *Last reviewed* (and bump *Version* for substantive changes) when you materially edit a governed document.
-- Company-identifying spots are intentionally left as `*(your company)*` placeholders — leave them as placeholders unless the user gives a real name. This is the one place an unfilled placeholder is *not* the "unconfigured repo" signal the template warns about; every other placeholder in this file is filled.
+- Most files carry a **Version / Last reviewed / Review cycle** header. Update *Last reviewed* (and bump *Version* for substantive changes) when you materially edit a governed document.
 - Keep dates absolute (e.g., `2026-07-13`), not relative.
 - Preserve the relative Markdown links between files; they are load-bearing (see the chain above).
 

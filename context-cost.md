@@ -1,6 +1,6 @@
 # Context cost of the governance package
 
-**Owner:** *(your company)* — Engineering · **Last reviewed:** 2026-08-05
+**Last reviewed:** 2026-08-05
 
 Tracks how much of an agent's context window the `ai-docs/` package consumes when it's loaded per `AGENTS.md`'s "load in one pass" instruction. Re-run the measurement below and update this table when `ai-docs/` files change size materially — it's a cost metric, not a governed rule file, so it doesn't need a version bump on every edit.
 
@@ -12,20 +12,22 @@ Word/char counts are exact (`wc -w -c` over each file). Token counts are an **ap
 wc -w -c ai-docs/*.md ai-docs/client-profiles/*.md
 ```
 
+**The entry-file row is a separate measurement, not part of the command above.** `ai-docs/*.md` also matches `AGENTS.template.md`, but that file still carries its "how to use it" banner and unfilled `*(placeholders)*` — content an installed repo never actually loads. Run `scripts/build.ps1` first and measure `build/AGENTS.md` instead: banner stripped, placeholders filled, which is what an agent's context actually pays for.
+
 ## Per-file cost
 
 | File | Words | Est. tokens |
 |---|---:|---:|
-| `core-rules.md` | 1,618 | ~2,800 |
-| `coding-rules.md` | 803 | ~1,450 |
-| `writing-rules.md` | 1,485 | ~2,600 |
-| `coding-patterns.md` | 1,276 | ~2,250 |
-| `writing-patterns.md` | 1,796 | ~2,950 |
-| `agent-workflow.md` | 3,043 | ~4,900 |
-| `client-profiles.md` + one profile | 450 | ~800 |
-| entry file (`AGENTS.md`, placeholders filled) | 1,248 | ~2,350 |
+| `core-rules.md` | 1,614 | ~2,800 |
+| `coding-rules.md` | 799 | ~1,450 |
+| `writing-rules.md` | 1,481 | ~2,600 |
+| `coding-patterns.md` | 1,272 | ~2,250 |
+| `writing-patterns.md` | 1,792 | ~2,950 |
+| `agent-workflow.md` | 3,039 | ~4,900 |
+| `client-profiles.md` + one profile | 446 | ~800 |
+| entry file (`AGENTS.md`, placeholders filled) | 973 | ~1,800 |
 
-`agent-workflow.md` is the single largest file — about a third of the cost of a full non-trivial-task load.
+`agent-workflow.md` is the single largest file — over a quarter of the cost of a full non-trivial-task load.
 
 ## Scenario totals
 
@@ -33,13 +35,13 @@ Per the graduated loading rule in `AGENTS.md` ("scale that set to the blast radi
 
 | Scenario | Files loaded | Est. tokens |
 |---|---|---:|
-| Trivial edit | entry file + `core-rules.md` | ~5,150 |
-| Non-trivial coding task | entry + core-rules + coding-rules + coding-patterns + agent-workflow + client profile | ~14,550 |
-| Non-trivial writing task | entry + core-rules + writing-rules + writing-patterns + agent-workflow + client profile | ~15,400 |
-| Everything at once | entry + all seven `ai-docs/` files | ~23,500 |
+| Trivial edit | entry file + `core-rules.md` | ~4,600 |
+| Non-trivial coding task | entry + core-rules + coding-rules + coding-patterns + agent-workflow + client profile | ~14,000 |
+| Non-trivial writing task | entry + core-rules + writing-rules + writing-patterns + agent-workflow + client profile | ~15,850 |
+| Everything at once | entry + all seven `ai-docs/` files | ~19,550 |
 
 ## Caveats
 
-- This is a one-time context-window cost **per session**, paid when files are actually `Read` — not merely linked to. The graduated-loading rule exists specifically to avoid paying the ~23.5k full cost on every task.
+- This is a one-time context-window cost **per session**, paid when files are actually `Read` — not merely linked to. The graduated-loading rule exists specifically to avoid paying the ~19.5k full cost on every task.
 - Prompt caching (where the harness supports it) makes repeat reference *cheap in billing* within a session once a file is cached, but it does not reduce how much of the context window that file occupies.
 - These numbers reflect `ai-docs/` as of 2026-08-05. Re-measure after any material edit to a file listed above.

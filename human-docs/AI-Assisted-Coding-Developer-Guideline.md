@@ -1,6 +1,5 @@
 # Developer Guideline: Using AI for Client Coding Work
 
-**Owner:** *(your company)* — Engineering
 **Applies to:** All engineers, contractors, and subcontractors who write, review, or ship code for client engagements
 **Status:** Internal standard
 **Version:** 1.5 · **Last reviewed:** 2026-08-05

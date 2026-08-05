@@ -8,16 +8,12 @@ $src = $RepoRoot
 $tgt = $MockArms.update
 $tierA = 'core-rules.md','coding-rules.md','writing-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md'
 
-"=== A3.1 - tier A replaced wholesale, local Owner preserved ==="
+"=== A3.1 - tier A replaced wholesale ==="
 $drift = @()
 foreach ($f in $tierA) {
-  # Neutralize the Owner line, which is legitimately the target's.
-  $n = { param($x) $x -replace '(?m)^\*\*Owner:\*\*[^\u00B7]*', '**Owner:** <LOCAL> ' }
-  if ((& $n (Read-Doc "$src\ai-docs\$f")) -ne (& $n (Read-Doc "$tgt\ai-governance\$f"))) { $drift += $f }
+  if ((Read-Doc "$src\ai-docs\$f") -ne (Read-Doc "$tgt\ai-governance\$f")) { $drift += $f }
 }
 Assert 'A3.1a' ($drift.Count -eq 0) "all 6 rule files match new upstream ($($drift -join ', '))"
-$cr = Read-Doc "$tgt\ai-governance\coding-rules.md"
-Assert 'A3.1b' ($cr -match '\*\*Owner:\*\* Registrar Modernization') 'locally-filled Owner survived the replacement'
 
 "=== A3.2 - tier B re-derived, and the diff stayed reviewable ==="
 $cl = Read-Doc "$tgt\CLAUDE.md"
@@ -56,7 +52,7 @@ Assert 'A3.3a' ($lost.Count -eq 0) "all target sections after the seam survived 
 Assert 'A3.3b' ($a -match '(?i)registrar')                      'target-specific project prose intact'
 
 "=== A3.4 - THE DOUBLE-Active client TRAP ==="
-$hdr   = [regex]::Match($a, '(?m)^\*\*Owner:\*\*[^\n]*$').Value
+$hdr   = [regex]::Match($a, '(?m)^.*\*\*Version:\*\*.*$').Value
 $inBlk = [regex]::Match($a, '(?m)^\*\*Active client:\*\*[^\n]*$').Value
 Assert 'A3.4a' ($hdr   -match 'Active client:\*\* Example State University \(ESU\)')   'header Active client survived filled'
 Assert 'A3.4b' ($inBlk -match '^\*\*Active client:\*\* Example State University \(ESU\)') 'in-block Active client survived filled'
@@ -66,7 +62,6 @@ Assert 'A3.4c' ($inBlk -notmatch '\*\(')                                        
 $today = Get-Date -Format 'yyyy-MM-dd'
 Assert 'A3.5a' ($hdr -match "Last reviewed:\*\* $today")        "Last reviewed set to today ($today)"
 Assert 'A3.5b' ($hdr -match '\*\*Version:\*\* 1\.1')            'Version bumped a minor step (1.0 -> 1.1)'
-Assert 'A3.5c' ($hdr -match '\*\*Owner:\*\* Registrar Modernization') 'header Owner left alone'
 
 "=== A3.6 - the assertion is the RIGHT one ==="
 # The target was filled, so the run must not have stopped and must not have

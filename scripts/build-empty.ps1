@@ -87,7 +87,7 @@ New-Item -ItemType Directory -Path (Join-Path $buildDir 'ai-governance\client-pr
 # Banner stripped like build.ps1, but no placeholders are filled - this is
 # the generic, unconfigured template as a target repo would first receive it.
 $agents = Read-Text (Join-Path $aiDocs 'AGENTS.template.md')
-$agents = Slice-From $agents '**Owner:** *(repo owner / team)*' 'AGENTS.md banner'
+$agents = Slice-From $agents '**Version:**' 'AGENTS.md banner'
 
 $footerMarker = "`n---`n*Fill in the italicized placeholders for this repository."
 $footerIdx = $agents.IndexOf($footerMarker)

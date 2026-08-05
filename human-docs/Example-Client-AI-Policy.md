@@ -1,6 +1,6 @@
 # Client AI Policy — *(reproduce the client's own policy here)*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.0 · **Last reviewed:** 2026-07-14 · **Review cycle:** Whenever the client issues or revises its AI policy.
+**Version:** 1.0 · **Last reviewed:** 2026-08-05 · **Review cycle:** Whenever the client issues or revises its AI policy.
 
 > **This file is a slot, not a policy.** When a client has its own policy governing AI use in application development, reproduce it here verbatim, under its own title and version. That copy is the **upstream authority**: where it conflicts with anything in this repository, it controls, and the client profiles that summarize it must be reconciled against it rather than the other way round.
 

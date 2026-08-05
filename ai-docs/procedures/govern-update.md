@@ -49,8 +49,6 @@ Adopt `build.ps1`'s failure posture too — **if an anchor is not found in the f
 
 **Tier B carries no placeholders, but that is not what makes a file safe to replace.** The risk to `CLAUDE.md` is **appended local content**: it is the natural place for a team to add Claude-specific project notes beneath the `@AGENTS.md` import, and `govern-init` step 1 already refuses to overwrite a pre-existing `CLAUDE.md` for exactly that reason. So give tier B **its own diff and its own gate** rather than folding it into the tier-A batch. If the target holds anything the incoming template does not, treat it as local customization: surface it and ask. Silently dropping a team's notes inside a batch nobody reads is the worst of both.
 
-**In tiers A and D, preserve a locally-filled `Owner:`.** The source repo ships those headers with `*(your company)*` unfilled; an adopting organization may have filled theirs in. Compare, and if the target's value differs from the source's, carry the target's value across into the replacement.
-
 **Handle files the source has added or removed:**
 
 - **Added upstream** (e.g. a new rules module): copy it into `ai-governance/`, and note that the link to it arrives automatically with the tier-C block replacement in step 5 — that block is where the rules files are linked. Verify afterwards that the link is present and resolves.
@@ -69,7 +67,7 @@ Note that without an install manifest there is no baseline, so "the target diffe
 The file splits at the first `---` after the mandatory-rules block:
 
 ```
-**Owner:** … · **Version:** … · **Last reviewed:** … · **Active client:** …   <- target's
+**Version:** … · **Last reviewed:** … · **Active client:** …                  <- target's
 (lead-in sentence)                                                            <- target's
 ## ⚠️ Mandatory rules
    (four paragraphs of links, the always-on core, precedence)                  <- the package's
@@ -81,7 +79,9 @@ The file splits at the first `---` after the mandatory-rules block:
 
 **The trap: one filled placeholder lives inside the block you are replacing.** `**Active client:** *(fill in)*` sits in the mandatory-rules block, and it is a *second, separate* placeholder from the `Active client` field in the header line — `build.ps1` fills the two independently. Replace the block naively and you revert a configured repo's active client to `*(fill in)*`, breaking the one line that tells every agent which client profile binds it. **Extract the target's filled value first, and substitute it into the replacement block.**
 
-Then, because you materially edited a governed document: set `Last reviewed` in the header to today's date (absolute, e.g. `2026-07-25`) and bump `Version` a minor step. Leave `Owner` and `Active client` in the header exactly as they were.
+Then, because you materially edited a governed document: set `Last reviewed` in the header to today's date (absolute, e.g. `2026-07-25`) and bump `Version` a minor step. Leave `Active client` in the header exactly as it was.
+
+**Locate the header line by the field that is always there, not by what comes first.** The header is whichever line carries `**Version:**` — do not assume it is the first field on that line. A target installed under an older version of this package may carry a field the current template no longer has (for example, a filled-in `Owner:` from before that field was retired); this procedure never rewrites header field structure, only the specific values named above. Leave any such legacy field exactly where it is and report it in the hand-off — it is harmless local content, not something to strip.
 
 **One carve-out, on the same logic as the assertion below: if `Last reviewed` is still the unfilled `*(date)*`, leave it.** A repo that never completed `govern-init`'s interview has never been reviewed, and stamping today's date there asserts a review that did not happen — the same false assertion the `Active client` rule refuses to make. Bump `Version` as normal, since it records that the rules moved rather than that anyone read them, and **say in the hand-off that the date is still unfilled**.
 
@@ -108,7 +108,7 @@ So: start from the source file, strip the `## Sample profile` section outright (
 Report, per tier:
 
 - **Updated** — which files, with their `Version:` deltas.
-- **Merged** — for `AGENTS.md` and `client-profiles.md`: what was replaced, and explicitly **what was preserved** (the active-client value, the project sections, the client list). State that the placeholder check passed.
+- **Merged** — for `AGENTS.md` and `client-profiles.md`: what was replaced, and explicitly **what was preserved** (the active-client value, the project sections, the client list, and any legacy header field the current template no longer defines). State that the placeholder check passed.
 - **Untouched** — name `ai-governance/client-profiles/` and its files explicitly. Reviewers need to see that client content was not in scope.
 - **Still unconfigured** — if the target's `Active client` or its active-profiles paragraph was unfilled, say so plainly. The rules are now current, but the repo has no client profile, so `core-rules.md` §8's sensitive-by-default governs until someone authors one. This is open work, not a clean result.
 - **Added / removed upstream** — including anything you refused to delete and why.

@@ -2,7 +2,7 @@
 
 *How an AI agent should work in this project to be effective: the work loop, when to ask vs. proceed vs. object, how to verify, how to hand off, when to stop iterating and attack your own work, where to spend effort, and when to hand a subtask to another agent. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus the craft companions [`coding-patterns.md`](./coding-patterns.md) (engineering craft) / [`writing-patterns.md`](./writing-patterns.md) (writing craft). Where anything here tensions with those: **a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over everything, safety wins over speed, and correctness wins over throughput.***
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.8 · **Last reviewed:** 2026-08-05 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.8 · **Last reviewed:** 2026-08-05 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 

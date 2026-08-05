@@ -2,7 +2,7 @@
 
 *The content-specific rules for AI agents that produce or edit documents, research, analysis, technical documentation, and other written deliverables — the additions to [`core-rules.md`](./core-rules.md) that apply when you write or edit content. **This includes documentation about code** — READMEs, API references, runbooks, release notes: they are written deliverables, so they are governed here, and by `coding-rules.md` only when you also change code. **Read `core-rules.md` first:** it holds the task-agnostic base (secrets, data, correctness, licensing, provenance, agentic actions, compliance, stop-and-ask, client overrides) that binds on every task. This file adds the content-only rules — factual grounding, citations, confidentiality, voice fidelity, accessible documents, verified documentation — that mitigate the risks of AI-generated content. Reference it from your project's entry file alongside `core-rules.md`. When a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, the client profile wins. Companions: [`writing-patterns.md`](./writing-patterns.md) (writing craft — audience, structure, economy, documentation of software) and [`agent-workflow.md`](./agent-workflow.md) (how to work).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.4 · **Last reviewed:** 2026-08-05 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.4 · **Last reviewed:** 2026-08-05 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 

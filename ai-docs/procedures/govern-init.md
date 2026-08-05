@@ -46,7 +46,7 @@ Do not copy `human-docs/` — it is for people and stays in the governance repo.
 
 Each of the three entry files ships with a "how to use" banner that must come off after copying:
 
-- **`AGENTS.md`** — retitle `# AGENTS.md (template)` to `# AGENTS.md` and delete the banner block above the `Owner:` line. It describes the template rather than the project, and its `../CLAUDE.md` link does not resolve outside the governance repo. **Also delete the closing footnote** — the trailing `---` and the italic *"Fill in the italicized placeholders for this repository…"* paragraph after it. It is install instructions, not project guidance, and it points at "the note at the top" that you just removed. This is the file whose placeholders you fill (step 5).
+- **`AGENTS.md`** — retitle `# AGENTS.md (template)` to `# AGENTS.md` and delete the banner block above the `Version:` line. It describes the template rather than the project, and its `../CLAUDE.md` link does not resolve outside the governance repo. **Also delete the closing footnote** — the trailing `---` and the italic *"Fill in the italicized placeholders for this repository…"* paragraph after it. It is install instructions, not project guidance, and it points at "the note at the top" that you just removed. This is the file whose placeholders you fill (step 5).
 - **`CLAUDE.md`** — retitle `# CLAUDE.md (template)` to `# CLAUDE.md`, delete everything from the `(template)` title down through the horizontal rule, and keep only the `@AGENTS.md` import line (with its one-sentence lead-in). No placeholders here.
 - **`.github/copilot-instructions.md`** — delete the banner block down through the horizontal rule, keeping the `# Coding rules for GitHub Copilot` heading and the core below it. No placeholders here; leave its `../` links intact.
 
@@ -68,7 +68,7 @@ Leave the paragraph beginning "Add each client as `client-profiles/<client>.md`"
 
 Interview the user for each italicized `*(placeholder)*` in the new `AGENTS.md` (the canonical entry — the thin `CLAUDE.md` and `copilot-instructions.md` carry none). Ask in one pass with concrete recommendations, not an open-ended survey:
 
-- **Header:** owner/team, active client. Set `Last reviewed` to today, absolute (e.g. `2026-07-14`). Leave `Version` at 1.0 — this is the target repo's first version.
+- **Header:** active client. Set `Last reviewed` to today, absolute (e.g. `2026-07-14`). Leave `Version` at 1.0 — this is the target repo's first version.
 - **Project overview:** 1–3 sentences — what the app is, who it's for, which engagement.
 - **Tech stack:** languages, frameworks, package manager, database/infra, runtime versions, dev environment.
 - **Common commands:** install, run, test-all, **single-test** (fast feedback), lint/format, build.
@@ -103,7 +103,7 @@ The copied `AGENTS.md` already carries a short "For the humans on this project" 
 
 - **Ask first.** This edits a project-owned file. If the user declines, skip it; the `AGENTS.md` note already covers the durable baseline.
 - Append a clearly-marked block to the repo's `README.md`, or to `CONTRIBUTING.md` if that's where the project keeps contributor guidance. **Never overwrite existing content** — apply the same discipline as step 1: if the target file already has an AI/governance section, stop and show the user rather than duplicating. If neither file exists, offer to create a short `README.md` section.
-- Fill the organization name from the step-5 header interview (owner/team), and include the AI-governance source-repo link if the user can supply one; otherwise keep it generic ("ask your engagement lead"). Do **not** introduce a `*(placeholder)*` here — fill it now or word it generically. Shape:
+- Ask the user for the organization name, and include the AI-governance source-repo link if the user can supply one; otherwise keep it generic ("ask your engagement lead"). Do **not** introduce a `*(placeholder)*` here — fill it now or word it generically. Shape:
 
   ```markdown
   ## AI-assisted development

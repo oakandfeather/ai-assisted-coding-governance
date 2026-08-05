@@ -84,7 +84,6 @@ $profiles = Get-ChildItem "$uu\ai-governance\client-profiles" -Filter '*.md'
 $idx = Read-Doc "$uu\ai-governance\client-profiles.md"
 Assert 'A3.7-prep' (($profiles.Count -ge 2) -and ($idx -match 'example-state-university\.md') -and ($idx -match 'northfield-community-college\.md')) `
                    "$($profiles.Count) profiles, both linked from the index"
-Assert 'A3.1-prep' ((Read-Doc "$uu\ai-governance\coding-rules.md") -match '\*\*Owner:\*\* Registrar Modernization') 'locally-filled Owner on a tier-A file'
 Push-Location $uu; $st = git status --porcelain; Pop-Location
 Assert 'A3.9-prep' ([string]::IsNullOrWhiteSpace($st)) 'clean working tree'
 

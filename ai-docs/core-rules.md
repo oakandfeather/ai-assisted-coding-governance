@@ -2,7 +2,7 @@
 
 *The task-agnostic base rules for any AI agent working on a client engagement — whether it writes code, edits documentation, does research, or drafts and analyzes content. Reference it from your project's entry file — `AGENTS.md`, `CLAUDE.md`, or `.github/copilot-instructions.md` (e.g., `See core-rules.md for the mandatory rules that apply to every task`). These rules exist to mitigate the risks of AI-generated work. Follow them on every task. When a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, the client profile wins. Two task modules add to this base: [`coding-rules.md`](./coding-rules.md) (code-specific) and [`writing-rules.md`](./writing-rules.md) (documentation/content-specific) — open the one your task calls for. Companion: [`agent-workflow.md`](./agent-workflow.md) (how to work).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.1 · **Last reviewed:** 2026-08-02 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.1 · **Last reviewed:** 2026-08-05 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 

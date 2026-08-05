@@ -2,7 +2,7 @@
 
 *Client-specific rules, referenced by [`core-rules.md`](./core-rules.md) (and the task modules `coding-rules.md` / `writing-rules.md`). Load the profile for the active client before starting work. Where a profile is stricter than the portable rules in `core-rules.md`, the profile governs.*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.3 · **Last reviewed:** 2026-07-22 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.3 · **Last reviewed:** 2026-08-05 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 

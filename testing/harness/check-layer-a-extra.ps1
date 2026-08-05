@@ -95,7 +95,7 @@ if ($crlf.Count -gt 0) { "               CRLF files: $($crlf -join ', ')" }
 # have thrown in build.ps1.
 
 $tpl = Read-Doc "$src\ai-docs\AGENTS.template.md"
-$sliceAnchor = '**Owner:** *(repo owner / team)*'
+$sliceAnchor = '**Version:**'
 $si = $tpl.IndexOf($sliceAnchor)
 Assert 'A4.4a' ($si -ge 0) 'slice anchor found in AGENTS.template.md'
 $sliced = if ($si -ge 0) { $tpl.Substring($si) } else { $tpl }

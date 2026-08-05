@@ -2,7 +2,7 @@
 
 *A craft guide for coding agents: how to produce code that is reliable, efficient, and maintainable. This is the companion to the safety/risk rules — [`core-rules.md`](./core-rules.md) (the task-agnostic base: secrets, correctness, licensing, agentic actions) and [`coding-rules.md`](./coding-rules.md) (code-specific: dependencies, security, testing); this file governs engineering quality; [`agent-workflow.md`](./agent-workflow.md) governs how to work. Its content-track sibling is [`writing-patterns.md`](./writing-patterns.md) (writing craft), which owns documentation *of* code — READMEs, runbooks, API references — while this file owns the comments and docstrings that travel inside a source file. Where these overlap or conflict, **safety and correctness win over efficiency and elegance**, and a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over both.*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.3 · **Last reviewed:** 2026-08-05 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.3 · **Last reviewed:** 2026-08-05 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 

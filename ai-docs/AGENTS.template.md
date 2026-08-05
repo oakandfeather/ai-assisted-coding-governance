@@ -6,9 +6,9 @@
 >
 > **Two thin companions travel with it.** Alongside this file, install the two thin per-tool pointers so the other agents use the same body: `CLAUDE.template.md` → `CLAUDE.md` at the repo root (Claude Code reads it and `@`-imports this file), and `copilot-instructions.template.md` → `.github/copilot-instructions.md` (Copilot's repository-wide custom-instructions path for Chat, inline suggestions, and supported features). Copilot agent workflows can also use this root `AGENTS.md`. Fill the placeholders **here**, in `AGENTS.md` — the companions carry no placeholders of their own.
 >
-> **Last step.** Retitle the copy to `# AGENTS.md` and delete this banner — everything from the `(template)` title down to the `Owner:` line. It describes the template, not the project, and its `../CLAUDE.md` link does not resolve outside this repo.
+> **Last step.** Retitle the copy to `# AGENTS.md` and delete this banner — everything from the `(template)` title down to the `Version:` line. It describes the template, not the project, and its `../CLAUDE.md` link does not resolve outside this repo.
 
-**Owner:** *(repo owner / team)* · **Version:** 1.8 · **Last reviewed:** *(date)* · **Active client:** *(client name)*
+**Version:** 1.9 · **Last reviewed:** *(date)* · **Active client:** *(client name)*
 
 Guidance for AI agents working in this repository.
 
