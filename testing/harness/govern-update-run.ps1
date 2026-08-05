@@ -64,9 +64,18 @@ function Get-Field($h, $f) {
 "=== PLAN (step 4) ==="
 "--- Tier A: replace wholesale, preserve locally-filled Owner ---"
 foreach ($f in $tierA) {
-  $s = Read-Doc "$src\ai-docs\$f"; $t = Read-Doc "$tgt\ai-governance\$f"
-  $sv = Get-Field (Get-Header $s) 'Version'; $tv = Get-Field (Get-Header $t) 'Version'
-  $so = Get-Field (Get-Header $s) 'Owner';   $to = Get-Field (Get-Header $t) 'Owner'
+  $s = Read-Doc "$src\ai-docs\$f"
+  $sv = Get-Field (Get-Header $s) 'Version'
+  $so = Get-Field (Get-Header $s) 'Owner'
+  # Added upstream: the procedure says copy it in and report it (never the
+  # reverse of A3.10's never-auto-delete). There is no target Owner to preserve.
+  if (-not (Test-Path -LiteralPath "$tgt\ai-governance\$f")) {
+    "  {0,-20} {1,-10} (absent) -> v{2}  [new upstream file - will be added]" -f $f, 'ADDED', $sv
+    continue
+  }
+  $t = Read-Doc "$tgt\ai-governance\$f"
+  $tv = Get-Field (Get-Header $t) 'Version'
+  $to = Get-Field (Get-Header $t) 'Owner'
   $state = if ($s -eq $t) { 'identical' } else { 'UPDATED' }
   $ownerNote = if ($so -ne $to) { "  [preserve target Owner: '$to']" } else { '' }
   "  {0,-20} {1,-10} v{2} -> v{3}{4}" -f $f, $state, $tv, $sv, $ownerNote
@@ -141,6 +150,13 @@ foreach ($f in $tierA) {
   $path = "$tgt\ai-governance\$f"
   $s = Read-Doc "$src\ai-docs\$f"
   $so = Get-Field (Get-Header $s) 'Owner'
+  if (-not (Test-Path -LiteralPath $path)) {
+    # New upstream file. Model its line endings on a sibling that is already
+    # installed, so it matches the rest of the copied set rather than the OS.
+    Write-DocLike $path $s "$tgt\ai-governance\core-rules.md"
+    "  $f : ADDED (new upstream file)"
+    continue
+  }
   $to = Get-Field (Get-Header (Read-Doc $path)) 'Owner'
   if ($so -ne $to -and $to) {
     $s = $s -replace [regex]::Escape("**Owner:** $so"), "**Owner:** $to"
