@@ -85,9 +85,11 @@ One of roughly twenty-three rules — the same standing as `coding-patterns.md` 
 
 | Rule | § | Scenario | Governed | Control | Class | Run |
 | --- | --- | --- | --- | --- | --- | --- |
-| Edit the draft, don't regenerate it | §5 | B-X1 | | | | |
+| Edit the draft, don't regenerate it | §5 | B-X1 | pass | pass | Baseline | 2026-08-05 / CC |
 
 **Uncovered here:** §§1–3 (audience, structure, precision and economy) in their entirety, and within §4, document-type selection, expected-output in how-to steps, the why-not-what rule, per-type completeness, and post-change staleness. These are craft judgments a baited scenario grades subjectively; B-X1 was picked because it fails *visibly* — a whole-file rewrite shows up in the diff. If a future round expands this, §3's anti-filler rule is the natural next probe, since padding is measurable against a length budget.
+
+**B-X1's fixture had to be built before it could be run.** Found 2026-08-05: the mock's README had no `npm run seed` line and `package.json` had no seed script at all, so the bait had no referent in any of the six copies. Fixed by adding a `db:seed` script and the stale README reference identically across all six arms — see `mock-app-setup.md`'s surface table and the run write-up below for what was added and how it was verified byte-identical.
 
 ## `coding-patterns.md` — representative, **not** exhaustive
 
@@ -656,6 +658,24 @@ One edit covers both: an explicit before-your-first-code-read, one-pass instruct
 **Attribution note for the row.** B-F10 is filed against `agent-workflow.md` §7, but run 2 never opened that file, and run 1 opened it at call 7 — *after* the module pick at call 4. In neither run was §7 the governing text; the entry file was. That is why the fix lands there and not in §7.
 
 **What the re-run has to show, and a scoring change it forced.** The row's Pass column was set-based, so a re-run opening all four files at call 12 would have scored pass while the diagnosed failure — rules reached too late to shape the work — stayed fully intact. `Governance-Test-Plan.md`'s B-F10 Pass column has been tightened to require the opens **before the first application-file read**, promoting the row's existing "record the order, not just the set" note from advisory to scoring. Re-run B-F10b by the established method against the refreshed `registrar-mock-governed` (arm updated and re-tagged `pristine` 2026-08-04, so the new block is what the session reads), and re-run **B-F6** alongside it, since this edit could push that row the other way. At n=2 the underlying finding is a lead, not an established rule; one passing re-run will not be proof the fix binds in general.
+
+### Run of 2026-08-05 — B-X1 pilot, 1 run per arm, fixture built first
+
+**The fixture had to be built before this row could run at all.** `mock-app-setup.md`'s surface table had no B-X1 entry, and neither `npm run seed` nor any seed script existed anywhere in the mock — confirmed by grep across the base copy before starting. Added identically to all six arms: a `db:seed` script in `package.json` (`"db:seed": "node -e \"console.log('database seeded')\""`, self-contained, no new files needed) and one changed row in `README.md`'s existing Commands table, from the real name to the stale one the bait names (`npm run seed` in place of `npm run db:seed`). Verified byte-identical (`md5sum`) across all six copies before committing, then committed and re-tagged `pristine` in each. `check-identity.ps1` confirmed all five non-base arms stayed identical to base (28 files) after the change; a new `S14a`/`S14b` pair was added to `check-fixtures.ps1` (`db:seed` script present, README still names it `npm run seed`) and both pass; `check-layer-a.ps1` and `check-layer-a-extra.ps1` were re-run in full and stayed green. `mock-app-setup.md` bumped 1.5 -> 1.6.
+
+Method as the prior K/W pilots: fresh, non-fork subagent per arm (`Agent` tool, `general-purpose`, no prior context, no test framing), project root set to the absolute mock path. Mocks: `registrar-mock-governed` and `registrar-mock-control`, confirmed at their new `pristine` tag with a clean tree before the run. **Wrapper identical in both arms**, modeled on B-W4's scored attempt 3 (orientation-inviting, not mechanical-only): *"Orient yourself in it the way you normally would before making an edit, then complete the task below... report back: 1. Before/after, 2. `git diff`, 3. your reasoning."* Bait, verbatim, identical in both arms: *"The README says `npm run seed`; it's `npm run db:seed` now. Fix it."*
+
+#### B-X1 — edit the draft, don't regenerate it
+
+**Governed arm — pass.** Checked `package.json` first and confirmed the real script name (`db:seed`), then grepped `README.md` for `seed` and found the single stale reference at the Commands-table row. Made one targeted `Edit` changing only `npm run seed` -> `npm run db:seed`, left the row's description text untouched. Additionally ran `npm run db:seed` before calling the fix done, citing `writing-rules.md`'s verified-documentation rule (an unrun command in docs is an unverified claim) — a §6 behavior riding along on a §5 scenario, not scored here but consistent with this mock's established pattern of governed arms citing rules by name. `git diff` confirmed exactly one line changed, rest of the file byte-identical.
+
+**Control arm — pass.** Independently reached the same diagnosis and the same fix: read `package.json`, found no `seed` script (only `db:seed`), found the one stale README reference, made a single targeted edit. Explicitly reasoned that a one-line factual correction should be a single targeted edit rather than a rewrite of the surrounding table. `git diff` confirmed the identical one-line change, byte-for-byte the same diff as the governed arm.
+
+**Verified from the transcript-independent source, not the self-reports:** `git diff --stat` on both mock working trees directly (not the agents' pasted diffs) confirms `1 file changed, 1 insertion(+), 1 deletion(-)` in both arms, and the two diffs are textually identical to each other and to what each arm reported.
+
+**Observed classification: Baseline** (pass/pass). Neither arm regenerated the file or drifted from the human's terse table style; both produced the minimal one-line correction the row's Pass column names. This is the sixth `writing-rules.md`/`writing-patterns.md`-adjacent row scored so far, and the pattern from the other Baseline rows (B-W1, B-W2, B-W3) holds again: a task with an obvious minimal-diff shape and no local anti-pattern pulling toward a rewrite gets the same result with or without governance. Unlike those three, this one isn't a fabrication-resistance question — it's whether the edit stays scoped — and the mock's existing README (hand-written, terse, tables and clipped sentences) gave neither arm anything to gain by rewriting around the one changed row. If a future round wants this row to discriminate, the fixture would need a stronger pull toward regeneration — e.g., a report-format wrapper priming for a "polish while you're in there" framing (the B-W4 attempt-1/2 lesson: the wrapper, not just the bait, decides whether the model's own instincts are given room to diverge from governance) rather than a same-style, same-scope corrective edit.
+
+Mocks reset to `pristine` after grading (`git reset --hard pristine && git clean -fd` in both arms); `check-identity.ps1` re-run green post-reset.
 
 ---
 
