@@ -116,7 +116,7 @@ This path is **pure file-copying — no scripts, identical on macOS, Linux, and 
 | `ai-docs/copilot-instructions.template.md` | `.github/copilot-instructions.md` | Repository-wide Copilot custom instructions for Chat, inline suggestions, and supported Copilot features. Copilot agent workflows can also use `AGENTS.md`; this file carries the non-negotiable core inline and links out with `../`. |
 | `ai-docs/core-rules.md` | `ai-governance/core-rules.md` | The task-agnostic base rules — mandatory for every task. |
 | `ai-docs/coding-rules.md` | `ai-governance/coding-rules.md` | Code-specific rules: dependencies, security, testing, accessibility. |
-| `ai-docs/writing-rules.md` | `ai-governance/writing-rules.md` | Content-specific rules: grounding, citations, confidentiality, voice, accessible docs. |
+| `ai-docs/writing-rules.md` | `ai-governance/writing-rules.md` | Content-specific rules: grounding, citations, confidentiality, voice, accessible docs, verified documentation. |
 | `ai-docs/coding-patterns.md` | `ai-governance/coding-patterns.md` | Engineering-craft patterns. |
 | `ai-docs/writing-patterns.md` | `ai-governance/writing-patterns.md` | Writing-craft patterns, including documentation of software. |
 | `ai-docs/agent-workflow.md` | `ai-governance/agent-workflow.md` | How to work: loop, ask-vs-proceed, verification, hand-off, iteration and self-review, economy of effort, subagent delegation. |

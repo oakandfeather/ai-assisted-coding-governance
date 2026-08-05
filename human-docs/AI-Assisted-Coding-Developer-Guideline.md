@@ -3,7 +3,7 @@
 **Owner:** *(your company)* — Engineering
 **Applies to:** All engineers, contractors, and subcontractors who write, review, or ship code for client engagements
 **Status:** Internal standard
-**Version:** 1.4 · **Last reviewed:** 2026-08-05
+**Version:** 1.5 · **Last reviewed:** 2026-08-05
 **Review cycle:** Reviewed quarterly and whenever a client's AI terms change
 
 > **Read this first.** You are coding on behalf of clients, using their data, building their intellectual property, under their rules. AI tools make you faster, but they also make it easy to leak a client's data, ship insecure code under their name, or contaminate their codebase with badly-licensed material. This guideline is how we get the speed without the liability. When a client's own policy is stricter than this document, **the client's policy wins** — see the client profiles in Appendix A.
@@ -125,7 +125,9 @@ AI drafts documentation faster than anyone will read it, and the failure modes a
 - **Update the docs when behavior changes.** Nothing flags a stale runbook the way a failing test flags stale code — that catch is yours, at review time.
 - **Ask for a diff, not a rewrite.** When you send a doc back for one fix, the common AI failure is returning the whole document rewritten — silently discarding the wording a human chose. A change you can't review in a small diff isn't the change you asked for.
 
-The agent-facing form is `writing-patterns.md`, the writing-craft companion — specifically its **§4** (documentation of software) and **§5** (revision discipline, including edit-don't-regenerate). The bullets above are that slice; `writing-patterns.md` §§1–3 cover written deliverables generally — audience, structure, economy — which matter for a memo or a client report but sit outside a *coding* guideline's scope, so they have no counterpart here by design. Its sibling `writing-rules.md` governs the *risks* in written work (grounding, citations, confidentiality, voice fidelity, accessible documents); `writing-patterns.md` governs the quality. Both apply to documentation about code.
+The agent-facing form is split across the two content files, and the seam is worth knowing because it tells you which failures are negotiable. **"Run the examples" is `writing-rules.md` §6** — a *risk* rule, because an unrun command is an unverified claim in the same way a fabricated citation is, and it binds whether or not the agent opened the craft file. The rest of the bullets above are **`writing-patterns.md` §4** (documentation of software) and **§5** (revision discipline, including edit-don't-regenerate) — craft, which a reviewer can trade off against a deadline in a way the first one can't.
+
+`writing-patterns.md` §§1–3 cover written deliverables generally — audience, structure, economy — which matter for a memo or a client report but sit outside a *coding* guideline's scope, so they have no counterpart here by design.
 
 ## 12. Agentic AI tools
 

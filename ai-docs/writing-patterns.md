@@ -12,7 +12,7 @@
 2. **Front-load the answer.** The conclusion first, the reasoning after.
 3. **Let the form match the content.** Comparison → table; ordered steps → numbered list; argument → prose.
 4. **Cut what carries no information.** Preamble, restatement, throat-clearing, padding.
-5. **Ship only examples you actually ran.** An unrun command is an unverified claim.
+5. **Show what success looks like.** What to type without what to expect leaves the reader unable to tell it worked. *(Running the example at all is `writing-rules.md` §6 — a risk rule, and it binds regardless.)*
 6. **State each fact in one owning place** and link to it from everywhere else.
 7. **Edit the draft; don't regenerate it.** A rewrite discards the edits a human already made.
 
@@ -61,8 +61,9 @@ If a request can't satisfy these, flag the tension rather than quietly trading o
 
 Applies when the deliverable documents software — a README, API reference, runbook, release note, help-center article, or in-repo guide. Everything above applies; this section adds what software documentation specifically owes its reader. *(For comments and docstrings that travel inside a source file, see [`coding-patterns.md`](./coding-patterns.md) §2.)*
 
+**One rule for documentation is not in this file: run every example before you ship it.** That one is [`writing-rules.md`](./writing-rules.md) §6, because an unrun command is an unverified claim rather than a rough edge — a risk rule, not a craft one. It binds whether or not you opened this file. Everything below assumes it.
+
 - **Pick the document type and hold it.** Four shapes, each with a different job: **tutorial** (learning by doing), **how-to** (one specific goal), **reference** (exhaustive lookup), **explanation** (why it works this way). Blending all four in one document is the default failure of generated documentation — too long to look something up in, too shallow to learn from. §1's audience question decides which one you're writing.
-- **Run every example before you ship it.** Commands, snippets, config fragments, and API calls in documentation are claims about behavior — verify them the way `coding-rules.md` §3 requires of tests: actually execute the command, compile the snippet, hit the endpoint. `core-rules.md` §2 already forbids inventing a flag or config key; this goes further — a *real* flag used in an unrun example is still an unverified claim. If you can't run it, say so in the document or your hand-off rather than presenting it as working.
 - **Show what success looks like.** A step that says what to type but not what to expect leaves the reader unable to tell whether it worked. Give the meaningful part of the output, the resulting state, or the error that means they got it wrong.
 - **Explain the why, not just the what.** Restating a signature, a flag name, or a UI label adds nothing the reader couldn't already see. Document purpose, constraints, non-obvious consequences, and the reason behind a surprising choice — the documentation form of the comment rule in `coding-patterns.md` §2.
 - **Cover what the document type owes.** A README owes what this is, who it's for, how to install it, how to run it, how to run its tests, and where to go next. A how-to owes prerequisites up front and ordered steps. A reference owes completeness and skimmability — every parameter, its default, and its error cases, in one consistent shape. An explanation owes the trade-offs and the alternatives rejected.
@@ -85,4 +86,4 @@ Applies when the deliverable documents software — a README, API reference, run
 
 ## Self-check before presenting content
 
-Re-run the TL;DR at the top: the reader and job are named, the answer is up front, the form fits the content, nothing padded survives, every example was actually run, each fact has one owning place, and an existing draft was edited rather than regenerated. Where a requirement forced a trade-off against one of these, name it in your hand-off so the reviewer sees the choice. Then run the safety self-checks in `core-rules.md` and `writing-rules.md` — all gates apply, and accuracy wins over polish.
+Re-run the TL;DR at the top: the reader and job are named, the answer is up front, the form fits the content, nothing padded survives, every step shows what success looks like, each fact has one owning place, and an existing draft was edited rather than regenerated. Where a requirement forced a trade-off against one of these, name it in your hand-off so the reviewer sees the choice. Then run the safety self-checks in `core-rules.md` and `writing-rules.md` — all gates apply, including §6's run-every-example rule, and accuracy wins over polish.
