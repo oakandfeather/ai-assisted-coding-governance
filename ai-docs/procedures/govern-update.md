@@ -37,7 +37,7 @@ Adopt `build.ps1`'s failure posture too — **if an anchor is not found in the f
 
 | Tier | Files | Treatment |
 | --- | --- | --- |
-| **A — verbatim** | `ai-governance/core-rules.md`, `coding-rules.md`, `writing-rules.md`, `coding-patterns.md`, `agent-workflow.md` | Replace wholesale from source. |
+| **A — verbatim** | `ai-governance/core-rules.md`, `coding-rules.md`, `writing-rules.md`, `coding-patterns.md`, `writing-patterns.md`, `agent-workflow.md` | Replace wholesale from source. |
 | **B — banner-stripped** | `CLAUDE.md`, `.github/copilot-instructions.md` | Re-derive from the template (slice the banner per step 2), then replace — but diff first, and gate it separately. See below. |
 | **C — merge** | `AGENTS.md` | Replace **only** the mandatory-rules block. See step 5. |
 | **D — merge** | `ai-governance/client-profiles.md` | Preserve the active-client paragraph. See step 6. |

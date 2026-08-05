@@ -116,13 +116,14 @@ This path is **pure file-copying — no scripts, identical on macOS, Linux, and 
 | `ai-docs/copilot-instructions.template.md` | `.github/copilot-instructions.md` | Repository-wide Copilot custom instructions for Chat, inline suggestions, and supported Copilot features. Copilot agent workflows can also use `AGENTS.md`; this file carries the non-negotiable core inline and links out with `../`. |
 | `ai-docs/core-rules.md` | `ai-governance/core-rules.md` | The task-agnostic base rules — mandatory for every task. |
 | `ai-docs/coding-rules.md` | `ai-governance/coding-rules.md` | Code-specific rules: dependencies, security, testing, accessibility. |
-| `ai-docs/writing-rules.md` | `ai-governance/writing-rules.md` | Content-specific rules: grounding, citations, confidentiality, voice, accessible docs, documentation craft. |
+| `ai-docs/writing-rules.md` | `ai-governance/writing-rules.md` | Content-specific rules: grounding, citations, confidentiality, voice, accessible docs. |
 | `ai-docs/coding-patterns.md` | `ai-governance/coding-patterns.md` | Engineering-craft patterns. |
+| `ai-docs/writing-patterns.md` | `ai-governance/writing-patterns.md` | Writing-craft patterns, including documentation of software. |
 | `ai-docs/agent-workflow.md` | `ai-governance/agent-workflow.md` | How to work: loop, ask-vs-proceed, verification, hand-off, iteration and self-review, economy of effort, subagent delegation. |
 | `ai-docs/client-profiles.md` | `ai-governance/client-profiles.md` | Index of per-client overrides. |
 | `ai-docs/client-profiles/` | `ai-governance/client-profiles/` | The profiles themselves — **excluding `example-university.md`**, which is a fictional sample and must never land in a real client's repo. |
 
-The three entry files go at their locations above; the six companion files and `client-profiles/` travel together into `ai-governance/`. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` imports `AGENTS.md`, `.github/copilot-instructions.md` links back with `../`, and the files inside `ai-governance/` link each other with relative `./` paths — so keep them together; separating them breaks the chain. Then fill in the italicized `*(placeholders)*` **in `AGENTS.md`** (the thin companions carry none), and write the active client's profile into `ai-governance/client-profiles/`. **Unfilled placeholders mean the repo is unconfigured:** ask before assuming a stack, client, or command. Never guess a client's rules — no profile at all is safer than an invented one, because `core-rules.md` §8 only falls back to sensitive-by-default when the profile is *absent*.
+The three entry files go at their locations above; the seven companion files and `client-profiles/` travel together into `ai-governance/`. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` imports `AGENTS.md`, `.github/copilot-instructions.md` links back with `../`, and the files inside `ai-governance/` link each other with relative `./` paths — so keep them together; separating them breaks the chain. Then fill in the italicized `*(placeholders)*` **in `AGENTS.md`** (the thin companions carry none), and write the active client's profile into `ai-governance/client-profiles/`. **Unfilled placeholders mean the repo is unconfigured:** ask before assuming a stack, client, or command. Never guess a client's rules — no profile at all is safer than an invented one, because `core-rules.md` §8 only falls back to sensitive-by-default when the profile is *absent*.
 
 `human-docs/` stays here. It is not copied into client repos. The copied `AGENTS.md` carries a short "For the humans on this project" note pointing developers back to it — that travels automatically, no extra copy step. To put the same pointer where people look first, add a block like this to the target repo's `README.md` (or `CONTRIBUTING.md`) — the install procedure offers this automatically on Paths A and B; on Path C you add it by hand:
 
@@ -142,7 +143,7 @@ Every path leaves a **copy** in the client repo, and a copy drifts: when `core-r
 
 **Claude Code:** run `/govern-update` from the target repo's root. **Any other agent:** the Path B instruction above, pointed at [`ai-docs/procedures/govern-update.md`](./ai-docs/procedures/govern-update.md) — same procedure, no setup.
 
-Either way it shows you what changed before changing anything, then works in tiers — the five portable rule files and the two thin entry files are replaced outright, while `AGENTS.md` and `ai-governance/client-profiles.md` are **merged**, because those two carry local content an overwrite would destroy. `ai-governance/client-profiles/` is never touched at all.
+Either way it shows you what changed before changing anything, then works in tiers — the six portable rule files and the two thin entry files are replaced outright, while `AGENTS.md` and `ai-governance/client-profiles.md` are **merged**, because those two carry local content an overwrite would destroy. `ai-governance/client-profiles/` is never touched at all.
 
 **By hand** (no agent in the loop), the same split is what matters. Safe to re-copy straight from `ai-docs/`: `core-rules.md`, `coding-rules.md`, `writing-rules.md`, `coding-patterns.md`, `agent-workflow.md`, and the two thin entry files (`CLAUDE.md`, `.github/copilot-instructions.md` — re-strip their banners). **Do not re-copy** `AGENTS.md` or `ai-governance/client-profiles.md`: bring the upstream changes into them by hand instead, keeping your filled placeholders, your `Active client` value — it appears **twice**, in the header *and* inside the mandatory-rules block — and your active-client list. Leave `ai-governance/client-profiles/` alone.
 
@@ -150,7 +151,7 @@ One thing no path can do: a repo scaffolded before the `ai-governance/` restruct
 
 ## Precedence
 
-> **client profile > `core-rules.md` > `coding-rules.md` / `writing-rules.md` > `coding-patterns.md` / `agent-workflow.md` > project entry file** *(`AGENTS.md` / `CLAUDE.md` / `.github/copilot-instructions.md`)*
+> **client profile > `core-rules.md` > `coding-rules.md` / `writing-rules.md` > `coding-patterns.md` / `writing-patterns.md` / `agent-workflow.md` > project entry file** *(`AGENTS.md` / `CLAUDE.md` / `.github/copilot-instructions.md`)*
 
 The stricter rule always wins. Above all of it sits the client's own AI policy, where they have one: it is the upstream authority and controls where anything here conflicts with it. Reproduce it in [`human-docs/Example-Client-AI-Policy.md`](./human-docs/Example-Client-AI-Policy.md), which explains the slot and what such a policy covers.
 

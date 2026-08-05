@@ -20,7 +20,7 @@ Scaffolds the governance package into a target project. This procedure **copies*
 
 ### 2. Copy the file set
 
-The three entry files land at their tool-specific paths; the other seven items travel together into an **`ai-governance/`** directory you create at the root. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` imports `AGENTS.md`, `.github/copilot-instructions.md` links back with `../`, and the files inside `ai-governance/` link each other with relative `./` paths — separating them breaks the chain.
+The three entry files land at their tool-specific paths; the other eight items travel together into an **`ai-governance/`** directory you create at the root. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` imports `AGENTS.md`, `.github/copilot-instructions.md` links back with `../`, and the files inside `ai-governance/` link each other with relative `./` paths — separating them breaks the chain.
 
 | From `ai-docs/` | To target repo |
 | --- | --- |
@@ -31,6 +31,7 @@ The three entry files land at their tool-specific paths; the other seven items t
 | `coding-rules.md` | `ai-governance/coding-rules.md` |
 | `writing-rules.md` | `ai-governance/writing-rules.md` |
 | `coding-patterns.md` | `ai-governance/coding-patterns.md` |
+| `writing-patterns.md` | `ai-governance/writing-patterns.md` |
 | `agent-workflow.md` | `ai-governance/agent-workflow.md` |
 | `client-profiles.md` | `ai-governance/client-profiles.md` |
 | `client-profiles/` | `ai-governance/client-profiles/` *(the directory — see the exclusion below)* |

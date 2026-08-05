@@ -1,8 +1,8 @@
 # Agent Workflow
 
-*How an AI agent should work in this project to be effective: the work loop, when to ask vs. proceed vs. object, how to verify, how to hand off, when to stop iterating and attack your own work, where to spend effort, and when to hand a subtask to another agent. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus [`coding-patterns.md`](./coding-patterns.md) (engineering craft). Where anything here tensions with those: **a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over everything, safety wins over speed, and correctness wins over throughput.***
+*How an AI agent should work in this project to be effective: the work loop, when to ask vs. proceed vs. object, how to verify, how to hand off, when to stop iterating and attack your own work, where to spend effort, and when to hand a subtask to another agent. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus the craft companions [`coding-patterns.md`](./coding-patterns.md) (engineering craft) / [`writing-patterns.md`](./writing-patterns.md) (writing craft). Where anything here tensions with those: **a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over everything, safety wins over speed, and correctness wins over throughput.***
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.7 · **Last reviewed:** 2026-08-03 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Owner:** *(your company)* — Engineering · **Version:** 1.8 · **Last reviewed:** 2026-08-05 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -103,7 +103,7 @@ Under time pressure, cut scope and say so in the hand-off. Cutting one of these 
 **The levers, in rough order of payoff:**
 
 - **The scarce resource is the human's review time, not yours.** A change costs what it costs to review. Small scoped diffs, a hand-off with no filler (§4), and no unrequested refactors or drive-by reformatting (`core-rules.md` §2) are efficiency measures, not just courtesy.
-- **Load the rules module your task needs, not all of them.** `core-rules.md`, the one task module your work calls for — `coding-rules.md` for code, `writing-rules.md` for content — and the active profile from `client-profiles.md`. Reach for `coding-patterns.md` when you are writing non-trivial code, not to fix a typo. Reading everything on every task crowds out what you actually have to reason over: the requirement and the existing material.
+- **Load the rules module your task needs, not all of them.** `core-rules.md`, the one task module your work calls for — `coding-rules.md` for code, `writing-rules.md` for content — and the active profile from `client-profiles.md`. Reach for the matching craft companion — `coding-patterns.md` when you are writing non-trivial code, `writing-patterns.md` when you are writing a non-trivial document — not to fix a typo. Reading everything on every task crowds out what you actually have to reason over: the requirement and the existing material.
 - **Gather context in one deliberate pass, not by discovery.** Work out what you need to read and read it together; issue independent searches and reads at once rather than one at a time; don't re-read what is already in front of you. Note the asymmetry: under-reading is the more expensive error. This budgets §1 step 2 — it does not waive it.
 - **Scale the whole loop to the blast radius,** the way §6 and the `core-rules.md` checklist already scale their own steps. A small, reversible change with no design or security surface earns a proportionally shorter path through §1 — with the floor above still intact.
 - **Narrow check per increment, wide gate once.** §3's narrow-then-wide ordering is about feedback speed; the corollary is that the full gate belongs before hand-off, not after every edit.
@@ -142,4 +142,4 @@ Delegation trades context isolation against re-derivation: the subtask starts wi
 
 ---
 
-*Precedence reminder: client profile > `core-rules.md` > the task module (`coding-rules.md` / `writing-rules.md`) > this file and `coding-patterns.md` > project entry-file preferences (`AGENTS.md` / `CLAUDE.md` / `.github/copilot-instructions.md`). The stricter rule always wins.*
+*Precedence reminder: client profile > `core-rules.md` > the task module (`coding-rules.md` / `writing-rules.md`) > this file and the craft companions (`coding-patterns.md` / `writing-patterns.md`) > project entry-file preferences (`AGENTS.md` / `CLAUDE.md` / `.github/copilot-instructions.md`). The stricter rule always wins.*

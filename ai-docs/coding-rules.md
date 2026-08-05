@@ -57,7 +57,7 @@ When generating UI, markup, or components, meet **WCAG 2.1 AA** by default (the 
 
 *(For accessibility of non-UI documents — headings, alt text, plain language, contrast in produced content — see [`writing-rules.md`](./writing-rules.md).)*
 
-*(When a change also ships documentation — a README, API reference, runbook, or release note — that documentation is a written deliverable: [`writing-rules.md`](./writing-rules.md) governs it, §6 in particular. This file governs the code the documentation describes.)*
+*(When a change also ships documentation — a README, API reference, runbook, or release note — that documentation is a written deliverable: [`writing-rules.md`](./writing-rules.md) governs its risks and [`writing-patterns.md`](./writing-patterns.md) §4 its craft. This file governs the code the documentation describes.)*
 
 ---
 

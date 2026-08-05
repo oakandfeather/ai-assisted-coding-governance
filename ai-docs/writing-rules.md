@@ -1,6 +1,6 @@
 # AI Writing Rules for Content Agents
 
-*The content-specific rules for AI agents that produce or edit documents, research, analysis, technical documentation, and other written deliverables — the additions to [`core-rules.md`](./core-rules.md) that apply when you write or edit content. **This includes documentation about code** — READMEs, API references, runbooks, release notes: they are written deliverables, so they are governed here, and by `coding-rules.md` only when you also change code. **Read `core-rules.md` first:** it holds the task-agnostic base (secrets, data, correctness, licensing, provenance, agentic actions, compliance, stop-and-ask, client overrides) that binds on every task. This file adds the content-only rules — factual grounding, citations, confidentiality, voice fidelity, accessible documents, documentation craft — that mitigate the risks of AI-generated content. Reference it from your project's entry file alongside `core-rules.md`. When a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, the client profile wins. Companion: [`agent-workflow.md`](./agent-workflow.md) (how to work).*
+*The content-specific rules for AI agents that produce or edit documents, research, analysis, technical documentation, and other written deliverables — the additions to [`core-rules.md`](./core-rules.md) that apply when you write or edit content. **This includes documentation about code** — READMEs, API references, runbooks, release notes: they are written deliverables, so they are governed here, and by `coding-rules.md` only when you also change code. **Read `core-rules.md` first:** it holds the task-agnostic base (secrets, data, correctness, licensing, provenance, agentic actions, compliance, stop-and-ask, client overrides) that binds on every task. This file adds the content-only rules — factual grounding, citations, confidentiality, voice fidelity, accessible documents — that mitigate the risks of AI-generated content. Reference it from your project's entry file alongside `core-rules.md`. When a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, the client profile wins. Companions: [`writing-patterns.md`](./writing-patterns.md) (writing craft — audience, structure, economy, documentation of software) and [`agent-workflow.md`](./agent-workflow.md) (how to work).*
 
 **Owner:** *(your company)* — Engineering · **Version:** 1.3 · **Last reviewed:** 2026-08-05 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
@@ -8,14 +8,13 @@
 
 ## TL;DR — the content checklist to run on every deliverable
 
-Run this **after** the `core-rules.md` TL;DR (secrets, data, correctness, licensing, provenance, actions, compliance). These add the content-specific checks; full detail follows in §§1–6.
+Run this **after** the `core-rules.md` TL;DR (secrets, data, correctness, licensing, provenance, actions, compliance). These add the content-specific checks; full detail follows in §§1–5.
 
 1. **Grounding:** every factual claim, number, and quote is traceable to a real source — nothing invented.
 2. **Citations:** sources are real, current, and verifiable; attribution is accurate.
 3. **Confidentiality:** client documents and data stay inside the approved workspace; nothing regulated or proprietary leaks.
 4. **Fidelity:** the client's or author's meaning, voice, and framing are preserved — no injected claims or positions.
 5. **Accessible documents:** headings, alt text, plain language, and sufficient contrast in what you produce.
-6. **Documentation craft:** documentation of software names its audience and type, ships only examples you actually ran, explains the *why*, and lives in one owning place.
 
 If any answer is "no" or "unsure," fix it or flag it before presenting. Scale the depth to the blast radius (see `core-rules.md`): a small wording fix needs a quick pass; anything that asserts facts, cites sources, or restates client positions needs the full check, stated in your hand-off.
 
@@ -65,21 +64,10 @@ When you produce documents, pages, or other content artifacts, make them accessi
 
 *(For accessibility of application UI and markup — ARIA, focus states, keyboard navigation — see [`coding-rules.md`](./coding-rules.md) §4.)*
 
-## 6. Technical and product documentation
-
-Applies when the deliverable documents software — a README, API reference, runbook, release note, help-center article, or in-repo guide. These are written deliverables even though they describe code, so §§1–5 above apply in full; this section adds what documentation specifically owes its reader. *(For comments and docstrings that travel inside a source file, see [`coding-patterns.md`](./coding-patterns.md).)*
-
-- **Decide the audience and the document type before you write.** Name who reads this (new user, integrator, on-call engineer, reviewer) and which of the four shapes it is — **tutorial** (learning by doing), **how-to** (one specific goal), **reference** (exhaustive lookup), **explanation** (why it works this way). Blending all four in one document is the default failure of generated documentation: the result is too long to look something up in and too shallow to learn from. If a document must serve two audiences, section it explicitly rather than averaging them.
-- **Run every example before you ship it.** Commands, snippets, config fragments, and API calls in documentation are claims about behavior — verify them the way `coding-rules.md` §3 requires of tests: actually execute the command, compile the snippet, hit the endpoint. `core-rules.md` §2 already forbids inventing a flag or config key; this goes further — a *real* flag used in an unrun example is still an unverified claim. If you cannot run it, say so in the document or your hand-off rather than presenting it as working.
-- **Show what success looks like.** A step that says what to type but not what to expect leaves the reader unable to tell whether it worked. Give the meaningful part of the output, the resulting state, or the error that means they got it wrong.
-- **Explain the why, not just the what.** Restating a signature, a flag name, or a UI label adds nothing the reader could not already see. Document purpose, constraints, non-obvious consequences, and the reason behind a surprising choice — the documentation form of the comment rule in `coding-patterns.md`.
-- **Cover what the document type owes.** A README owes what this is, who it's for, how to install it, how to run it, how to run its tests, and where to go next. A how-to owes prerequisites up front and ordered steps. A reference owes completeness and skimmability — every parameter, its default, and its error cases, in one consistent shape. An explanation owes the tradeoffs and the alternatives rejected.
-- **Cut filler.** No preamble that restates the heading, no "in this section we will," no padded overview saying the same thing three ways. Front-load the answer; prefer a short table or list to an essay. Length is not thoroughness, and prose the reader learns to skip costs you the parts they should have read.
-- **State each fact in one owning place and link to it.** Duplicated documentation drifts, and the copy the reader happens to find is the stale one. Write it once in the file that owns it and link from everywhere else, rather than restating it for convenience.
-- **Keep documentation true when behavior changes.** A README, runbook, or help article does not travel with the source file the way a docstring does, so nothing will flag it when the code moves underneath it. When you change behavior, find the documentation that describes it and update it in the same change; when you find documentation already stale, fix it or flag it rather than writing around it.
+*(For the **craft** of the documents themselves — naming the audience, structuring the argument, cutting filler, and what a README, runbook, or API reference specifically owes its reader — see [`writing-patterns.md`](./writing-patterns.md). This file governs the risks; that one governs the quality.)*
 
 ---
 
 ## Self-check before presenting content
 
-Re-run the **TL;DR at the top of this file** (grounding, citations, confidentiality, fidelity, accessible documents, documentation craft) **and** the `core-rules.md` TL;DR (secrets, data, correctness, licensing, provenance, actions, compliance) — both gates apply, at the depth the blast radius warrants. For deliverables that assert facts, cite sources, or speak for the client, state in your hand-off which items you verified — especially that claims and citations trace to real sources — so the human reviewer sees the check rather than assuming it.
+Re-run the **TL;DR at the top of this file** (grounding, citations, confidentiality, fidelity, accessible documents) **and** the `core-rules.md` TL;DR (secrets, data, correctness, licensing, provenance, actions, compliance) — both gates apply, at the depth the blast radius warrants. For deliverables that assert facts, cite sources, or speak for the client, state in your hand-off which items you verified — especially that claims and citations trace to real sources — so the human reviewer sees the check rather than assuming it.

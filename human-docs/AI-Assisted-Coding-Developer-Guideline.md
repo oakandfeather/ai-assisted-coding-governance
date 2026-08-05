@@ -3,7 +3,7 @@
 **Owner:** *(your company)* — Engineering
 **Applies to:** All engineers, contractors, and subcontractors who write, review, or ship code for client engagements
 **Status:** Internal standard
-**Version:** 1.3 · **Last reviewed:** 2026-08-05
+**Version:** 1.4 · **Last reviewed:** 2026-08-05
 **Review cycle:** Reviewed quarterly and whenever a client's AI terms change
 
 > **Read this first.** You are coding on behalf of clients, using their data, building their intellectual property, under their rules. AI tools make you faster, but they also make it easy to leak a client's data, ship insecure code under their name, or contaminate their codebase with badly-licensed material. This guideline is how we get the speed without the liability. When a client's own policy is stricter than this document, **the client's policy wins** — see the client profiles in Appendix A.
@@ -123,8 +123,9 @@ AI drafts documentation faster than anyone will read it, and the failure modes a
 - **Cut the padding.** Preambles, "in this section we will," and the same point made three ways are the AI house style, and they teach readers to skim past the parts that mattered.
 - **Watch for duplication.** A fact stated in three files drifts in two of them. One owning place; link from everywhere else.
 - **Update the docs when behavior changes.** Nothing flags a stale runbook the way a failing test flags stale code — that catch is yours, at review time.
+- **Ask for a diff, not a rewrite.** When you send a doc back for one fix, the common AI failure is returning the whole document rewritten — silently discarding the wording a human chose. A change you can't review in a small diff isn't the change you asked for.
 
-The agent-facing form is `writing-rules.md` §6, which governs any documentation an agent produces, including documentation about code.
+The agent-facing form is `writing-patterns.md` — the writing-craft companion, whose §4 covers documentation of software and §5 the edit-don't-regenerate rule. Its sibling `writing-rules.md` governs the *risks* in written work (grounding, citations, confidentiality, voice); `writing-patterns.md` governs the quality. Both apply to documentation about code.
 
 ## 12. Agentic AI tools
 
