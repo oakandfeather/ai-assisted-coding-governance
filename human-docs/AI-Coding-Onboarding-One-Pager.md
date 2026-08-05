@@ -35,7 +35,7 @@ Every client has different constraints. Before you write a line, check the **cli
 - [ ] Tests are real; security reviewed
 - [ ] Accessible (if UI + client requires it) · meets client compliance
 - [ ] Nothing from another client leaked in
-- [ ] Docs it wrote: I ran the examples (a real flag name isn't a working command)
+- [ ] Docs it wrote: I ran the examples (a real flag name isn't a working command), and a one-line fix came back as a one-line diff
 
 ## When to stop and ask your engagement lead
 Unsure if a tool or data input is allowed · the task seems to need sensitive data in an AI tool · a dependency/license/pattern you can't fully vet · something feels off (odd agent behavior, possible data exposure). **Suspected data exposure → escalate same day.**
