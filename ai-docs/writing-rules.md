@@ -1,20 +1,21 @@
 # AI Writing Rules for Content Agents
 
-*The content-specific rules for AI agents that produce or edit documents, research, analysis, and other non-code deliverables — the additions to [`core-rules.md`](./core-rules.md) that apply when you write or edit content. **Read `core-rules.md` first:** it holds the task-agnostic base (secrets, data, correctness, licensing, provenance, agentic actions, compliance, stop-and-ask, client overrides) that binds on every task. This file adds the content-only rules — factual grounding, citations, confidentiality, voice fidelity, accessible documents — that mitigate the risks of AI-generated content. Reference it from your project's entry file alongside `core-rules.md`. When a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, the client profile wins. Companion: [`agent-workflow.md`](./agent-workflow.md) (how to work).*
+*The content-specific rules for AI agents that produce or edit documents, research, analysis, technical documentation, and other written deliverables — the additions to [`core-rules.md`](./core-rules.md) that apply when you write or edit content. **This includes documentation about code** — READMEs, API references, runbooks, release notes: they are written deliverables, so they are governed here, and by `coding-rules.md` only when you also change code. **Read `core-rules.md` first:** it holds the task-agnostic base (secrets, data, correctness, licensing, provenance, agentic actions, compliance, stop-and-ask, client overrides) that binds on every task. This file adds the content-only rules — factual grounding, citations, confidentiality, voice fidelity, accessible documents, verified documentation — that mitigate the risks of AI-generated content. Reference it from your project's entry file alongside `core-rules.md`. When a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, the client profile wins. Companions: [`writing-patterns.md`](./writing-patterns.md) (writing craft — audience, structure, economy, documentation of software) and [`agent-workflow.md`](./agent-workflow.md) (how to work).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.2 · **Last reviewed:** 2026-08-04 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Owner:** *(your company)* — Engineering · **Version:** 1.4 · **Last reviewed:** 2026-08-05 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
 ## TL;DR — the content checklist to run on every deliverable
 
-Run this **after** the `core-rules.md` TL;DR (secrets, data, correctness, licensing, provenance, actions, compliance). These add the content-specific checks; full detail follows in §§1–5.
+Run this **after** the `core-rules.md` TL;DR (secrets, data, correctness, licensing, provenance, actions, compliance). These add the content-specific checks; full detail follows in §§1–6.
 
 1. **Grounding:** every factual claim, number, and quote is traceable to a real source — nothing invented.
 2. **Citations:** sources are real, current, and verifiable; attribution is accurate.
 3. **Confidentiality:** client documents and data stay inside the approved workspace; nothing regulated or proprietary leaks.
 4. **Fidelity:** the client's or author's meaning, voice, and framing are preserved — no injected claims or positions.
 5. **Accessible documents:** headings, alt text, plain language, and sufficient contrast in what you produce.
+6. **Verified documentation:** every command, snippet, and API call you document was actually run — or is labelled unverified.
 
 If any answer is "no" or "unsure," fix it or flag it before presenting. Scale the depth to the blast radius (see `core-rules.md`): a small wording fix needs a quick pass; anything that asserts facts, cites sources, or restates client positions needs the full check, stated in your hand-off.
 
@@ -64,8 +65,18 @@ When you produce documents, pages, or other content artifacts, make them accessi
 
 *(For accessibility of application UI and markup — ARIA, focus states, keyboard navigation — see [`coding-rules.md`](./coding-rules.md) §4.)*
 
+## 6. Verified documentation
+
+Applies when the deliverable documents software — a README, API reference, runbook, release note, help-center article, or in-repo guide.
+
+- **Run every example before you ship it.** Commands, snippets, config fragments, and API calls in documentation are claims about behavior — verify them the way `coding-rules.md` §3 requires of tests: actually execute the command, compile the snippet, hit the endpoint. `core-rules.md` §2 already forbids inventing a flag or config key; this goes further — a *real* flag used in an unrun example is still an unverified claim. If you cannot run it, say so in the document or your hand-off rather than presenting it as working.
+
+**Why this one rule sits here and the rest of documentation guidance doesn't.** An unrun example is not a style lapse; it is the documentation form of presenting unverified work as verified (`core-rules.md` §2, `agent-workflow.md` §3), and it fails the same way a fabricated citation does — the reader trusts a claim nothing backs. That makes it a risk rule, so it belongs in this file, under this file's checklist.
+
+*(Everything else documentation owes its reader — audience and document type, showing what success looks like, explaining the *why*, per-type completeness, and keeping docs true as behavior changes — is **craft**, and lives in [`writing-patterns.md`](./writing-patterns.md) §4, alongside the general writing craft in its §§1–3, 5. This file governs the risks; that one governs the quality.)*
+
 ---
 
 ## Self-check before presenting content
 
-Re-run the **TL;DR at the top of this file** (grounding, citations, confidentiality, fidelity, accessible documents) **and** the `core-rules.md` TL;DR (secrets, data, correctness, licensing, provenance, actions, compliance) — both gates apply, at the depth the blast radius warrants. For deliverables that assert facts, cite sources, or speak for the client, state in your hand-off which items you verified — especially that claims and citations trace to real sources — so the human reviewer sees the check rather than assuming it.
+Re-run the **TL;DR at the top of this file** (grounding, citations, confidentiality, fidelity, accessible documents, verified documentation) **and** the `core-rules.md` TL;DR (secrets, data, correctness, licensing, provenance, actions, compliance) — both gates apply, at the depth the blast radius warrants. For deliverables that assert facts, cite sources, or speak for the client, state in your hand-off which items you verified — especially that claims and citations trace to real sources — so the human reviewer sees the check rather than assuming it.

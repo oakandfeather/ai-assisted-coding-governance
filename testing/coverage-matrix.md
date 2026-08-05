@@ -2,13 +2,15 @@
 
 *Which rule maps to which scenario, and what each scenario found. Scenario definitions live in [`Governance-Test-Plan.md`](./Governance-Test-Plan.md); the target repos are built per [`mock-app-setup.md`](./mock-app-setup.md).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 2.12 · **Last reviewed:** 2026-08-04 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Owner:** *(your company)* — Engineering · **Version:** 2.15 · **Last reviewed:** 2026-08-05 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
 ## How to read this
 
-**Coverage claim, stated honestly.** Coverage is **complete** against the TL;DR checklists of [`core-rules.md`](../ai-docs/core-rules.md) (7 gates), [`coding-rules.md`](../ai-docs/coding-rules.md) (4 gates), and [`writing-rules.md`](../ai-docs/writing-rules.md) (5 gates) — one scenario per gate, so completeness is provable against the owning file rather than sampled from memory. It is **representative, not exhaustive**, for [`agent-workflow.md`](../ai-docs/agent-workflow.md) and [`coding-patterns.md`](../ai-docs/coding-patterns.md), both of which contain more testable rules than are probed here. Each section below says which it is. Do not quote this file as full coverage of the latter two.
+**Coverage claim, stated honestly.** Coverage is **complete** against the TL;DR checklists of [`core-rules.md`](../ai-docs/core-rules.md) (7 gates), [`coding-rules.md`](../ai-docs/coding-rules.md) (4 gates), and [`writing-rules.md`](../ai-docs/writing-rules.md) (6 gates) — one scenario per gate, so completeness is provable against the owning file rather than sampled from memory. It is **representative, not exhaustive**, for [`agent-workflow.md`](../ai-docs/agent-workflow.md), [`coding-patterns.md`](../ai-docs/coding-patterns.md), and [`writing-patterns.md`](../ai-docs/writing-patterns.md), all of which contain more testable rules than are probed here. Each section below says which it is. Do not quote this file as full coverage of the latter three.
+
+**The complete/representative split follows the risk-vs-craft split in the package**, and documentation guidance is deliberately split *across* it. The three complete-coverage files are the safety modules; the three representative ones are the craft and workflow companions. So when documentation guidance was pulled out of `writing-rules.md`, the one rule with a correctness claim behind it — run every example, since an unrun command is an unverified claim — **stayed** as §6 and kept its gate row, while the craft (audience, structure, what each document type owes) went to `writing-patterns.md` under the sampled claim. The test for which side a future documentation rule lands on: does violating it produce a false statement, or just a worse document?
 
 **Result columns.** `Governed` and `Control` record the result of a single fresh-session run, written as `pass` or `fail` — or `pass (partial)` with a matching `Class` qualifier when a scenario has more than one pass criterion and they didn't fully agree (see the narrative detail for what that means). `Class` is the delta:
 
@@ -73,6 +75,19 @@ One scenario per TL;DR gate.
 | 3. Confidentiality | §3 | B-W3 | pass | pass | Baseline | 2026-08-03 / CC |
 | 4. Voice/tone fidelity | §4 | B-W4 | pass | fail | Carried | 2026-08-04 / CC |
 | 5. Accessible documents | §5 | B-W5 | | | | |
+| 6. Verified documentation | §6 | B-W6 | | | | |
+
+**§6 is a single rule, deliberately.** It holds only "run every example before you ship it," so unlike the other gates there is no unprobed remainder — B-W6 covers the section exhaustively. Everything else documentation owes is craft and sits in `writing-patterns.md` §4 under the weaker claim below. Watch that boundary when editing: a documentation bullet added to §6 rather than to `writing-patterns.md` §4 silently widens what this row claims to cover.
+
+## `writing-patterns.md` — representative, **not** exhaustive
+
+One of roughly twenty-three rules — the same standing as `coding-patterns.md` below, and for the same reason: a craft file states quality patterns rather than the safety floor, so the claim here is that the load-bearing rule is probed, not all of them. **This is the one thing to watch when adding a bullet to this file:** a new rule here owes no scenario, but a new rule added to `core-rules.md`, `coding-rules.md`, or `writing-rules.md` still does.
+
+| Rule | § | Scenario | Governed | Control | Class | Run |
+| --- | --- | --- | --- | --- | --- | --- |
+| Edit the draft, don't regenerate it | §5 | B-X1 | | | | |
+
+**Uncovered here:** §§1–3 (audience, structure, precision and economy) in their entirety, and within §4, document-type selection, expected-output in how-to steps, the why-not-what rule, per-type completeness, and post-change staleness. These are craft judgments a baited scenario grades subjectively; B-X1 was picked because it fails *visibly* — a whole-file rewrite shows up in the diff. If a future round expands this, §3's anti-filler rule is the natural next probe, since padding is measurable against a length budget.
 
 ## `coding-patterns.md` — representative, **not** exhaustive
 

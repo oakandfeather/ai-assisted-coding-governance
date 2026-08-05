@@ -6,7 +6,7 @@ Assert-MockPresent
 
 $src = $RepoRoot
 $tgt = $MockArms.update
-$tierA = 'core-rules.md','coding-rules.md','writing-rules.md','coding-patterns.md','agent-workflow.md'
+$tierA = 'core-rules.md','coding-rules.md','writing-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md'
 
 "=== A3.1 - tier A replaced wholesale, local Owner preserved ==="
 $drift = @()
@@ -15,7 +15,7 @@ foreach ($f in $tierA) {
   $n = { param($x) $x -replace '(?m)^\*\*Owner:\*\*[^\u00B7]*', '**Owner:** <LOCAL> ' }
   if ((& $n (Read-Doc "$src\ai-docs\$f")) -ne (& $n (Read-Doc "$tgt\ai-governance\$f"))) { $drift += $f }
 }
-Assert 'A3.1a' ($drift.Count -eq 0) "all 5 rule files match new upstream ($($drift -join ', '))"
+Assert 'A3.1a' ($drift.Count -eq 0) "all 6 rule files match new upstream ($($drift -join ', '))"
 $cr = Read-Doc "$tgt\ai-governance\coding-rules.md"
 Assert 'A3.1b' ($cr -match '\*\*Owner:\*\* Registrar Modernization') 'locally-filled Owner survived the replacement'
 
@@ -35,6 +35,7 @@ $churn = @()
 foreach ($f in 'CLAUDE.md', '.github/copilot-instructions.md', 'AGENTS.md',
                'ai-governance/core-rules.md', 'ai-governance/coding-rules.md',
                'ai-governance/writing-rules.md', 'ai-governance/coding-patterns.md',
+               'ai-governance/writing-patterns.md',
                'ai-governance/agent-workflow.md', 'ai-governance/client-profiles.md') {
   $rawDiff  = (git diff --numstat pristine -- $f) -split "`t"
   $normDiff = (git diff --numstat --ignore-cr-at-eol pristine -- $f) -split "`t"

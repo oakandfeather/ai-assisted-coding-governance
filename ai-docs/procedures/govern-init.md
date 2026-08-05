@@ -20,7 +20,7 @@ Scaffolds the governance package into a target project. This procedure **copies*
 
 ### 2. Copy the file set
 
-The three entry files land at their tool-specific paths; the other seven items travel together into an **`ai-governance/`** directory you create at the root. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` imports `AGENTS.md`, `.github/copilot-instructions.md` links back with `../`, and the files inside `ai-governance/` link each other with relative `./` paths — separating them breaks the chain.
+The three entry files land at their tool-specific paths; the other eight items travel together into an **`ai-governance/`** directory you create at the root. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` imports `AGENTS.md`, `.github/copilot-instructions.md` links back with `../`, and the files inside `ai-governance/` link each other with relative `./` paths — separating them breaks the chain.
 
 | From `ai-docs/` | To target repo |
 | --- | --- |
@@ -31,6 +31,7 @@ The three entry files land at their tool-specific paths; the other seven items t
 | `coding-rules.md` | `ai-governance/coding-rules.md` |
 | `writing-rules.md` | `ai-governance/writing-rules.md` |
 | `coding-patterns.md` | `ai-governance/coding-patterns.md` |
+| `writing-patterns.md` | `ai-governance/writing-patterns.md` |
 | `agent-workflow.md` | `ai-governance/agent-workflow.md` |
 | `client-profiles.md` | `ai-governance/client-profiles.md` |
 | `client-profiles/` | `ai-governance/client-profiles/` *(the directory — see the exclusion below)* |
@@ -94,7 +95,7 @@ Fill the **Active client** line in the new `AGENTS.md`, then author that client'
 
 **Author `ai-governance/client-profiles/<client>.md`** following the shape of `example-university.md` in the governance repo: title, a short authority note naming the upstream policy, tight imperative bullets, a closing reference line. Read that file for its **shape** — do not copy its content, which belongs to a fictional client. Keep the profile to what changes an agent's behavior; procurement and org detail belong in the human guideline, not here. Then link the profile from the copied `ai-governance/client-profiles.md` under `## Active client profiles`.
 
-**Never invent a client rule.** This fallback is the opposite of step 5's. There, an unfilled placeholder is the safe outcome — it signals "unconfigured, ask." Here the safe outcome is **no profile file at all**, because `core-rules.md` §8 only fails safe when the profile is *absent*: it then treats the client's data as sensitive by default. A guessed or half-authored profile looks authoritative, suppresses that fail-safe, and is worse than nothing. So if the client's rules cannot be established and the user cannot supply them: write no profile, leave the empty state from step 4 in place, and tell the user plainly that §12's default applies until someone raises it with the engagement lead.
+**Never invent a client rule.** This fallback is the opposite of step 5's. There, an unfilled placeholder is the safe outcome — it signals "unconfigured, ask." Here the safe outcome is **no profile file at all**, because `core-rules.md` §8 only fails safe when the profile is *absent*: it then treats the client's data as sensitive by default. A guessed or half-authored profile looks authoritative, suppresses that fail-safe, and is worse than nothing. So if the client's rules cannot be established and the user cannot supply them: write no profile, leave the empty state from step 4 in place, and tell the user plainly that `core-rules.md` §8's sensitive-by-default governs until someone raises it with the engagement lead.
 
 ### 7. Signpost the humans (opt-in)
 

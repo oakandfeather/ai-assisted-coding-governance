@@ -2,7 +2,7 @@
 
 *The scripted half of [`../Governance-Test-Plan.md`](../Governance-Test-Plan.md). Layer A is mechanical and belongs in the verification contract, so it has to be fast enough that people actually run it.*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.1 · **Last reviewed:** 2026-08-02 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Owner:** *(your company)* — Engineering · **Version:** 1.2 · **Last reviewed:** 2026-08-05 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -74,6 +74,15 @@ git add -A; git commit -m "Refresh installed governance to upstream (govern-upda
 **Never refresh `…-update/`.** It is deliberately aged, and A3 has nothing to pull once it matches the source. `-Arm` defaults to `update` precisely so the A3 invocations above stay untouched; the maintenance values are opt-in, and only the `update` arm writes the tier-E snapshot `assert-a3.ps1` reads.
 
 Distinguishing the two cases matters: a check that was **green before your edit and red after** is never staleness. A2.8e in particular oracles the tier-C mandatory-rules block that `govern-update` merges, so an edit inside `AGENTS.template.md`'s mandatory-rules block turns it red until the arms are refreshed — expected, but only alongside a deliberate refresh, never worked around.
+
+### When you have *added* a rule file, not just edited one
+
+A new file in `ai-docs/` fails **louder and differently**, so it reads as a defect when it is the same staleness: A2.2 fails outright on the item count and `check-layer-a.ps1` throws mid-run, before you reach the refresh step. Same fix — run the updater against the `governed` and `unconfigured` arms — but two things are specific to the add case:
+
+- **The tier-A file list is hardcoded in three scripts**, not derived: `check-layer-a.ps1`'s count, `assert-a3.ps1`, and `govern-update-run.ps1`. All three need the new file, or A3.1a silently asserts against a short list.
+- **Model the new file's line endings on an already-installed sibling** (`core-rules.md`) rather than the OS default, or it lands as the odd one out and A2.9c records the mismatch.
+
+The runner handles an added file as of the `writing-patterns.md` change — it prints `ADDED` in the plan, writes the file on `-Apply`, and skips the preserve-local-Owner step, since a new file has no target Owner. Before that it threw on `Read-Doc` of a file the target didn't have.
 
 ## Two traps these scripts exist to avoid
 
