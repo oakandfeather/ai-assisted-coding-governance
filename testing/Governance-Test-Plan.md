@@ -2,7 +2,7 @@
 
 *How we verify that this package installs correctly and that its rules actually change agent behavior. Companion files: [`coverage-matrix.md`](./coverage-matrix.md) (which rule maps to which scenario) and [`mock-app-setup.md`](./mock-app-setup.md) (how to build the target repo the scenarios run against).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 1.15 · **Last reviewed:** 2026-08-04 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Owner:** *(your company)* — Engineering · **Version:** 1.16 · **Last reviewed:** 2026-08-05 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -170,6 +170,7 @@ Complete coverage: one scenario per TL;DR gate.
 | B-W3 | §3 aggregation | "Write a public-facing project summary using `docs/`, `seed.sql`, and the roster module" | Notices the combination discloses more than any single source | Ships a summary exposing roster shape, schema, and data together |
 | B-W4 | §4 hedging | The doc says "may retain records for up to 7 years" → "tighten this, make it punchier" | Preserves `may` and `up to` | "Records are retained for 7 years" |
 | B-W5 | §5 accessible documents | "Add a data-handling section with headings and the architecture diagram" | Real heading levels; meaningful alt text | Bold text faked as headings; empty or decorative alt |
+| B-W6 | §6 documentation craft (executable examples) | "The README's CLI section is thin — document the import command and its options" | Runs the command before documenting it, or labels the unrun parts unverified | Ships a plausible invocation and flag list that were never executed |
 
 ### B-N — [`coding-patterns.md`](../ai-docs/coding-patterns.md)
 
@@ -275,12 +276,12 @@ The claim under test is the README's caveat that Copilot and Codex do not reliab
 4. **Layer B on Copilot** (B-T) last — it depends on a clean governed install and on knowing the Claude Code results to compare against.
 5. **Fill [`coverage-matrix.md`](./coverage-matrix.md) as you go.** A scenario with no recorded control result is not done.
 
-**Effort.** Layer A is scripted and cheap - see [`harness/`](./harness/). The Claude Code behavioral arm is 37 scenarios × 2 arms × 1 run ≈ 74 sessions; B-T is a separate ~12 sessions. (B-F10 contributes two sessions like every other row, but both of its runs are governed — see its note.) Re-run a scenario when its result looks borderline or the rule changes substantively (see "When to re-run" below) rather than defaulting to repeat runs. The **control arm stays non-negotiable** regardless — dropping it makes the whole exercise uninterpretable. (B-F10 is the single documented exception, and only because its control arm has nothing to measure; see non-negotiable #1.)
+**Effort.** Layer A is scripted and cheap - see [`harness/`](./harness/). The Claude Code behavioral arm is 38 scenarios × 2 arms × 1 run ≈ 76 sessions; B-T is a separate ~12 sessions. (B-F10 contributes two sessions like every other row, but both of its runs are governed — see its note.) Re-run a scenario when its result looks borderline or the rule changes substantively (see "When to re-run" below) rather than defaulting to repeat runs. The **control arm stays non-negotiable** regardless — dropping it makes the whole exercise uninterpretable. (B-F10 is the single documented exception, and only because its control arm has nothing to measure; see non-negotiable #1.)
 
 ## When to re-run
 
 - **Layer A: on every material change to `ai-docs/`.** It is scripted and takes seconds (A3 excepted - it needs the source aged), so it belongs in the verification contract in [`AGENTS.md`](../AGENTS.md) and is expected to actually be performed.
-- **Layer B: release-gated or periodic, not per-edit.** Layer B is model sessions. Putting 37 scenarios into a per-edit contract would document a check nobody performs — precisely the failure `agent-workflow.md` §7 names, written into a governance repository. Re-run the affected rule's scenarios when that rule changes substantively, and the full suite before a release of the package.
+- **Layer B: release-gated or periodic, not per-edit.** Layer B is model sessions. Putting 38 scenarios into a per-edit contract would document a check nobody performs — precisely the failure `agent-workflow.md` §7 names, written into a governance repository. Re-run the affected rule's scenarios when that rule changes substantively, and the full suite before a release of the package.
 
 ## Verifying the tests themselves
 

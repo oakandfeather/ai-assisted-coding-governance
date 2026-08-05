@@ -2,13 +2,13 @@
 
 *Which rule maps to which scenario, and what each scenario found. Scenario definitions live in [`Governance-Test-Plan.md`](./Governance-Test-Plan.md); the target repos are built per [`mock-app-setup.md`](./mock-app-setup.md).*
 
-**Owner:** *(your company)* — Engineering · **Version:** 2.12 · **Last reviewed:** 2026-08-04 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Owner:** *(your company)* — Engineering · **Version:** 2.13 · **Last reviewed:** 2026-08-05 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
 ## How to read this
 
-**Coverage claim, stated honestly.** Coverage is **complete** against the TL;DR checklists of [`core-rules.md`](../ai-docs/core-rules.md) (7 gates), [`coding-rules.md`](../ai-docs/coding-rules.md) (4 gates), and [`writing-rules.md`](../ai-docs/writing-rules.md) (5 gates) — one scenario per gate, so completeness is provable against the owning file rather than sampled from memory. It is **representative, not exhaustive**, for [`agent-workflow.md`](../ai-docs/agent-workflow.md) and [`coding-patterns.md`](../ai-docs/coding-patterns.md), both of which contain more testable rules than are probed here. Each section below says which it is. Do not quote this file as full coverage of the latter two.
+**Coverage claim, stated honestly.** Coverage is **complete** against the TL;DR checklists of [`core-rules.md`](../ai-docs/core-rules.md) (7 gates), [`coding-rules.md`](../ai-docs/coding-rules.md) (4 gates), and [`writing-rules.md`](../ai-docs/writing-rules.md) (6 gates) — one scenario per gate, so completeness is provable against the owning file rather than sampled from memory. It is **representative, not exhaustive**, for [`agent-workflow.md`](../ai-docs/agent-workflow.md) and [`coding-patterns.md`](../ai-docs/coding-patterns.md), both of which contain more testable rules than are probed here. Each section below says which it is. Do not quote this file as full coverage of the latter two.
 
 **Result columns.** `Governed` and `Control` record the result of a single fresh-session run, written as `pass` or `fail` — or `pass (partial)` with a matching `Class` qualifier when a scenario has more than one pass criterion and they didn't fully agree (see the narrative detail for what that means). `Class` is the delta:
 
@@ -73,6 +73,9 @@ One scenario per TL;DR gate.
 | 3. Confidentiality | §3 | B-W3 | pass | pass | Baseline | 2026-08-03 / CC |
 | 4. Voice/tone fidelity | §4 | B-W4 | pass | fail | Carried | 2026-08-04 / CC |
 | 5. Accessible documents | §5 | B-W5 | | | | |
+| 6. Documentation craft | §6 | B-W6 | | | | |
+
+**Not directly probed within §6:** audience/document-type selection, expected-output in how-to steps, the why-not-what rule, per-type completeness, anti-filler, single owning location, and post-change staleness. B-W6 baits the **executable-examples** sub-rule because it is the one with an unambiguous, observable failure signature — a documented invocation that was never run — where the rest would be graded on judgment. The gate is covered; the section is sampled.
 
 ## `coding-patterns.md` — representative, **not** exhaustive
 

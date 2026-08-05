@@ -3,7 +3,7 @@
 **Owner:** *(your company)* — Engineering
 **Applies to:** All engineers, contractors, and subcontractors who write, review, or ship code for client engagements
 **Status:** Internal standard
-**Version:** 1.2 · **Last reviewed:** 2026-08-04
+**Version:** 1.3 · **Last reviewed:** 2026-08-05
 **Review cycle:** Reviewed quarterly and whenever a client's AI terms change
 
 > **Read this first.** You are coding on behalf of clients, using their data, building their intellectual property, under their rules. AI tools make you faster, but they also make it easy to leak a client's data, ship insecure code under their name, or contaminate their codebase with badly-licensed material. This guideline is how we get the speed without the liability. When a client's own policy is stricter than this document, **the client's policy wins** — see the client profiles in Appendix A.
@@ -113,7 +113,20 @@ AI produces insecure code as fluently as secure code. On every engagement:
 
 If you're building UI for a client with accessibility obligations — public-sector clients especially — AI-generated markup and components must be checked against **WCAG 2.1 AA / Section 508 / ADA**. AI routinely ships missing alt text, unlabeled controls, poor contrast, and markup that breaks screen readers. Automated checks plus manual/assistive-tech review before you call it done.
 
-## 11. Agentic AI tools
+## 11. AI-written documentation
+
+AI drafts documentation faster than anyone will read it, and the failure modes are quieter than in code: a wrong README doesn't fail a build, it just misleads whoever trusted it — often months later.
+
+- **Run the examples.** Every command, snippet, and config fragment in an AI-written doc is an untested claim until someone executes it. A real flag name is not the same thing as a working invocation.
+- **Decide what the document is** before accepting a draft — tutorial, how-to, reference, or explanation. Generated docs default to blending all four and serving none.
+- **Demand the why.** A paragraph restating a function signature or a button label is filler; the value is purpose, constraints, and the non-obvious consequence.
+- **Cut the padding.** Preambles, "in this section we will," and the same point made three ways are the AI house style, and they teach readers to skim past the parts that mattered.
+- **Watch for duplication.** A fact stated in three files drifts in two of them. One owning place; link from everywhere else.
+- **Update the docs when behavior changes.** Nothing flags a stale runbook the way a failing test flags stale code — that catch is yours, at review time.
+
+The agent-facing form is `writing-rules.md` §6, which governs any documentation an agent produces, including documentation about code.
+
+## 12. Agentic AI tools
 
 For AI agents that can run commands, edit files, install packages, or call services:
 
@@ -124,7 +137,7 @@ For AI agents that can run commands, edit files, install packages, or call servi
 
 **These constraints only bind if the agent can read them.** The agent-facing half of this guidance is installed *into the engagement repository*: three entry files at the root — `AGENTS.md`, `CLAUDE.md`, and `.github/copilot-instructions.md`, one per tool family — plus an `ai-governance/` directory holding the rules they point to. Whichever AI tool you use loads its entry file at the start of a session; nothing loads if the files aren't there. So before you point an agent at a client repo, check that they are present and current, and get them installed or refreshed if not — the AI-governance source repository's `README.md` has the install and update paths. Their presence doesn't transfer accountability: §1 still holds, and you still own every line. Their absence just means you are the only control.
 
-## 12. When to stop and ask the engagement lead
+## 13. When to stop and ask the engagement lead
 
 - You're unsure whether a tool or a data input is allowed for this client.
 - The task seems to require putting sensitive client data into an AI tool.
@@ -183,6 +196,7 @@ ESU has its own AI-in-application-development policy; our team must comply with 
 - [ ] Dependencies are real, legitimate, correctly licensed
 - [ ] Tests are real (test the requirement, not just the code)
 - [ ] Provenance noted where the client requires it
+- [ ] Any docs it wrote: I ran the examples, and nothing they describe is already stale
 
 **Before I ship**
 - [ ] Security-reviewed
