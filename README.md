@@ -168,3 +168,5 @@ The installer and updater sit outside that argument, because they are *procedure
 See [`AGENTS.md`](./AGENTS.md) for the reference chain, the deduplication discipline, and editing conventions. The short version: each rule is stated once in its owning file, everything else links to it, and the two tracks must not drift apart.
 
 This repo applies its own governance to itself, using the same three-entry-file design it ships: `AGENTS.md` is the canonical entry file, `CLAUDE.md` is a one-line `@AGENTS.md` import, and `.github/copilot-instructions.md` carries the core inline. The one deliberate difference from an install: they link to `ai-docs/` directly rather than to a copied `ai-governance/`, because the rule files already live here — see the note in `AGENTS.md`.
+
+[`context-cost.md`](./context-cost.md) tracks the context-window cost of loading `ai-docs/` — per-file and per-scenario token estimates, re-measured whenever those files change materially.
