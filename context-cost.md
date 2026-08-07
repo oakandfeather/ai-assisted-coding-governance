@@ -1,6 +1,6 @@
 # Context cost of the governance package
 
-**Last reviewed:** 2026-08-05
+**Last reviewed:** 2026-08-07
 
 Tracks how much of an agent's context window the `ai-docs/` package consumes when it's loaded per `AGENTS.md`'s "load in one pass" instruction. Re-run the measurement below and update this table when `ai-docs/` files change size materially — it's a cost metric, not a governed rule file, so it doesn't need a version bump on every edit.
 
@@ -23,11 +23,11 @@ wc -w -c ai-docs/*.md ai-docs/client-profiles/*.md
 | `writing-rules.md` | 1,481 | ~2,600 |
 | `coding-patterns.md` | 1,272 | ~2,250 |
 | `writing-patterns.md` | 1,792 | ~2,950 |
-| `agent-workflow.md` | 3,039 | ~4,900 |
+| `agent-workflow.md` | 2,555 | ~4,150 |
 | `client-profiles.md` + one profile | 446 | ~800 |
 | entry file (`AGENTS.md`, placeholders filled) | 973 | ~1,800 |
 
-`agent-workflow.md` is the single largest file — over a quarter of the cost of a full non-trivial-task load.
+`agent-workflow.md` is still the single largest file — over a fifth of the cost of a full load — after the v1.9 compression pass cut it ~16% (3,039 → 2,555 words) without dropping a rule.
 
 ## Scenario totals
 
@@ -36,12 +36,12 @@ Per the graduated loading rule in `AGENTS.md` ("scale that set to the blast radi
 | Scenario | Files loaded | Est. tokens |
 |---|---|---:|
 | Trivial edit | entry file + `core-rules.md` | ~4,600 |
-| Non-trivial coding task | entry + core-rules + coding-rules + coding-patterns + agent-workflow + client profile | ~14,000 |
-| Non-trivial writing task | entry + core-rules + writing-rules + writing-patterns + agent-workflow + client profile | ~15,850 |
-| Everything at once | entry + all seven `ai-docs/` files | ~19,550 |
+| Non-trivial coding task | entry + core-rules + coding-rules + coding-patterns + agent-workflow + client profile | ~13,250 |
+| Non-trivial writing task | entry + core-rules + writing-rules + writing-patterns + agent-workflow + client profile | ~15,100 |
+| Everything at once | entry + all seven `ai-docs/` files | ~18,800 |
 
 ## Caveats
 
-- This is a one-time context-window cost **per session**, paid when files are actually `Read` — not merely linked to. The graduated-loading rule exists specifically to avoid paying the ~19.5k full cost on every task.
+- This is a one-time context-window cost **per session**, paid when files are actually `Read` — not merely linked to. The graduated-loading rule exists specifically to avoid paying the ~18.8k full cost on every task.
 - Prompt caching (where the harness supports it) makes repeat reference *cheap in billing* within a session once a file is cached, but it does not reduce how much of the context window that file occupies.
-- These numbers reflect `ai-docs/` as of 2026-08-05. Re-measure after any material edit to a file listed above.
+- These numbers reflect `ai-docs/` as of 2026-08-07. Re-measure after any material edit to a file listed above.
