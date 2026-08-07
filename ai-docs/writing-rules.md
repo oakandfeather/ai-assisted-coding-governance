@@ -1,14 +1,14 @@
 # AI Writing Rules for Content Agents
 
-*The content-specific rules for AI agents that produce or edit documents, research, analysis, technical documentation, and other written deliverables — the additions to [`core-rules.md`](./core-rules.md) that apply when you write or edit content. **This includes documentation about code** — READMEs, API references, runbooks, release notes: they are written deliverables, so they are governed here, and by `coding-rules.md` only when you also change code. **Read `core-rules.md` first:** it holds the task-agnostic base (secrets, data, correctness, licensing, provenance, agentic actions, compliance, stop-and-ask, client overrides) that binds on every task. This file adds the content-only rules — factual grounding, citations, confidentiality, voice fidelity, accessible documents, verified documentation — that mitigate the risks of AI-generated content. Reference it from your project's entry file alongside `core-rules.md`. When a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, the client profile wins. Companions: [`writing-patterns.md`](./writing-patterns.md) (writing craft — audience, structure, economy, documentation of software) and [`agent-workflow.md`](./agent-workflow.md) (how to work).*
+*Rules for producing or editing written deliverables — documents, research, analysis, technical documentation — with §§1–6 below the whole scope. **Read [`core-rules.md`](./core-rules.md) first:** it holds the task-agnostic base that binds on every task; this file adds only the content rules on top of it. **Documentation about code** — READMEs, API references, runbooks, release notes — is a written deliverable, so it is governed here, and by `coding-rules.md` only when you also change code. Where a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, it wins. Companions: [`writing-patterns.md`](./writing-patterns.md) (writing craft) and [`agent-workflow.md`](./agent-workflow.md) (how to work).*
 
-**Version:** 1.4 · **Last reviewed:** 2026-08-05 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.5 · **Last reviewed:** 2026-08-07 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
 ## TL;DR — the content checklist to run on every deliverable
 
-Run this **after** the `core-rules.md` TL;DR (secrets, data, correctness, licensing, provenance, actions, compliance). These add the content-specific checks; full detail follows in §§1–6.
+Run this **after** the `core-rules.md` TL;DR. Full detail in §§1–6.
 
 1. **Grounding:** every factual claim, number, and quote is traceable to a real source — nothing invented.
 2. **Citations:** sources are real, current, and verifiable; attribution is accurate.
@@ -17,66 +17,63 @@ Run this **after** the `core-rules.md` TL;DR (secrets, data, correctness, licens
 5. **Accessible documents:** headings, alt text, plain language, and sufficient contrast in what you produce.
 6. **Verified documentation:** every command, snippet, and API call you document was actually run — or is labelled unverified.
 
-If any answer is "no" or "unsure," fix it or flag it before presenting. Scale the depth to the blast radius (see `core-rules.md`): a small wording fix needs a quick pass; anything that asserts facts, cites sources, or restates client positions needs the full check, stated in your hand-off.
+Any "no" or "unsure": fix or flag it before presenting. Scale depth to the blast radius (`core-rules.md`) — a small wording fix needs a quick pass; anything asserting facts, citing sources, or restating client positions needs the full check, stated in your hand-off.
 
 ---
 
 ## 1. Factual grounding and no fabrication
 
-- **Ground every factual claim.** Assert facts, figures, dates, names, and quotes only when they trace to a real source you can point to — the provided material, an authoritative reference, or the client's own documents. This is the content form of `core-rules.md` §2.
-- **Never invent a statistic, quote, event, or attribution.** A plausible-sounding number with no source is worse than an acknowledged gap. If you don't have the figure, say so and leave a marked placeholder rather than filling it in.
-- **Quote accurately.** Reproduce quotations verbatim from the source; don't paraphrase inside quotation marks, and don't attribute a paraphrase as a direct quote.
-- **Distinguish what the source says from what you infer.** Mark analysis, extrapolation, and opinion as such; don't present your inference as established fact.
-- **Flag uncertainty explicitly.** When a claim is unverified, out of date, or contested, say so in the text or in your hand-off — don't smooth it over into false confidence.
+- **Ground every factual claim.** Assert facts, figures, dates, names, and quotes only when they trace to a real source you can point to — the provided material, an authoritative reference, or the client's own documents (the content form of `core-rules.md` §2).
+- **Never invent a statistic, quote, event, or attribution.** A plausible-sounding number with no source is worse than an acknowledged gap: say you don't have it and leave a marked placeholder.
+- **Quote accurately.** Verbatim from the source; don't paraphrase inside quotation marks, and don't attribute a paraphrase as a direct quote.
+- **Distinguish what the source says from what you infer.** Mark analysis, extrapolation, and opinion as such; don't present inference as established fact.
+- **Flag uncertainty explicitly.** When a claim is unverified, out of date, or contested, say so in the text or your hand-off — don't smooth it into false confidence.
 
 ## 2. Citation and source integrity
 
-- **Cite real, verifiable sources.** Don't fabricate references, URLs, DOIs, page numbers, or author names. If you cannot verify a citation, do not present it as verified — flag it for checking.
+- **Cite real, verifiable sources.** Don't fabricate references, URLs, DOIs, page numbers, or author names. If you cannot verify a citation, flag it for checking rather than presenting it as verified.
 - **Prefer primary and current sources.** Check that a source is authoritative for the claim and current enough to still hold; note the date where currency matters.
 - **Attribute honestly.** Credit the origin of facts, ideas, and figures; don't present sourced material as original or original material as sourced.
 - **Match the project's citation convention** (footnotes, inline links, a references section) rather than imposing your own.
-- **Don't launder licensed or copyrighted text** into a deliverable without attribution and a license check — see `core-rules.md` §3.
-- **For how to verify a source or claim before citing it** — when to search, how many sources, handling disagreement, staleness — see `core-rules.md` §9.
+- **Don't launder licensed or copyrighted text** into a deliverable without attribution and a license check (`core-rules.md` §3). How to verify a source or claim before citing it — when to search, how many sources, handling disagreement, staleness — is `core-rules.md` §9.
 
 ## 3. Confidentiality of client documents and data
 
-- **Keep client documents inside the approved workspace.** Don't send drafts, source documents, research inputs, or excerpts to external tools or endpoints unless the task explicitly and legitimately requires it and the destination is approved (see `core-rules.md` §1, §5).
-- **Minimize regulated and sensitive content.** Don't reproduce PII, health, education, or financial records into deliverables, examples, or summaries beyond what the task genuinely needs — `core-rules.md` §1 governs the synthetic-data and non-exposure rules; apply them to produced content too.
-- **Watch for over-disclosure in aggregation.** A summary or dataset that combines several sources can expose more than any one did — check that the combined output doesn't reveal something confidential.
-- **Respect handling and retention rules** the client sets for their documents; don't copy sensitive material to convenient-but-unapproved locations.
+- **Keep client documents inside the approved workspace.** Don't send drafts, source documents, research inputs, or excerpts to external tools or endpoints unless the task explicitly and legitimately requires it and the destination is approved (`core-rules.md` §1, §5).
+- **Minimize regulated and sensitive content.** Don't reproduce PII, health, education, or financial records into deliverables, examples, or summaries beyond what the task genuinely needs; `core-rules.md` §1's synthetic-data and non-exposure rules apply to produced content too.
+- **Watch for over-disclosure in aggregation.** A summary or dataset combining several sources can expose more than any one did — check that the combined output doesn't reveal something confidential.
+- **Respect the client's handling and retention rules** for their documents; don't copy sensitive material to convenient-but-unapproved locations.
 
 ## 4. Voice, tone, and framing fidelity
 
 - **Preserve the author's or client's meaning.** When editing or summarizing, keep the intended message, scope, and emphasis; don't quietly change what a document claims or commits to.
-- **Don't inject positions.** Don't add opinions, recommendations, promises, or claims the client hasn't made — especially in anything that speaks for the client (public statements, policy, correspondence).
+- **Don't inject positions.** No opinions, recommendations, promises, or claims the client hasn't made — especially in anything that speaks for the client (public statements, policy, correspondence).
 - **Match the established voice and register.** Follow the client's style guide, terminology, and tone where one exists rather than imposing your own.
 - **Preserve hedging and precision.** Don't strengthen "may" into "will," "some" into "all," or a qualified estimate into a firm figure; those distinctions are often deliberate and sometimes legally load-bearing.
 - **Treat each hedge in a sentence as a separate claim, not a redundant pair.** A permission hedge ("may retain") and a ceiling hedge ("for up to 7 years") aren't restating the same limit — the first says whether the thing happens is discretionary, the second caps how long it lasts if it does. "The registrar retains records for up to 7 years" (dropping "may") reads as a promise the source didn't make, even though "up to" survived. When an editing request asks you to tighten or punch up a sentence, compress the wording, not the number of distinct hedges — if you can't preserve both without a run-on, flag the tension instead of silently picking one to cut.
-- **Flag, don't silently resolve, substantive ambiguity** in what the client means — see `core-rules.md` §7 and `agent-workflow.md` §2.
+- **Flag, don't silently resolve, substantive ambiguity** in what the client means (`core-rules.md` §7, `agent-workflow.md` §2).
 
 ## 5. Accessible documents
 
-When you produce documents, pages, or other content artifacts, make them accessible by default (the ADA Title II baseline is WCAG 2.1 AA; prefer WCAG 2.2 where the client has adopted it):
+Make documents, pages, and other content artifacts accessible by default (the ADA Title II baseline is WCAG 2.1 AA; prefer WCAG 2.2 where the client has adopted it):
 
 - **Use a real heading structure** — proper heading levels in order, not bold text faked as headings — so the document is navigable.
 - **Provide meaningful alt text** for images, charts, and diagrams; don't leave informative visuals undescribed.
 - **Write in plain language** appropriate to the audience; define jargon; prefer clear structure (lists, short paragraphs, descriptive link text) over dense blocks.
 - **Ensure sufficient contrast and don't rely on color alone** to convey meaning in tables, charts, or callouts.
 
-*(For accessibility of application UI and markup — ARIA, focus states, keyboard navigation — see [`coding-rules.md`](./coding-rules.md) §4.)*
+*(Application UI and markup accessibility — ARIA, focus states, keyboard navigation — is [`coding-rules.md`](./coding-rules.md) §4.)*
 
 ## 6. Verified documentation
 
 Applies when the deliverable documents software — a README, API reference, runbook, release note, help-center article, or in-repo guide.
 
-- **Run every example before you ship it.** Commands, snippets, config fragments, and API calls in documentation are claims about behavior — verify them the way `coding-rules.md` §3 requires of tests: actually execute the command, compile the snippet, hit the endpoint. `core-rules.md` §2 already forbids inventing a flag or config key; this goes further — a *real* flag used in an unrun example is still an unverified claim. If you cannot run it, say so in the document or your hand-off rather than presenting it as working.
+- **Run every example before you ship it.** Commands, snippets, config fragments, and API calls in documentation are claims about behavior — verify them the way `coding-rules.md` §3 requires of tests: actually execute the command, compile the snippet, hit the endpoint. `core-rules.md` §2 forbids inventing a flag or config key; this goes further — a *real* flag in an unrun example is still an unverified claim, failing the way a fabricated citation does. If you cannot run it, say so in the document or your hand-off rather than presenting it as working.
 
-**Why this one rule sits here and the rest of documentation guidance doesn't.** An unrun example is not a style lapse; it is the documentation form of presenting unverified work as verified (`core-rules.md` §2, `agent-workflow.md` §3), and it fails the same way a fabricated citation does — the reader trusts a claim nothing backs. That makes it a risk rule, so it belongs in this file, under this file's checklist.
-
-*(Everything else documentation owes its reader — audience and document type, showing what success looks like, explaining the *why*, per-type completeness, and keeping docs true as behavior changes — is **craft**, and lives in [`writing-patterns.md`](./writing-patterns.md) §4, alongside the general writing craft in its §§1–3, 5. This file governs the risks; that one governs the quality.)*
+*(The rest of what documentation owes its reader — audience and document type, showing what success looks like, the *why*, per-type completeness, keeping docs true as behavior changes — is **craft**, in [`writing-patterns.md`](./writing-patterns.md) §4. This file governs risk; that one quality.)*
 
 ---
 
 ## Self-check before presenting content
 
-Re-run the **TL;DR at the top of this file** (grounding, citations, confidentiality, fidelity, accessible documents, verified documentation) **and** the `core-rules.md` TL;DR (secrets, data, correctness, licensing, provenance, actions, compliance) — both gates apply, at the depth the blast radius warrants. For deliverables that assert facts, cite sources, or speak for the client, state in your hand-off which items you verified — especially that claims and citations trace to real sources — so the human reviewer sees the check rather than assuming it.
+Re-run this file's **TL;DR** **and** the `core-rules.md` TL;DR — both gates apply, at the depth the blast radius warrants. For deliverables that assert facts, cite sources, or speak for the client, state in your hand-off which items you verified, especially that claims and citations trace to real sources, so the human reviewer sees the check rather than assuming it.
