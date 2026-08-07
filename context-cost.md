@@ -19,7 +19,7 @@ wc -w -c ai-docs/*.md ai-docs/client-profiles/*.md
 | File | Words | Est. tokens |
 |---|---:|---:|
 | `core-rules.md` | 1,614 | ~2,800 |
-| `coding-rules.md` | 799 | ~1,450 |
+| `coding-rules.md` | 704 | ~1,250 |
 | `writing-rules.md` | 1,275 | ~2,200 |
 | `coding-patterns.md` | 1,272 | ~2,250 |
 | `writing-patterns.md` | 1,622 | ~2,700 |
@@ -27,7 +27,7 @@ wc -w -c ai-docs/*.md ai-docs/client-profiles/*.md
 | `client-profiles.md` + one profile | 446 | ~800 |
 | entry file (`AGENTS.md`, placeholders filled) | 973 | ~1,800 |
 
-`agent-workflow.md` is still the single largest file — over a fifth of the cost of a full load — after the v1.9 compression pass cut it ~16% (3,039 → 2,555 words) without dropping a rule. `writing-rules.md` had the same treatment at v1.5, ~14% (1,481 → 1,275 words), and `writing-patterns.md` at v1.1, ~9% (1,792 → 1,622 words) — none of the three dropped a rule.
+`agent-workflow.md` is still the single largest file — over a fifth of the cost of a full load — after the v1.9 compression pass cut it ~16% (3,039 → 2,555 words) without dropping a rule. The same treatment has since run over `writing-rules.md` at v1.5, ~14% (1,481 → 1,275 words); `writing-patterns.md` at v1.1, ~9% (1,792 → 1,622 words); and `coding-rules.md` at v2.3, ~12% (799 → 704 words) — none of the four dropped a rule.
 
 ## Scenario totals
 
@@ -36,12 +36,12 @@ Per the graduated loading rule in `AGENTS.md` ("scale that set to the blast radi
 | Scenario | Files loaded | Est. tokens |
 |---|---|---:|
 | Trivial edit | entry file + `core-rules.md` | ~4,600 |
-| Non-trivial coding task | entry + core-rules + coding-rules + coding-patterns + agent-workflow + client profile | ~13,250 |
+| Non-trivial coding task | entry + core-rules + coding-rules + coding-patterns + agent-workflow + client profile | ~13,050 |
 | Non-trivial writing task | entry + core-rules + writing-rules + writing-patterns + agent-workflow + client profile | ~14,450 |
-| Everything at once | entry + all seven `ai-docs/` files | ~18,150 |
+| Everything at once | entry + all seven `ai-docs/` files | ~17,950 |
 
 ## Caveats
 
-- This is a one-time context-window cost **per session**, paid when files are actually `Read` — not merely linked to. The graduated-loading rule exists specifically to avoid paying the ~18.2k full cost on every task.
+- This is a one-time context-window cost **per session**, paid when files are actually `Read` — not merely linked to. The graduated-loading rule exists specifically to avoid paying the ~18.0k full cost on every task.
 - Prompt caching (where the harness supports it) makes repeat reference *cheap in billing* within a session once a file is cached, but it does not reduce how much of the context window that file occupies.
 - These numbers reflect `ai-docs/` as of 2026-08-07. Re-measure after any material edit to a file listed above.
