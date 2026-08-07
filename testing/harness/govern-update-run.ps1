@@ -9,7 +9,13 @@
 #
 # Anchors are READ OUT OF scripts/build.ps1 (procedure step 2), never restated
 # here: a third copy alongside the two build scripts is exactly the drift this
-# package exists to prevent.
+# package exists to prevent. The optional-module transformation comes from
+# scripts/module-lines.ps1 the same way (via harness-common.ps1), so the tier-B
+# and tier-C rebuilds below use the very code govern-init used at install - which
+# is what makes the byte-reproducibility check meaningful rather than circular.
+#
+# 'core-only' is a valid -Arm for exactly that check: run it against an
+# unchanged source and the tier-C block must come back byte-identical.
 #
 # Writes go through Write-DocLike, which preserves the target's existing line
 # endings. Normalizing them rewrites every line of every governance file and
@@ -19,7 +25,7 @@
 
 param(
   [switch]$Apply,
-  [ValidateSet('update','governed','unconfigured')][string]$Arm = 'update'
+  [ValidateSet('update','governed','unconfigured','core-only')][string]$Arm = 'update'
 )
 
 . "$PSScriptRoot\harness-common.ps1"
@@ -49,7 +55,12 @@ $aFootnote     = "`n---`n*Fill in the italicized placeholders for this repositor
 "  copilot body   : $aCopilotBody"
 ""
 
-$tierA = 'core-rules.md','coding-rules.md','writing-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md'
+# Derived from the target, not hardcoded. The package installs in modules and
+# there is no manifest, so what is in ai-governance/ IS the record of what this
+# repo chose. A hardcoded list here would make a declined module look like a
+# missing file and pull it back in on every update.
+$tierA    = Get-TierAFiles $tgt
+$declined = Get-DeclinedModules $tgt
 
 function Get-Header($t) {
   # Match the whole line that carries **Version:**, wherever it falls on the
@@ -70,16 +81,24 @@ function Get-Field($h, $f) {
 foreach ($f in $tierA) {
   $s = Read-Doc "$src\ai-docs\$f"
   $sv = Get-Field (Get-Header $s) 'Version'
-  # Added upstream: the procedure says copy it in and report it (never the
-  # reverse of A3.10's never-auto-delete).
-  if (-not (Test-Path -LiteralPath "$tgt\ai-governance\$f")) {
-    "  {0,-20} {1,-10} (absent) -> v{2}  [new upstream file - will be added]" -f $f, 'ADDED', $sv
-    continue
-  }
   $t = Read-Doc "$tgt\ai-governance\$f"
   $tv = Get-Field (Get-Header $t) 'Version'
   $state = if ($s -eq $t) { 'identical' } else { 'UPDATED' }
   "  {0,-20} {1,-10} v{2} -> v{3}" -f $f, $state, $tv, $sv
+}
+
+# Absent means declined, not stale. This is the exact mirror of A3.10's
+# never-auto-delete: a module the install chose not to take is reported as
+# available and left alone. Adding it back would silently undo the user's
+# decision and re-inflate the context cost they were avoiding. We cannot tell a
+# declined module from one added upstream since the install, and we do not need
+# to - the answer to both is "offer it, don't take it".
+if ($declined.Count -gt 0) {
+  "--- Not installed here (available on request, NEVER auto-added) ---"
+  foreach ($f in $declined) {
+    $sv = Get-Field (Get-Header (Read-Doc "$src\ai-docs\$f")) 'Version'
+    "  {0,-20} {1,-10} (absent) -> v{2}  [declined at install - offer, do not add]" -f $f, 'AVAILABLE', $sv
+  }
 }
 
 "--- Tier B: re-derive from template, own gate ---"
@@ -90,6 +109,9 @@ $claudeNew = "# CLAUDE.md`n`n" + $claudeNew.Substring($ci)
 $copilotNew = Read-Doc "$src\ai-docs\copilot-instructions.template.md"
 $pi = $copilotNew.IndexOf($aCopilotBody); if ($pi -lt 0) { throw "Anchor not found in copilot template" }
 $copilotNew = $copilotNew.Substring($pi)
+# The template lists every module; this target may have declined some. Filter to
+# the installed set or the refresh silently re-links files that are not there.
+$copilotNew = Remove-ModuleLines $copilotNew (Get-InstalledModules $tgt) 'tier B copilot-instructions.md'
 
 $tierB = @(
   @{ Label = 'CLAUDE.md';                       Path = "$tgt\CLAUDE.md";                       New = $claudeNew  },
@@ -122,9 +144,12 @@ if (Test-Path -LiteralPath $tierEDir) {
 "--- added / removed upstream ---"
 $srcSet = (Get-ChildItem "$src\ai-docs" -File -Filter '*.md' | ForEach-Object { $_.Name }) | Where-Object { $_ -notmatch '\.template\.md$' }
 $tgtSet = Get-ChildItem "$tgt\ai-governance" -File -Filter '*.md' | ForEach-Object { $_.Name }
-$added   = $srcSet | Where-Object { $_ -notin $tgtSet }
+# An optional module absent from the target is reported above as declined, not
+# here as "added upstream" - otherwise every partial install would read as
+# behind. What is left here is a genuinely new file the package grew.
+$added   = $srcSet | Where-Object { $_ -notin $tgtSet -and $_ -notin $OptionalModules }
 $removed = $tgtSet | Where-Object { $_ -notin $srcSet }
-if ($added)   { $added   | ForEach-Object { "    ADDED upstream  : $_" } }   else { '    (none added)' }
+if ($added)   { $added   | ForEach-Object { "    ADDED upstream  : $_  -> REPORT and offer, never auto-add" } } else { '    (none added)' }
 if ($removed) { $removed | ForEach-Object { "    REMOVED upstream: $_  -> REPORT, never auto-delete" } } else { '    (none removed)' }
 
 if (-not $Apply) { ""; "PLAN ONLY - nothing written. Re-run with -Apply."; exit 0 }
@@ -148,15 +173,11 @@ if ($Arm -eq 'update') {
 
 "--- Tier A ---"
 foreach ($f in $tierA) {
+  # $tierA is derived from what the target already has, so every entry here
+  # exists. A module that is absent was declined and is never written - it was
+  # reported as available in the plan above and that is where it stops.
   $path = "$tgt\ai-governance\$f"
   $s = Read-Doc "$src\ai-docs\$f"
-  if (-not (Test-Path -LiteralPath $path)) {
-    # New upstream file. Model its line endings on a sibling that is already
-    # installed, so it matches the rest of the copied set rather than the OS.
-    Write-DocLike $path $s "$tgt\ai-governance\core-rules.md"
-    "  $f : ADDED (new upstream file)"
-    continue
-  }
   Write-DocLike $path $s $path
   "  $f : replaced"
 }
@@ -186,6 +207,11 @@ $bi = $sT.IndexOf($aAgentsBanner); if ($bi -lt 0) { throw "Anchor not found: AGE
 $sT = $sT.Substring($bi)
 $fi = $sT.IndexOf($aFootnote);     if ($fi -lt 0) { throw "Anchor not found: AGENTS closing footnote" }
 $sT = $sT.Substring(0, $fi)
+# Filter to the installed module set BEFORE slicing the block out, so the
+# lead-in/list/closing unit is removed as a whole when nothing is installed
+# (procedure step 5). Doing it after the slice would work too, but this keeps the
+# transformation applied to the same shape build.ps1 applies it to.
+$sT = Remove-ModuleLines $sT (Get-InstalledModules $tgt) 'tier C AGENTS.md block'
 $nStart = $sT.IndexOf('## ' + [char]0x26A0)
 $nEnd   = $sT.IndexOf("`n---", $nStart)
 $newBlock = $sT.Substring($nStart, $nEnd - $nStart)

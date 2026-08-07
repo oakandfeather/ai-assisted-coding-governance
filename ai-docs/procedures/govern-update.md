@@ -4,7 +4,7 @@ Refreshes an installed governance package in place. This procedure **copies and 
 
 **How this is run.** Follow it directly, start to finish. Either run `/govern-update` in Claude Code, or hand any other agent — Codex, Cursor, Windsurf, the Copilot agent — the path to this file and tell it to read the file and follow it exactly. Nothing here needs a tool or a tool-specific feature: every step is reading files, writing files, comparing them, and asking the user before each tier lands.
 
-**The whole difficulty of this procedure is that `govern-init` forks part of the package at install time.** The portable rule files are upstream's and can be replaced. But the target's `AGENTS.md` carries ~27 filled placeholders describing *that* project, `ai-governance/client-profiles.md` carries *that* engagement's active-client pointer, and `ai-governance/client-profiles/` carries client-authored profiles. An update that overwrites those is a regression, not an update — it turns a configured repo into one that reads as unconfigured. Know which tier every file is in before you write anything.
+**The whole difficulty of this procedure is that `govern-init` forks part of the package at install time.** The portable rule files are upstream's and can be replaced. But the target's `AGENTS.md` carries ~27 filled placeholders describing *that* project, `ai-governance/client-profiles.md` carries *that* engagement's active-client pointer, `ai-governance/client-profiles/` carries client-authored profiles, and **which modules are installed at all is a choice that repo made** at install time. An update that overwrites any of those is a regression, not an update — it turns a configured repo into one that reads as unconfigured, or quietly reinstalls rules the team decided they didn't need. Know which tier every file is in before you write anything, and read the installed module set off disk before you rebuild anything that links to it.
 
 ## Source package
 
@@ -29,6 +29,8 @@ Refreshes an installed governance package in place. This procedure **copies and 
 
 **Read the anchor strings out of `build.ps1` and use those.** Do not copy an anchor list into this file: `build.ps1`, `build-empty.ps1`, and this procedure would then be three copies of one fact, which is the drift hazard this whole package exists to prevent.
 
+**One transformation lives next door, in `scripts/module-lines.ps1`** — the optional-module contract, dot-sourced by both build scripts. It defines which modules are optional (`$OptionalModules`), which craft companion requires which rules module (`$ModuleParents`), the anchors bounding the module list inside an entry file, and `Remove-ModuleLines`, which deletes the bullet line for every module not installed and removes the whole unit when none is. It is separate from `build.ps1` only because `build-empty.ps1` cannot dot-source a script that runs a full build as a side effect; treat the two files as one source of truth and read both. **You need this one:** steps 5 and 6 rebuild blocks that link the modules, and `govern-init` trimmed those same blocks at install using exactly this transformation. Reproduce it byte-for-byte or you will hand the user a whole-block diff with no content change in it.
+
 Adopt `build.ps1`'s failure posture too — **if an anchor is not found in the file you are operating on, stop and report it.** A missing anchor means the shape changed underneath you; a best-effort merge at that point produces a mangled governance file that still looks plausible.
 
 **One limit on that:** `build.ps1` *assembles from source* — it never merges into an existing install, so its anchors are **source-side only**. Locating the corresponding region in an already-installed target is this procedure's own problem, and a source anchor can be legitimately absent there. Steps 5 and 6 each say which anchors to use on the target side; use those, and do not assume a source anchor transfers.
@@ -37,8 +39,8 @@ Adopt `build.ps1`'s failure posture too — **if an anchor is not found in the f
 
 | Tier | Files | Treatment |
 | --- | --- | --- |
-| **A — verbatim** | `ai-governance/core-rules.md`, `coding-rules.md`, `writing-rules.md`, `coding-patterns.md`, `writing-patterns.md`, `agent-workflow.md` | Replace wholesale from source. |
-| **B — banner-stripped** | `CLAUDE.md`, `.github/copilot-instructions.md` | Re-derive from the template (slice the banner per step 2), then replace — but diff first, and gate it separately. See below. |
+| **A — verbatim** | `ai-governance/core-rules.md`, plus **whichever of** `coding-rules.md`, `writing-rules.md`, `coding-patterns.md`, `writing-patterns.md`, `agent-workflow.md` **are present in the target** | Replace wholesale from source. Never add one that is absent — see below. |
+| **B — banner-stripped** | `CLAUDE.md`, `.github/copilot-instructions.md` | Re-derive from the template (slice the banner per step 2), then replace — but diff first, and gate it separately. `.github/copilot-instructions.md` carries the same module list as `AGENTS.md`, so filter it to the installed set the same way (step 5). `CLAUDE.md` names no module and needs no filtering. See below. |
 | **C — merge** | `AGENTS.md` | Replace **only** the mandatory-rules block. See step 5. |
 | **D — merge** | `ai-governance/client-profiles.md` | Preserve the active-client paragraph. See step 6. |
 | **E — never touch** | `ai-governance/client-profiles/*.md` | Leave alone entirely. Report as untouched. |
@@ -49,18 +51,26 @@ Adopt `build.ps1`'s failure posture too — **if an anchor is not found in the f
 
 **Tier B carries no placeholders, but that is not what makes a file safe to replace.** The risk to `CLAUDE.md` is **appended local content**: it is the natural place for a team to add Claude-specific project notes beneath the `@AGENTS.md` import, and `govern-init` step 1 already refuses to overwrite a pre-existing `CLAUDE.md` for exactly that reason. So give tier B **its own diff and its own gate** rather than folding it into the tier-A batch. If the target holds anything the incoming template does not, treat it as local customization: surface it and ask. Silently dropping a team's notes inside a batch nobody reads is the worst of both.
 
-**Handle files the source has added or removed:**
+**The installed module set is whatever is in `ai-governance/`. Read it off disk; that is the record.**
 
-- **Added upstream** (e.g. a new rules module): copy it into `ai-governance/`, and note that the link to it arrives automatically with the tier-C block replacement in step 5 — that block is where the rules files are linked. Verify afterwards that the link is present and resolves.
+`govern-init` installs `core-rules.md`, `client-profiles.md`, and `client-profiles/` always, and the five optional modules only if the user selected them. Nothing writes that choice down anywhere else — deliberately, because a manifest that can disagree with the directory is worse than no manifest. So **an absent module means declined, not stale.**
+
+Handle the two directions as a matched pair; they are the same rule pointing opposite ways:
+
+- **Present upstream, absent locally:** **report it as available, and never add it.** This is the common case for an optional module the user declined at install, and re-adding it would silently undo their decision and re-inflate the context cost they were avoiding. Offer — "`writing-rules.md` and `writing-patterns.md` are not installed here; say the word and I'll add them" — and act only on a yes. The same applies to a genuinely new module added upstream since the install: report it, describe what it covers, let them choose. You cannot distinguish the two cases and **you do not need to**, because the answer is identical: ask.
 - **Removed upstream:** report it and ask. **Never auto-delete** a governance file from a client's repo; a rule that vanishes silently is worse than one that lingers.
+
+If the user does accept an offered module, copy it verbatim into `ai-governance/` and add its bullet line back to `AGENTS.md` and `.github/copilot-instructions.md` per step 5 — the link does **not** arrive on its own, because those blocks are rebuilt filtered to the installed set.
 
 ### 4. Present the plan, then apply tier by tier
 
 Show the user what will change before changing it: per file, whether it is identical, updated, added, or removed, and for updated files the `Version:` / `Last reviewed:` delta from their headers. Those header fields are the readable narrative of what moved; content comparison is what actually detects it, so **trust the content diff, not the version number** — an upstream edit that forgot to bump its version still needs to land.
 
-Then apply with **one approval per tier, not per file.** Tier A goes as a single batch — five full rule-file diffs are unreadable, and a gate nobody reads is not a safety measure. Tier B gets its own gate (it may hold appended local content), and tiers C and D are merges, so each gets its own gate and its own diff.
+List the installed modules and the declined ones explicitly in that plan, so the user can see what this repo carries before approving anything.
 
-Note that without an install manifest there is no baseline, so "the target differs from the source" is genuinely ambiguous: it may be an upstream change or a deliberate local edit. Treat every difference as needing confirmation, and say plainly that you cannot tell the two apart.
+Then apply with **one approval per tier, not per file.** Tier A goes as a single batch — a stack of full rule-file diffs is unreadable, and a gate nobody reads is not a safety measure. Tier B gets its own gate (it may hold appended local content), and tiers C and D are merges, so each gets its own gate and its own diff.
+
+Note that without an install manifest there is no baseline, so a *content* difference is genuinely ambiguous: it may be an upstream change or a deliberate local edit. Treat every such difference as needing confirmation, and say plainly that you cannot tell the two apart. **Which modules are installed is not ambiguous** — the directory answers that exactly, which is why step 3 can treat absence as a decision rather than a guess.
 
 ### 5. Tier C — merge `AGENTS.md`
 
@@ -76,6 +86,8 @@ The file splits at the first `---` after the mandatory-rules block:
 ```
 
 **Replace only the mandatory-rules block** — from the `## ⚠️ Mandatory rules` heading up to (not including) the following `---`. Everything else is the target's: its header line, its lead-in sentence (projects customize it), and every section after the seam. Take the replacement from the source template with its banner and closing footnote sliced off per step 2.
+
+**Filter the replacement block to the installed module set before you write it.** The source template lists every optional module; this target may have declined some. Apply `Remove-ModuleLines` from `scripts/module-lines.ps1` (step 2) with the set you read off `ai-governance/` in step 3 — deleting the bullet line for each absent module, and the whole lead-in/list/closing unit if none is installed. **Skip this and the update silently re-links modules the repo does not have**, turning a clean install into one whose entry file points at three files that aren't there — and re-asserting a choice the user already made against them.
 
 **The trap: one filled placeholder lives inside the block you are replacing.** `**Active client:** *(fill in)*` sits in the mandatory-rules block, and it is a *second, separate* placeholder from the `Active client` field in the header line — `build.ps1` fills the two independently. Replace the block naively and you revert a configured repo's active client to `*(fill in)*`, breaking the one line that tells every agent which client profile binds it. **Extract the target's filled value first, and substitute it into the replacement block.**
 
@@ -111,7 +123,8 @@ Report, per tier:
 - **Merged** — for `AGENTS.md` and `client-profiles.md`: what was replaced, and explicitly **what was preserved** (the active-client value, the project sections, the client list, and any legacy header field the current template no longer defines). State that the placeholder check passed.
 - **Untouched** — name `ai-governance/client-profiles/` and its files explicitly. Reviewers need to see that client content was not in scope.
 - **Still unconfigured** — if the target's `Active client` or its active-profiles paragraph was unfilled, say so plainly. The rules are now current, but the repo has no client profile, so `core-rules.md` §8's sensitive-by-default governs until someone authors one. This is open work, not a clean result.
-- **Added / removed upstream** — including anything you refused to delete and why.
+- **Modules installed here, and modules not installed** — name both sets. For the absent ones, say explicitly that you did **not** add them and that they are available on request; that is the line which tells the user their install-time choice survived the update.
+- **Added / removed upstream** — including anything you refused to delete and why, and anything you refused to add and why.
 - **Anything that stopped the run** — a missing anchor, a legacy layout, a dirty working tree, a stale source clone, or a stale launcher that halted before this file was reached. Say what you did not do.
 
 Then tell the user to review the diff and commit it: this is governance their reviewers should see in a PR, and the diff is the audit trail for when the rules changed.

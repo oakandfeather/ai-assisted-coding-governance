@@ -1,6 +1,11 @@
 /build/
 /empty-build/
 
+# The partial-install oracle, written by build-empty.ps1 -Modules core -OutDir
+# core-build. Generated like the two above, and deliberately full of dangling
+# ai-governance/ links - see the carve-out in scripts/check-links.ps1.
+/core-build/
+
 # Written by testing/harness/govern-update-run.ps1 -Apply so assert-a3.ps1 can
 # prove tier E was untouched. A per-run artifact, not source.
 /testing/harness/.tier-e-snapshot.json

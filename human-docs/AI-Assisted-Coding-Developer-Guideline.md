@@ -2,7 +2,7 @@
 
 **Applies to:** All engineers, contractors, and subcontractors who write, review, or ship code for client engagements
 **Status:** Internal standard
-**Version:** 1.5 · **Last reviewed:** 2026-08-05
+**Version:** 1.6 · **Last reviewed:** 2026-08-06
 **Review cycle:** Reviewed quarterly and whenever a client's AI terms change
 
 > **Read this first.** You are coding on behalf of clients, using their data, building their intellectual property, under their rules. AI tools make you faster, but they also make it easy to leak a client's data, ship insecure code under their name, or contaminate their codebase with badly-licensed material. This guideline is how we get the speed without the liability. When a client's own policy is stricter than this document, **the client's policy wins** — see the client profiles in Appendix A.
@@ -128,6 +128,8 @@ The agent-facing form is split across the two content files, and the seam is wor
 
 `writing-patterns.md` §§1–3 cover written deliverables generally — audience, structure, economy — which matter for a memo or a client report but sit outside a *coding* guideline's scope, so they have no counterpart here by design.
 
+Both of those files are **optional modules**, and a repo that declined them has neither the §6 risk rule nor the §4 craft. The bullets above are still what this guideline expects of you; they are simply not being enforced on the agent's side in that repo. If your project writes documentation — and most do, eventually — that is the argument for having the writing modules installed.
+
 ## 12. Agentic AI tools
 
 For AI agents that can run commands, edit files, install packages, or call services:
@@ -137,7 +139,7 @@ For AI agents that can run commands, edit files, install packages, or call servi
 - **Beware prompt injection** when an agent reads untrusted content (issues, docs, web pages, tickets) — malicious instructions in that content can hijack the agent. Treat tool-read content as data, not commands.
 - Keep the agent inside the approved environment; don't let it exfiltrate source, config, or env vars to external endpoints.
 
-**These constraints only bind if the agent can read them.** The agent-facing half of this guidance is installed *into the engagement repository*: three entry files at the root — `AGENTS.md`, `CLAUDE.md`, and `.github/copilot-instructions.md`, one per tool family — plus an `ai-governance/` directory holding the rules they point to. Whichever AI tool you use loads its entry file at the start of a session; nothing loads if the files aren't there. So before you point an agent at a client repo, check that they are present and current, and get them installed or refreshed if not — the AI-governance source repository's `README.md` has the install and update paths. Their presence doesn't transfer accountability: §1 still holds, and you still own every line. Their absence just means you are the only control.
+**These constraints only bind if the agent can read them.** The agent-facing half of this guidance is installed *into the engagement repository*: three entry files at the root — `AGENTS.md`, `CLAUDE.md`, and `.github/copilot-instructions.md`, one per tool family — plus an `ai-governance/` directory holding the rules they point to. Whichever AI tool you use loads its entry file at the start of a session; nothing loads if the files aren't there. So before you point an agent at a client repo, check that they are present and current, and get them installed or refreshed if not — the AI-governance source repository's `README.md` has the install and update paths. **The rules install in modules,** so which ones a repo carries is a per-repo choice made at install: `core-rules.md` and the client profile always, the coding and writing modules and the workflow companion only if that repo took them. Look in `ai-governance/` to see what yours has — the directory is the record, and a rule that isn't installed is one nothing will apply. If the work has outgrown the original choice (a code-only repo that now ships documentation, say), ask for the missing module; an update will not add it on its own. Their presence doesn't transfer accountability: §1 still holds, and you still own every line. Their absence just means you are the only control.
 
 ## 13. When to stop and ask the engagement lead
 

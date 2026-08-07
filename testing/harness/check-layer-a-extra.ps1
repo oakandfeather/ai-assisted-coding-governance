@@ -16,15 +16,24 @@ $src = $RepoRoot
 if (-not (Test-Path -LiteralPath (Join-Path $src 'build'))) {
   throw "build/ not found. Run scripts\build.ps1 first - it is the oracle for A2.8c-e and A4.4b."
 }
+if (-not (Test-Path -LiteralPath (Join-Path $src 'core-build'))) {
+  throw "core-build/ not found. Run: scripts\build-empty.ps1 -Modules core -OutDir core-build - it is the oracle for the core-only arm."
+}
 
 # ---------------------------------------------------------------------------
-"=== A2.8c-e - AGENTS.md structurally matches build/AGENTS.md ==="
+"=== A2.8c-e - AGENTS.md structurally matches its build oracle ==="
 # build/ is the oracle for STRUCTURE only. govern-init interviews for values and
 # will never reproduce build.ps1's hardcoded sample-client strings, so compare
 # the shape - heading sequence and the package-owned block - not the prose.
-
-$targetAgents = Read-Doc "$g\AGENTS.md"
-$oracleAgents = Read-Doc "$src\build\AGENTS.md"
+#
+# Which oracle depends on the arm's module set. The mandatory-rules block varies
+# with what was installed, so a core-only arm compared against the full build/
+# would fail on the very lines the install was supposed to remove. Each arm is
+# checked against the build assembled with the same selection.
+$oracleFor = [ordered]@{
+  governed    = 'build'        # full install, sample client filled in
+  'core-only' = 'core-build'   # every optional module declined
+}
 
 function Get-Headings($text) {
   # Blank fenced blocks first. The target's Commands section contains shell
@@ -34,12 +43,6 @@ function Get-Headings($text) {
   [regex]::Matches($t, '(?m)^#{1,6}\s+(.+?)\s*$') | ForEach-Object { $_.Groups[1].Value }
 }
 
-$tH = Get-Headings $targetAgents
-$oH = Get-Headings $oracleAgents
-$hDiff = Compare-Object $oH $tH
-Assert 'A2.8c' ($null -eq $hDiff) "heading sequence identical ($($oH.Count) headings)"
-if ($hDiff) { $hDiff | ForEach-Object { "        $($_.SideIndicator) $($_.InputObject)" } }
-
 function Get-Block($text) {
   $i = $text.IndexOf('Mandatory rules')
   if ($i -lt 0) { return $null }
@@ -48,13 +51,29 @@ function Get-Block($text) {
   if ($end -lt 0) { return $null }
   $text.Substring($start, $end - $start)
 }
-$tB = Get-Block $targetAgents
-$oB = Get-Block $oracleAgents
-Assert 'A2.8d' (($null -ne $tB) -and ($null -ne $oB)) 'mandatory-rules block locatable in both'
-if ($tB -and $oB) {
-  # Neutralize the two independently-filled Active client values before comparing.
-  $n = { param($s) $s -replace '(?m)(\*\*Active client:\*\*)[^\n]*', '$1 <VALUE>' }
-  Assert 'A2.8e' ((& $n $tB) -eq (& $n $oB)) 'mandatory-rules block identical to oracle (Active client neutralized)'
+
+foreach ($armName in $oracleFor.Keys) {
+  $oracleDir = Join-Path $src $oracleFor[$armName]
+  if (-not (Test-Path -LiteralPath $oracleDir)) {
+    throw "$($oracleFor[$armName])/ not found. Run scripts\build.ps1, and scripts\build-empty.ps1 -Modules core -OutDir core-build."
+  }
+  $targetAgents = Read-Doc (Join-Path $MockArms[$armName] 'AGENTS.md')
+  $oracleAgents = Read-Doc (Join-Path $oracleDir 'AGENTS.md')
+
+  $tH = Get-Headings $targetAgents
+  $oH = Get-Headings $oracleAgents
+  $hDiff = Compare-Object $oH $tH
+  Assert 'A2.8c' ($null -eq $hDiff) "$armName : heading sequence identical to $($oracleFor[$armName])/ ($($oH.Count) headings)"
+  if ($hDiff) { $hDiff | ForEach-Object { "        $($_.SideIndicator) $($_.InputObject)" } }
+
+  $tB = Get-Block $targetAgents
+  $oB = Get-Block $oracleAgents
+  Assert 'A2.8d' (($null -ne $tB) -and ($null -ne $oB)) "$armName : mandatory-rules block locatable in both"
+  if ($tB -and $oB) {
+    # Neutralize the two independently-filled Active client values before comparing.
+    $n = { param($s) $s -replace '(?m)(\*\*Active client:\*\*)[^\n]*', '$1 <VALUE>' }
+    Assert 'A2.8e' ((& $n $tB) -eq (& $n $oB)) "$armName : mandatory-rules block identical to oracle (Active client neutralized)"
+  }
 }
 
 # ---------------------------------------------------------------------------

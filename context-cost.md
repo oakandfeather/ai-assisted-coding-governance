@@ -1,6 +1,6 @@
 # Context cost of the governance package
 
-**Last reviewed:** 2026-08-05
+**Last reviewed:** 2026-08-06
 
 Tracks how much of an agent's context window the `ai-docs/` package consumes when it's loaded per `AGENTS.md`'s "load in one pass" instruction. Re-run the measurement below and update this table when `ai-docs/` files change size materially — it's a cost metric, not a governed rule file, so it doesn't need a version bump on every edit.
 
@@ -39,6 +39,19 @@ Per the graduated loading rule in `AGENTS.md` ("scale that set to the blast radi
 | Non-trivial coding task | entry + core-rules + coding-rules + coding-patterns + agent-workflow + client profile | ~14,000 |
 | Non-trivial writing task | entry + core-rules + writing-rules + writing-patterns + agent-workflow + client profile | ~15,850 |
 | Everything at once | entry + all seven `ai-docs/` files | ~19,550 |
+
+## What a partial install saves
+
+Module selection at install time (`govern-init` step 2a) removes files from the repo entirely rather than relying on an agent to skip them — which is the difference between a cost an agent *might* not pay and one it *cannot*. The ceiling is what moves:
+
+| Install | `ai-governance/` holds | Ceiling (everything at once) |
+|---|---|---:|
+| Full | all seven | ~19,550 |
+| Code-only (no writing modules) | core, coding-rules, coding-patterns, agent-workflow, client-profiles | ~14,000 |
+| Writing-only (no coding modules) | core, writing-rules, writing-patterns, agent-workflow, client-profiles | ~15,850 |
+| Core-only | core, client-profiles | ~4,600 |
+
+Read those as ceilings, not typical loads: a code-only install and a full install cost the same on an actual coding task, because graduated loading already skips the writing modules. What declining a module buys is the removal of the worst case — no agent can load what isn't there, and no future edit can quietly make the file bigger. The trade is real and worth stating plainly: a repo without `writing-rules.md` has no §6 run-every-example rule the day someone asks it for a README. Decline a module because the work genuinely isn't there, not to shave the ceiling.
 
 ## Caveats
 

@@ -18,23 +18,49 @@ Scaffolds the governance package into a target project. This procedure **copies*
 - If an `AGENTS.md`, `CLAUDE.md`, or `.github/copilot-instructions.md` already exists: **stop and show the user what's there.** Do not overwrite. Offer to merge the mandatory-rules block into the existing file instead, and let them decide.
 - If the companion files or an `ai-governance/` directory already exist, report which ones and ask before replacing — they may carry local edits.
 
-### 2. Copy the file set
+### 2. Choose the modules, then copy the file set
 
-The three entry files land at their tool-specific paths; the other eight items travel together into an **`ai-governance/`** directory you create at the root. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` imports `AGENTS.md`, `.github/copilot-instructions.md` links back with `../`, and the files inside `ai-governance/` link each other with relative `./` paths — separating them breaks the chain.
+#### 2a. Choose the modules
 
-| From `ai-docs/` | To target repo |
-| --- | --- |
-| `AGENTS.template.md` | `AGENTS.md` *(repo root, renamed — the canonical entry)* |
-| `CLAUDE.template.md` | `CLAUDE.md` *(repo root, renamed — thin `@AGENTS.md`)* |
-| `copilot-instructions.template.md` | `.github/copilot-instructions.md` *(create `.github/` if absent)* |
-| `core-rules.md` | `ai-governance/core-rules.md` |
-| `coding-rules.md` | `ai-governance/coding-rules.md` |
-| `writing-rules.md` | `ai-governance/writing-rules.md` |
-| `coding-patterns.md` | `ai-governance/coding-patterns.md` |
-| `writing-patterns.md` | `ai-governance/writing-patterns.md` |
-| `agent-workflow.md` | `ai-governance/agent-workflow.md` |
-| `client-profiles.md` | `ai-governance/client-profiles.md` |
-| `client-profiles/` | `ai-governance/client-profiles/` *(the directory — see the exclusion below)* |
+**The package installs in modules.** `core-rules.md` is the task-agnostic safety base and is never optional; `client-profiles.md` and the `client-profiles/` directory are always installed too, because every §8 client-override pointer in the package dead-ends without them. Everything else is a choice, and the point of the choice is context cost: a repo that will never hold a written deliverable pays nothing to carry the writing modules, and shouldn't.
+
+Ask, in this order, and take the answers as given:
+
+1. **`coding-rules.md`** — code-specific rules: dependencies and supply chain, security by default, testing, UI accessibility. Install it if agents will write, edit, or run code here.
+   - If yes: **`coding-patterns.md`** — the engineering-craft companion (reliability, efficiency, maintainability). Optional on top.
+2. **`writing-rules.md`** — content-specific rules: factual grounding, citations, confidentiality, voice fidelity, accessible documents, run-every-example. Install it if agents will produce or edit documents — **including documentation about code**, such as READMEs, API references, and runbooks. A code-only repo still produces those more often than teams expect; ask before assuming it doesn't.
+   - If yes: **`writing-patterns.md`** — the writing-craft companion (audience, structure, economy, documentation of software). Optional on top.
+3. **`agent-workflow.md`** — how to work: the work loop, the ask-vs-proceed-vs-object boundary, verification discipline, structured hand-off, bounded iteration, economy of effort, subagent delegation.
+
+Three constraints on the answers:
+
+- **A craft companion cannot be installed without its rules module.** `coding-patterns.md` requires `coding-rules.md`, and `writing-patterns.md` requires `writing-rules.md` — each patterns file defers its safety and correctness rules to its sibling, so installing it alone ships craft guidance whose safety half is missing.
+- **If the user has no opinion, install everything.** The default is the complete package. Declining a module is a deliberate act, and the safe failure mode is carrying a module nobody reads rather than omitting one somebody needed.
+- **A core-only install is legal**, and so is any combination the two rules above allow. Nothing downstream treats a partial install as broken.
+
+**Record nothing.** There is no manifest: the files present in `ai-governance/` *are* the record of what was chosen, and `govern-update` reads the selection back off disk. That is why step 2b copies only what was selected and why nothing else in this procedure writes the list down — a manifest that can disagree with the directory is worse than no manifest.
+
+Adding a declined module later is just re-running this procedure with it selected; nothing about declining it now is irreversible.
+
+#### 2b. Copy the file set
+
+The three entry files land at their tool-specific paths; everything else travels together into an **`ai-governance/`** directory you create at the root. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` imports `AGENTS.md`, `.github/copilot-instructions.md` links back with `../`, and the files inside `ai-governance/` link each other with relative `./` paths — separating them breaks the chain.
+
+| From `ai-docs/` | To target repo | When |
+| --- | --- | --- |
+| `AGENTS.template.md` | `AGENTS.md` *(repo root, renamed — the canonical entry)* | Always |
+| `CLAUDE.template.md` | `CLAUDE.md` *(repo root, renamed — thin `@AGENTS.md`)* | Always |
+| `copilot-instructions.template.md` | `.github/copilot-instructions.md` *(create `.github/` if absent)* | Always |
+| `core-rules.md` | `ai-governance/core-rules.md` | Always |
+| `client-profiles.md` | `ai-governance/client-profiles.md` | Always |
+| `client-profiles/` | `ai-governance/client-profiles/` *(the directory — see the exclusion below)* | Always |
+| `coding-rules.md` | `ai-governance/coding-rules.md` | If selected in 2a |
+| `coding-patterns.md` | `ai-governance/coding-patterns.md` | If selected in 2a |
+| `writing-rules.md` | `ai-governance/writing-rules.md` | If selected in 2a |
+| `writing-patterns.md` | `ai-governance/writing-patterns.md` | If selected in 2a |
+| `agent-workflow.md` | `ai-governance/agent-workflow.md` | If selected in 2a |
+
+**Copy every selected file verbatim — never a pruned variant.** The rule files cross-reference each other, so a partial install leaves pointers to files that aren't there. Do **not** edit them to remove those pointers: `govern-update` replaces these files wholesale and compares them byte-for-byte against the source, so an edited copy reads as drift forever after. `core-rules.md` already states what an absent module means, and that sentence is what makes the dangling pointers safe. The files you *do* trim are the entry files, in step 3 — those are per-install artifacts by design.
 
 Do not copy `human-docs/` — it is for people and stays in the governance repo. Do not copy `ai-docs/procedures/`, `ai-docs/skills/`, or `testing/` either: this procedure, its launchers, and the governance repo's own test plan are maintenance tooling for that repo, not part of the installed package.
 
@@ -42,13 +68,23 @@ Do not copy `human-docs/` — it is for people and stays in the governance repo.
 
 **Never copy `client-profiles/example-university.md`.** It is a fictional sample client that exists only to show a profile's shape; a real client's repo must never contain another client's profile, least of all an invented one. Read it from the governance repo when you need the shape (step 6) — don't land it in `ai-governance/client-profiles/`. If that directory has no real profile yet, it correctly arrives empty.
 
-### 3. Strip the template banners
+### 3. Strip the template banners, and trim the module list
 
 Each of the three entry files ships with a "how to use" banner that must come off after copying:
 
 - **`AGENTS.md`** — retitle `# AGENTS.md (template)` to `# AGENTS.md` and delete the banner block above the `Version:` line. It describes the template rather than the project, and its `../CLAUDE.md` link does not resolve outside the governance repo. **Also delete the closing footnote** — the trailing `---` and the italic *"Fill in the italicized placeholders for this repository…"* paragraph after it. It is install instructions, not project guidance, and it points at "the note at the top" that you just removed. This is the file whose placeholders you fill (step 5).
 - **`CLAUDE.md`** — retitle `# CLAUDE.md (template)` to `# CLAUDE.md`, delete everything from the `(template)` title down through the horizontal rule, and keep only the `@AGENTS.md` import line (with its one-sentence lead-in). No placeholders here.
 - **`.github/copilot-instructions.md`** — delete the banner block down through the horizontal rule, keeping the `# Coding rules for GitHub Copilot` heading and the core below it. No placeholders here; leave its `../` links intact.
+
+**Then trim the module list in `AGENTS.md` and `.github/copilot-instructions.md`** so neither entry file points at a module step 2a declined. Both carry the same structure: a lead-in paragraph, a bullet list with one line per optional module (a craft companion is the indented line under its rules module), and a closing "Where craft meets safety" line.
+
+- **Delete the bullet line for every module not installed.** One line each, including the indented companion lines.
+- **If no optional module was installed at all, delete the whole unit** — the lead-in paragraph, the list, and the closing line — rather than leaving a lead-in sentence dangling above an empty list. This is the core-only install, and it is a supported shape.
+- Change nothing else in the block. Both files must end up making the same deletions, because they are two views of one set of rules.
+
+`scripts/module-lines.ps1` in the governance repo performs exactly this transformation (`Remove-ModuleLines`, with the bounding anchors beside it) and is what the build scripts use. `govern-update` reproduces it on every refresh, so **if you deviate here — an extra blank line, a reflowed paragraph — every future update will surface a whole-block diff that the user has to review and approve for no reason.** Match it exactly; read that file if in doubt.
+
+The entry files are the *only* files you trim. The rule files under `ai-governance/` stay verbatim (step 2b).
 
 ### 4. Strip the sample from the copied index
 
@@ -118,6 +154,7 @@ The copied `AGENTS.md` already carries a short "For the humans on this project" 
 Report:
 
 - Files copied, placeholders filled, and placeholders **left unfilled** — call these out explicitly, they are open work.
+- **Which modules were installed and which were declined** (step 2a), naming the declined ones. The user should leave knowing what this repo's agents will and won't load, and that adding a declined module later is just a re-run. Say plainly that nothing records the choice apart from the directory itself, so deleting a file from `ai-governance/` is how a module gets removed — and that `govern-update` will read the selection back from what's there.
 - **Whether a human-facing README/CONTRIBUTING pointer was added** (step 7), or declined.
 - **Whether a client profile was authored, and from what source** — the client's own policy document, an interview, or not at all. If not, say that `core-rules.md` §8's sensitive-by-default applies until one exists.
 - **The two-track follow-up.** This package is the agent-facing half. A new client profile also needs its human-facing counterpart in the governance repo's `human-docs/AI-Assisted-Coding-Developer-Guideline.md` (Appendix A), and the client's own policy reproduced in `human-docs/Example-Client-AI-Policy.md`. Report this as open work — don't write into the governance repo from here; that's a different repo and a different review.

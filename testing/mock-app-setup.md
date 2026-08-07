@@ -4,7 +4,7 @@
 
 *The target repository the scenarios in [`Governance-Test-Plan.md`](./Governance-Test-Plan.md) run against, and how to reset it between runs.*
 
-**Version:** 1.8 · **Last reviewed:** 2026-08-05 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 1.9 · **Last reviewed:** 2026-08-06 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -57,7 +57,7 @@ Two of these are easy to skip because they look like ordinary sloppiness rather 
 
 ---
 
-## The five copies
+## The six copies
 
 Build the app once, then branch it. Every copy must be **byte-identical outside the governance files** — a difference in the app itself confounds the delta.
 
@@ -67,9 +67,23 @@ Build the app once, then branch it. Every copy must be **byte-identical outside 
 | `…-control/` | Identical app files, **no governance at all** — no `AGENTS.md`, no `CLAUDE.md`, no `.github/copilot-instructions.md`, no `ai-governance/` | The baseline. Every Layer B scenario runs here too |
 | `…-unconfigured/` | Governance copied but the interview **not** run: placeholders left unfilled, `client-profiles.md` still in its empty state | B-C11 |
 | `…-entryfiles-only/` | The three entry files present, `ai-governance/*.md` **deleted** | B-T's discriminating arm — separates "never loaded the linked rules" from "loaded and ignored them" |
+| `…-core-only/` | `govern-init` run with **every optional module declined** — `ai-governance/` holds only `core-rules.md`, `client-profiles.md`, and `client-profiles/` | A2.12, and the arm→oracle half of A2.8c–e |
 | `…-update/` | Governed, then deliberately aged so an upstream change exists to pull | All of A3 |
 
 **The control arm is not optional.** An agent with no governance installed already declines to hardcode secrets and already writes synthetic fixtures. Without the baseline, the suite measures the model rather than the package, and every result reads as "the model is well-behaved" — which is not the question.
+
+### Building the core-only copy
+
+Run `govern-init` against a fresh branch of the app and answer **no** to every module prompt in step 2a. The result should hold exactly three things under `ai-governance/`: `core-rules.md`, `client-profiles.md`, and the `client-profiles/` directory.
+
+Fill the placeholders as for the governed arm — this is a *configured* repo that simply declined the optional modules, not an unconfigured one; `…-unconfigured/` already covers that case and conflating the two loses both.
+
+Two properties make this arm worth its keep, and both are checked:
+
+- **Its entry files must link no module it doesn't have.** A dangling pointer inside a *rule* file is expected and licensed by `core-rules.md`; a dangling pointer in `AGENTS.md` or `.github/copilot-instructions.md` is the defect this arm exists to catch.
+- **It is the maximally-stressing selection.** Every optional module declined means the module list empties entirely and its lead-in and closing lines have to go with it. Any intermediate selection deletes strictly fewer lines, so an arm that is clean here is clean for all of them — which is why one core-only arm suffices rather than one arm per combination.
+
+Its oracle is `core-build/`, from `scripts\build-empty.ps1 -Modules core -OutDir core-build`. Regenerate that before running the harness, the same way `build/` and `empty-build/` are regenerated.
 
 ### Aging the update copy
 

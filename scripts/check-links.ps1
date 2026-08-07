@@ -8,9 +8,9 @@ and the AGENTS.md verification contract is specifically about the former.
 Run after editing any .md file. Exits 0 when every link resolves, 1 when any
 link is broken, so it works as a gate.
 
-Two carve-outs are deliberate, and removing either produces guaranteed false
-positives on a clean tree - which is how a checker trains everyone to ignore
-its output:
+Three carve-outs are deliberate, and removing any of them produces guaranteed
+false positives on a clean tree - which is how a checker trains everyone to
+ignore its output:
 
   1. The *.template.md files link into `ai-governance/`, a directory that does
      not exist in this repo and must not. Those links resolve only once the
@@ -18,6 +18,16 @@ its output:
      verified against the corresponding build/ output instead.
   2. Code spans and fenced code blocks that QUOTE link syntax are prose about
      links, not links. They are stripped before matching.
+  3. core-build/ is skipped entirely. It is the core-only install oracle, and a
+     core-only install has dangling ai-governance/ links inside its rule files
+     BY DESIGN - core-rules.md states that an absent module means the pointer
+     does not apply. Link-checking it would flag the feature as a defect. Note
+     the asymmetry, and its limit: build/ and empty-build/ are full installs and
+     ARE checked, so a genuine break still surfaces THERE - but nothing in this
+     script validates a link against a PARTIAL install, the template links in
+     carve-out 1 included, since those resolve against build/ by construction.
+     What core-build/ must not have is a dangling link in an *entry* file, and
+     that is asserted by the harness (A2.12c), not here.
 
 Note on encoding: this script only reads files and reports paths, so it never
 retypes source content. Paths are compared as text; no output is written.
@@ -65,7 +75,8 @@ function Get-RelativePath([string]$fullPath) {
 }
 
 $mdFiles = Get-ChildItem -LiteralPath $repoRoot -Recurse -Filter *.md -File |
-    Where-Object { $_.FullName -notmatch '\\\.git\\' }
+    Where-Object { $_.FullName -notmatch '\\\.git\\' } |
+    Where-Object { $_.FullName -notmatch '\\core-build\\' }
 
 $checked  = 0
 $skipped  = 0

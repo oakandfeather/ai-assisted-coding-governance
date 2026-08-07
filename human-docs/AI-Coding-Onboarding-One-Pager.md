@@ -17,7 +17,7 @@
 ## Know the client's rules first
 Every client has different constraints. Before you write a line, check the **client profile** for: which tools are allowed, what data you can share, disclosure/IP/training terms, and compliance regime. When the client's policy is stricter than ours, **the client's policy wins.** (The sample profile in the guideline shows a strict one — three data levels, hard "never with AI" list for FERPA/HIPAA/PII, disclosure expected, accessibility mandatory.)
 
-**And check the repo is governed.** The rules your AI tools follow are installed *in the engagement repo* — `AGENTS.md` at the root plus an `ai-governance/` directory beside it, including the client profile in the form the agent reads. Missing or stale? Get them installed before you start. Nothing binds an agent that never loaded them.
+**And check the repo is governed.** The rules your AI tools follow are installed *in the engagement repo* — `AGENTS.md` at the root plus an `ai-governance/` directory beside it, including the client profile in the form the agent reads. The rules install in modules, so glance at what's actually in `ai-governance/`: `core-rules.md` is always there, the coding and writing modules only if this repo took them. Missing, stale, or short a module the work now needs? Get it installed before you start. Nothing binds an agent that never loaded it.
 
 ## The daily loop
 1. **Scope it yourself** — know the design before you prompt.

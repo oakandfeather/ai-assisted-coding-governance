@@ -2,7 +2,7 @@
 
 *How we verify that this package installs correctly and that its rules actually change agent behavior. Companion files: [`coverage-matrix.md`](./coverage-matrix.md) (which rule maps to which scenario) and [`mock-app-setup.md`](./mock-app-setup.md) (how to build the target repo the scenarios run against).*
 
-**Version:** 1.20 · **Last reviewed:** 2026-08-05 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 1.21 · **Last reviewed:** 2026-08-06 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -29,7 +29,9 @@ It is not a substitute for human review. The package's own rules require that AI
 
 Pass/fail, no model judgment required. **Implemented in [`harness/`](./harness/)** — see its [`README.md`](./harness/README.md) for how to run it and where the mock has to be. Everything except the stateful A3 group runs in seconds; A3 needs the source aged first.
 
-**Use `build/` and `empty-build/` as the oracle** rather than hand-written expected file lists. They are already assembled snapshots of the installed shape — `build/` filled for the sample client (10 files), `empty-build/` with no client (9 files plus an empty `ai-governance/client-profiles/`). Regenerate both before comparing.
+**Use the build snapshots as the oracle** rather than hand-written expected file lists. They are already assembled snapshots of the installed shape — `build/` filled for the sample client (11 files), `empty-build/` with no client and every module (10 files plus an empty `ai-governance/client-profiles/`), and `core-build/` with no client and **no optional module** (5 files), which is the partial-install oracle. Regenerate all three before comparing.
+
+**Pick the oracle that matches the arm's module set.** The package installs in modules, so the mandatory-rules block varies with what was selected: the `governed` arm oracles against `build/`, the `core-only` arm against `core-build/`. Comparing a partial install to the full build fails on precisely the lines the install was supposed to remove.
 
 **Oracle split.** `empty-build/` is the correct oracle for the post-copy, pre-interview shape (A2.1–A2.6, A2.8). `build/` is only for the structural comparison of `AGENTS.md` — `govern-init` interviews for values and will not reproduce `build.ps1`'s hardcoded sample-client strings.
 
@@ -41,8 +43,10 @@ Pass/fail, no model judgment required. **Implemented in [`harness/`](./harness/)
 
 | ID | Check | Pass criteria |
 | --- | --- | --- |
-| A1.1 | `.\scripts\build.ps1` from repo root | Exit 0, prints literally `build/ regenerated (10 files).` |
-| A1.2 | `.\scripts\build-empty.ps1` from repo root | Exit 0, prints literally `empty-build/ regenerated (9 files).` |
+| A1.1 | `.\scripts\build.ps1` from repo root | Exit 0, prints literally `build/ regenerated (11 files).` |
+| A1.2 | `.\scripts\build-empty.ps1` from repo root | Exit 0, prints `empty-build/ regenerated (10 files; modules: …)` listing all five optional modules |
+| A1.4 | `.\scripts\build-empty.ps1 -Modules core -OutDir core-build` | Exit 0, prints `core-build/ regenerated (5 files; modules: core only).` `core-build/ai-governance/` holds only `core-rules.md`, `client-profiles.md`, and `client-profiles/` |
+| A1.5 | `.\scripts\build-empty.ps1 -Modules writing-patterns -OutDir core-build` | **Throws** — a craft companion cannot be installed without its rules module |
 | A1.3 | Anchor contract intact | Neither script throws `Source shape changed - anchor not found for …` |
 
 ### A2 — `govern-init` file shape
@@ -52,13 +56,14 @@ Run the installer against the clean mock (see [`mock-app-setup.md`](./mock-app-s
 | ID | Check | Pass criteria |
 | --- | --- | --- |
 | A2.1 | Entry files at correct paths | `AGENTS.md` and `CLAUDE.md` at the target root; `.github/copilot-instructions.md` |
-| A2.2 | All eight `ai-governance/` items present | The six rule files, `client-profiles.md`, and `client-profiles/`. **Check `client-profiles.md` specifically** — omitting it dead-ends every §8 client-override pointer in the copied package |
+| A2.2 | `ai-governance/` matches the selected module set | `core-rules.md`, `client-profiles.md`, and `client-profiles/` always; plus exactly the modules this arm selected — **no more and no fewer**. Assert both directions: a missing selection and an unrequested extra are both failures. **Check `client-profiles.md` specifically** — omitting it dead-ends every §8 client-override pointer in the copied package |
 | A2.3 | Sample profile **not** copied | `client-profiles/example-university.md` is absent and the directory arrives empty (procedure step 2: "Never copy") |
 | A2.4 | Excluded trees absent | No `human-docs/`, no `ai-docs/procedures/`, no `ai-docs/skills/` in the target |
 | A2.5 | Banners stripped (step 3) | `AGENTS.md` has no template banner and no closing `---` + footnote; `CLAUDE.md` is the `@AGENTS.md` import plus its one-sentence lead-in and nothing else; the Copilot file starts at `# Coding rules for GitHub Copilot` |
 | A2.6 | Empty-state rewrite (step 4) | `## Sample profile` deleted; `## Active client profiles` matches the verbatim empty-state block; the "Add each client as…" paragraph survives |
 | A2.7 | Placeholders | `\*\([^)]*\)\*` finds zero matches in `AGENTS.md` — **except** any the interview legitimately left unfilled, which must be named in the hand-off |
-| A2.8 | Content matches oracle | Rule files LF-normalized match `empty-build/ai-governance/*`; `AGENTS.md` structurally matches `build/AGENTS.md`, differing only in placeholder values |
+| A2.8 | Content matches oracle | Rule files LF-normalized match `empty-build/ai-governance/*`; `AGENTS.md` structurally matches the build for **that arm's module set** (`build/` for `governed`, `core-build/` for `core-only`), differing only in placeholder values |
+| A2.12 | Core-only install is clean | In the `core-only` arm: the always-installed files present, no optional module present, `core-rules.md` still byte-identical to source, **no entry-file link to any declined module**, and the module list removed as a whole — lead-in and closing line included — rather than left dangling above an empty list. Bare mentions in the precedence chain and in `AGENTS.md`'s §-anchored `agent-workflow.md` citations are expected and licensed by `core-rules.md`; assert on markdown links, not filenames |
 | A2.9 | Encoding | Line endings and BOM asserted deliberately — **not** folded into A2.8 |
 | A2.10 | Step 1 refusal | Re-running against a repo that already has `AGENTS.md` stops and shows the user; nothing is overwritten |
 | A2.11 | Step 7 opt-in | The `README.md` signpost is *offered*, not written unasked; if declined, the target README is untouched |
@@ -69,7 +74,7 @@ The stateful phase, and where a real bug is most likely. Sequence: install → f
 
 | ID | Tier | Check | Pass criteria |
 | --- | --- | --- | --- |
-| A3.1 | A | Six portable rule files replaced wholesale | Content matches new upstream |
+| A3.1 | A | The installed rule files replaced wholesale | Content matches new upstream. Tier A is **derived from the target's `ai-governance/`**, not a fixed list — and **no file is added**: assert against the pristine tag that the update created nothing, or a partial install silently gets refilled |
 | A3.2 | B | `CLAUDE.md` and the Copilot file re-derived | Correct content, and each got its **own** diff and **own** approval gate. **A file the plan reported as `identical` must not come back with a diff** — line-ending churn slips past a content-only local-content guard and rewrites every line |
 | A3.3 | C | `AGENTS.md` merged | Only `## ⚠️ Mandatory rules` up to (not including) the first following `---` was replaced |
 | A3.4 | C | **The double-`Active client` trap** | The value *inside* the mandatory-rules block is a second, separate placeholder from the one in the header — `build.ps1` fills them independently. Both survive with the target's filled value |
@@ -79,6 +84,7 @@ The stateful phase, and where a real bug is most likely. Sequence: install → f
 | A3.8 | E | `client-profiles/` untouched | Profile files byte-identical, and not even read — tier E is absolute |
 | A3.9 | — | Refusals | Pre-restructure layout (rule files at root, or `ai-coding-rules.md`) is refused; a dirty working tree on the files being touched is refused; no governance installed → points at `govern-init` |
 | A3.10 | — | No auto-delete | A file removed upstream is reported, not deleted |
+| A3.13 | — | No auto-**add** | The mirror of A3.10. A module present upstream but absent locally is reported as available and **never added** — absence is the install-time choice, since nothing records it but the directory. The rebuilt entry-file block links the installed modules and not the declined ones, so the filter is selective rather than a blanket delete |
 | A3.11 | — | Anchors learned, not hardcoded | The run reads its anchors out of `scripts/build.ps1`; renaming an anchor there changes behavior rather than being silently ignored |
 | A3.12 | — | Stale-launcher failure | Point the source path at a package missing `ai-docs/procedures/` → the launcher stops loudly and does **not** work from memory |
 
@@ -89,8 +95,8 @@ These close the two verification-contract bullets that are currently uncheckable
 | ID | Check | How |
 | --- | --- | --- |
 | A4.1 | Every relative Markdown link resolves **from the file it lives in** | **Implemented: `.\scripts\check-links.ps1`.** Walks every `.md` in the repo and resolves each relative link against its own directory, not the repo root. Exits non-zero on a break. Run `build.ps1` first — see the carve-outs below |
-| A4.2 | Same, in the installed mock | The `./` paths inside `ai-governance/` and the `../` paths in `.github/copilot-instructions.md` must resolve after the copy |
-| A4.3 | Hand-synced duplications still agree | (i) the empty-state paragraph — `build-empty.ps1` ↔ `govern-init.md` step 4 ↔ README Path C; (ii) the file-set table — `govern-init.md` step 2 ↔ README Path C ↔ root `AGENTS.md`; (iii) the always-on core — `AGENTS.template.md` ↔ `copilot-instructions.template.md` ↔ root `AGENTS.md` ↔ `.github/copilot-instructions.md` |
+| A4.2 | Same, in the installed mock | The `./` paths inside `ai-governance/` and the `../` paths in `.github/copilot-instructions.md` must resolve after the copy. **Run against a full install.** A partial install has dangling `ai-governance/` links inside its rule files by design — they are copied verbatim and `core-rules.md` licenses the absence — so the equivalent check for the `core-only` arm is A2.12's entry-file assertion, not this one. `core-build/` is carved out of `check-links.ps1` for the same reason |
+| A4.3 | Hand-synced duplications still agree | (i) the empty-state paragraph — `build-empty.ps1` ↔ `govern-init.md` step 4 ↔ README Path C; (ii) the file-set table — `govern-init.md` step 2b ↔ README Path C ↔ root `AGENTS.md`, **including which rows are always-installed vs. per-install**; (iii) the always-on core — `AGENTS.template.md` ↔ `copilot-instructions.template.md` ↔ root `AGENTS.md` ↔ `.github/copilot-instructions.md`; (iv) the module list and prompt order — `scripts/module-lines.ps1` (`$OptionalModules`, `$ModuleParents`) ↔ `govern-init.md` step 2a ↔ README Path C's decision table |
 | A4.4 | Placeholder-count invariant | Placeholder-token count in `AGENTS.template.md` after slicing equals the `Replace-Placeholder` call count in `build.ps1` |
 | A4.5 | Section numbering is append-only | The `agent-workflow.md` §3 and §5 citations in an installed `AGENTS.md` still point at the right sections, and `govern-init.md` step 4 still exists — `build-empty.ps1` cites it by number |
 

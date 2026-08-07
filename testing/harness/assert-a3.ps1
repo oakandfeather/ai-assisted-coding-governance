@@ -6,14 +6,30 @@ Assert-MockPresent
 
 $src = $RepoRoot
 $tgt = $MockArms.update
-$tierA = 'core-rules.md','coding-rules.md','writing-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md'
+# Derived, not hardcoded: tier A is whichever modules this arm actually carries.
+# A hardcoded list would assert against files a partial install legitimately
+# lacks, and would quietly stop covering a module the package later adds.
+$tierA    = Get-TierAFiles $tgt
+$declined = Get-DeclinedModules $tgt
 
 "=== A3.1 - tier A replaced wholesale ==="
 $drift = @()
 foreach ($f in $tierA) {
   if ((Read-Doc "$src\ai-docs\$f") -ne (Read-Doc "$tgt\ai-governance\$f")) { $drift += $f }
 }
-Assert 'A3.1a' ($drift.Count -eq 0) "all 6 rule files match new upstream ($($drift -join ', '))"
+Assert 'A3.1a' ($drift.Count -eq 0) "all $($tierA.Count) installed rule files match new upstream ($($drift -join ', '))"
+
+# A3.1b - the mirror of A3.10's never-auto-delete. A module absent before the
+# update must still be absent after it: absence is an install-time choice, and
+# an updater that "helpfully" restores it overrides the user silently.
+#
+# Asked of git, not of the current directory. $declined is read AFTER the update
+# ran, so a module the updater wrongly added no longer looks declined and the
+# check would pass vacuously - the pristine tag is the only honest baseline.
+Push-Location $tgt
+$addedFiles = @(git diff --name-only --diff-filter=A pristine -- 'ai-governance')
+Pop-Location
+Assert 'A3.1b' ($addedFiles.Count -eq 0) "no ai-governance/ file was added by the update ($($addedFiles -join ', '))"
 
 "=== A3.2 - tier B re-derived, and the diff stayed reviewable ==="
 $cl = Read-Doc "$tgt\CLAUDE.md"
@@ -28,11 +44,11 @@ Assert 'A3.2d' ($cp -match 'ai-governance/core-rules\.md')       'copilot links 
 # guard and rewrites every line, destroying the audit trail step 7 asks for.
 Push-Location $tgt
 $churn = @()
-foreach ($f in 'CLAUDE.md', '.github/copilot-instructions.md', 'AGENTS.md',
-               'ai-governance/core-rules.md', 'ai-governance/coding-rules.md',
-               'ai-governance/writing-rules.md', 'ai-governance/coding-patterns.md',
-               'ai-governance/writing-patterns.md',
-               'ai-governance/agent-workflow.md', 'ai-governance/client-profiles.md') {
+# Entry files plus every rule file this arm actually installed - derived, so a
+# partial install checks exactly what it carries and no more.
+$churnPaths = @('CLAUDE.md', '.github/copilot-instructions.md', 'AGENTS.md') +
+              @(Get-ExpectedRuleFiles $tgt | ForEach-Object { "ai-governance/$_" })
+foreach ($f in $churnPaths) {
   $rawDiff  = (git diff --numstat pristine -- $f) -split "`t"
   $normDiff = (git diff --numstat --ignore-cr-at-eol pristine -- $f) -split "`t"
   $rawLines  = if ($rawDiff.Count  -ge 2) { [int]$rawDiff[0]  + [int]$rawDiff[1]  } else { 0 }

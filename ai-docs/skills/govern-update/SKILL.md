@@ -1,6 +1,6 @@
 ---
 name: govern-update
-description: Update an already-installed AI-assisted coding governance package to the latest upstream version — refreshes the portable rule files and the package-owned sections of the three entry files, while preserving the target repo's filled-in placeholders, its active-client pointer, and its client profiles. Use when asked to "update / refresh / pull the latest governance rules", when an installed `ai-governance/` directory is behind the source package, or after the governance source repo has changed. For a repo with no governance installed yet, use `govern-init` instead.
+description: Update an already-installed AI-assisted coding governance package to the latest upstream version — refreshes the installed rule modules and the package-owned sections of the three entry files, while preserving the target repo's filled-in placeholders, its active-client pointer, its client profiles, and its install-time module selection. Use when asked to "update / refresh / pull the latest governance rules", when an installed `ai-governance/` directory is behind the source package, or after the governance source repo has changed. For a repo with no governance installed yet, use `govern-init` instead.
 ---
 
 # govern-update

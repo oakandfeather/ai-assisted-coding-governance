@@ -91,6 +91,40 @@ Assert 'A3.10-1' ($removed -contains 'coding-patterns.md')      "upstream remova
 Assert 'A3.10-2' (Test-Path "$d\ai-governance\coding-patterns.md") 'file still present - REPORTED, not auto-deleted'
 Remove-ScratchCopy $d
 
+# --- A3.13: a module absent LOCALLY is REPORTED, never auto-added ----------
+# The exact mirror of A3.10. There the file is present locally and gone
+# upstream; here it is present upstream and gone locally - which is what a
+# declined module looks like, since nothing records the install-time choice
+# except the directory itself. Both directions resolve the same way: report,
+# ask, do not act unilaterally.
+"=== A3.13 - module absent locally (declined at install) ==="
+# Copied from the GOVERNED arm, not the update arm: this check needs a full
+# install to remove modules from, and the update arm is deliberately aged - it
+# predates writing-patterns.md, so the file would not be there to delete.
+$d = New-ScratchCopy 'a313' $MockArms.governed
+Remove-Item -LiteralPath "$d\ai-governance\writing-rules.md" -Force
+Remove-Item -LiteralPath "$d\ai-governance\writing-patterns.md" -Force   # a companion cannot outlive its rules module
+
+$declined = Get-DeclinedModules $d
+Assert 'A3.13-1' (($declined -contains 'writing-rules.md') -and ($declined -contains 'writing-patterns.md')) `
+                 "declined set derived from disk: $($declined -join ', ')"
+Assert 'A3.13-2' ((Get-TierAFiles $d) -notcontains 'writing-rules.md') `
+                 'tier A excludes the declined module - nothing to replace, nothing to add'
+
+# The entry-file rebuild must drop the matching bullets, or the next update
+# re-links files the repo does not have.
+$tpl = Read-Doc "$src\ai-docs\AGENTS.template.md"
+$filtered = Remove-ModuleLines $tpl (Get-InstalledModules $d) 'A3.13 tier-C block'
+Assert 'A3.13-3' (($filtered -notmatch 'ai-governance/writing-rules\.md') -and
+                  ($filtered -notmatch 'ai-governance/writing-patterns\.md')) `
+                 'rebuilt block links neither declined module'
+Assert 'A3.13-4' ($filtered -match 'ai-governance/coding-rules\.md') `
+                 'installed modules still linked - the filter is selective, not a blanket delete'
+Assert 'A3.13-5' ((Test-Path "$d\ai-governance\core-rules.md") -and
+                  -not (Test-Path "$d\ai-governance\writing-rules.md")) `
+                 'declined module still absent - REPORTED, not auto-added'
+Remove-ScratchCopy $d
+
 # --- A3.11: anchors are LEARNED from build.ps1, not hardcoded --------------
 "=== A3.11 - anchors learned, not hardcoded ==="
 $bp = Read-Doc "$src\scripts\build.ps1"

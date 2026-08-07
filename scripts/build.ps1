@@ -21,6 +21,13 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 $aiDocs   = Join-Path $repoRoot 'ai-docs'
 $buildDir = Join-Path $repoRoot 'build'
 
+# The optional-module contract: $OptionalModules, Resolve-Modules, and
+# Remove-ModuleLines, plus the anchors bounding the module list in an assembled
+# entry file. build/ is a full install, so nothing is removed here - but
+# ai-docs/procedures/govern-update.md reads this transformation from
+# scripts/module-lines.ps1, so keep it defined in exactly that one place.
+. (Join-Path $PSScriptRoot 'module-lines.ps1')
+
 function Read-Text([string]$path) {
     if (-not (Test-Path -LiteralPath $path)) {
         throw "Expected source file not found: $path"
@@ -148,6 +155,11 @@ $agents = Replace-Placeholder $agents '*(e.g., public-sector clients may be subj
 
 $agents = Replace-Placeholder $agents '*(per client profile' '(per client profile: ESU IT Security)' 'AGENTS.md escalation contact'
 
+# build/ is a full install, so nothing is dropped. Running the transformation
+# anyway means this script fails loudly if the module-list anchors stop matching,
+# rather than leaving govern-update to discover it in a client's repo.
+$agents = Remove-ModuleLines $agents $OptionalModules 'build/AGENTS.md'
+
 Assert-NoPlaceholders $agents 'build/AGENTS.md'
 Write-Text (Join-Path $buildDir 'AGENTS.md') $agents
 
@@ -160,6 +172,7 @@ Write-Text (Join-Path $buildDir 'CLAUDE.md') $claude
 # ---------- .github/copilot-instructions.md ----------
 $copilot = Read-Text (Join-Path $aiDocs 'copilot-instructions.template.md')
 $copilot = Slice-From $copilot '# Coding rules for GitHub Copilot' 'copilot-instructions.md body'
+$copilot = Remove-ModuleLines $copilot $OptionalModules 'build/.github/copilot-instructions.md'
 $copilot = $copilot.TrimEnd() + "`n"
 Write-Text (Join-Path $buildDir '.github\copilot-instructions.md') $copilot
 

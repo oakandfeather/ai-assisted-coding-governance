@@ -1,6 +1,16 @@
 # Coding rules for GitHub Copilot
 
-**Before any task, open and follow [`../ai-docs/core-rules.md`](../ai-docs/core-rules.md) — the non-negotiable base for every task — and the repository's [`../AGENTS.md`](../AGENTS.md). Before producing or editing documents and content — including documentation about code, such as READMEs and runbooks — also open [`../ai-docs/writing-rules.md`](../ai-docs/writing-rules.md); before writing, editing, or running code, also open [`../ai-docs/coding-rules.md`](../ai-docs/coding-rules.md). Also open the active client's profile via [`../ai-docs/client-profiles.md`](../ai-docs/client-profiles.md) (there is none in this repo), plus the matching craft companion — [`../ai-docs/coding-patterns.md`](../ai-docs/coding-patterns.md) before writing or editing non-trivial code, [`../ai-docs/writing-patterns.md`](../ai-docs/writing-patterns.md) before writing or editing a non-trivial document. Open that set in one pass before you start reading this repository's code or content — not after you have picked an approach — and scale it to the blast radius: a typo doesn't earn four files.** `AGENTS.md` is the shared entry file every agent in this repo uses — what this repository is, its commands, the verification contract, the active client, and the reference chain into `../ai-docs/` all live there. Read them; do not work from the summary below alone.
+**Before any task, open and follow [`../ai-docs/core-rules.md`](../ai-docs/core-rules.md) — the non-negotiable base for every task — and the repository's [`../AGENTS.md`](../AGENTS.md).** Also open the active client's profile via [`../ai-docs/client-profiles.md`](../ai-docs/client-profiles.md) (there is none in this repo). `AGENTS.md` is the shared entry file every agent in this repo uses — what this repository is, its commands, the verification contract, the active client, and the reference chain into `../ai-docs/` all live there. Read them; do not work from the summary below alone.
+
+**Then open the module your task calls for, in one pass before you start reading this repository's code or content — not after you have picked an approach.** Scale it to the blast radius: a typo doesn't earn four files.
+
+- **[`../ai-docs/writing-rules.md`](../ai-docs/writing-rules.md)** — before producing or editing documents and content, including documentation about code such as READMEs and runbooks. This repository is almost entirely Markdown, so this is the usual module here.
+  - **[`../ai-docs/writing-patterns.md`](../ai-docs/writing-patterns.md)** — the craft companion; read before a non-trivial document.
+- **[`../ai-docs/coding-rules.md`](../ai-docs/coding-rules.md)** — before writing, editing, or running code, which here means the PowerShell in `scripts/` and `testing/harness/`.
+  - **[`../ai-docs/coding-patterns.md`](../ai-docs/coding-patterns.md)** — the craft companion; read before non-trivial code.
+- **[`../ai-docs/agent-workflow.md`](../ai-docs/agent-workflow.md)** — how to work: the work loop, ask-vs-proceed, verification, and hand-off.
+
+Where craft meets safety, safety and correctness win.
 
 **These non-negotiables hold even if you open nothing else:**
 
@@ -14,6 +24,6 @@
 
 **Precedence:** client profile > `../ai-docs/core-rules.md` > `../ai-docs/coding-rules.md` / `../ai-docs/writing-rules.md` > `../ai-docs/coding-patterns.md` / `../ai-docs/writing-patterns.md` / `../ai-docs/agent-workflow.md` > this project's entry file. The stricter rule always wins; above all sits the client's own AI policy where one exists.
 
-Everything else — the full dependency, testing, licensing, disclosure, accessibility, and factual-grounding rules, the work loop, and the active client's profile — is in `../ai-docs/`. Open `../ai-docs/core-rules.md` (plus `writing-rules.md` for documents and content — documentation about code included — and `coding-rules.md` for code) and run the applicable TL;DR self-check before presenting work.
+Everything else — the full dependency, testing, licensing, disclosure, accessibility, and factual-grounding rules, the work loop, and the active client's profile — is in `../ai-docs/`. Open `../ai-docs/core-rules.md`, plus whichever task module above your work calls for, and run the applicable TL;DR self-check before presenting work.
 
-**Note on paths:** this repository is the *source* of the governance package, so the rules files live in `../ai-docs/`. In a repo where the package has been installed, the same files live in `../ai-governance/` instead.
+**Note on paths:** this repository is the *source* of the governance package, so the rules files live in `../ai-docs/` — and every module lives there, since the source is by definition complete. In a repo where the package has been *installed*, the same files live in `../ai-governance/` instead, and only the modules that install selected are present; see `core-rules.md` on what an absent module means.

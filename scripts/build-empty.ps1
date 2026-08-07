@@ -8,6 +8,20 @@ a generic reference distinct from build/ (filled in for the ESU sample).
 
 Run after materially editing anything under ai-docs/, alongside build.ps1.
 
+The package installs in modules, so this script also assembles the partial-install
+oracle. -Modules selects which optional modules land ('all' by default, 'core' for
+a core-only install, or an explicit list); -OutDir names the directory to write.
+The two supported combinations are:
+
+  .\scripts\build-empty.ps1                                  -> empty-build/ (all)
+  .\scripts\build-empty.ps1 -Modules core -OutDir core-build -> core-build/  (none)
+
+A core-only build has dangling ai-governance/ links inside the rule files by
+design - core-rules.md says so explicitly, and check-links.ps1 carves core-build/
+out for exactly that reason. What it must NOT have is a dangling link in an entry
+file: AGENTS.md and .github/copilot-instructions.md are per-install artifacts and
+get their module list trimmed by Remove-ModuleLines.
+
 Note on encoding: every literal string in this script is deliberately
 ASCII-only. The source ai-docs/*.md files contain typographic punctuation
 (em dashes, middle dots, etc.) - this script never retypes that text; it only
@@ -17,12 +31,31 @@ decides to read this .ps1 file's encoding.
 #>
 
 #Requires -Version 5.1
+[CmdletBinding()]
+param(
+    [string[]]$Modules = @('all'),
+
+    # Whitelisted: this script deletes its output directory before writing, so
+    # an arbitrary -OutDir is a foot-gun pointed at the source tree.
+    [ValidateSet('empty-build', 'core-build')]
+    [string]$OutDir = 'empty-build'
+)
+
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $aiDocs   = Join-Path $repoRoot 'ai-docs'
-$buildDir = Join-Path $repoRoot 'empty-build'
+$buildDir = Join-Path $repoRoot $OutDir
+
+# The optional-module contract, shared with build.ps1 and read by
+# ai-docs/procedures/govern-update.md. Defines $OptionalModules,
+# Resolve-Modules, and Remove-ModuleLines.
+. (Join-Path $PSScriptRoot 'module-lines.ps1')
+
+# Wrapped in @() deliberately: PowerShell unrolls a function's empty-array return
+# to $null, and 'core' is the one selection that legitimately returns none.
+$selected = @(Resolve-Modules $Modules)
 
 function Read-Text([string]$path) {
     if (-not (Test-Path -LiteralPath $path)) {
@@ -74,7 +107,7 @@ function Replace-Paragraph([string]$content, [string]$startAnchor, [string]$newT
     return $content.Substring(0, $start) + $newText + $content.Substring($end)
 }
 
-Write-Host "Rebuilding empty-build/ from ai-docs/ ..."
+Write-Host "Rebuilding $OutDir/ from ai-docs/ ..."
 
 # ---------- clean slate ----------
 if (Test-Path -LiteralPath $buildDir) {
@@ -94,6 +127,7 @@ $footerIdx = $agents.IndexOf($footerMarker)
 if ($footerIdx -lt 0) { throw "Source shape changed - AGENTS.md closing footnote not found" }
 $agents = $agents.Substring(0, $footerIdx).TrimEnd() + "`n"
 $agents = "# AGENTS.md`n`n" + $agents
+$agents = Remove-ModuleLines $agents $selected "$OutDir/AGENTS.md"
 
 Write-Text (Join-Path $buildDir 'AGENTS.md') $agents
 
@@ -106,18 +140,22 @@ Write-Text (Join-Path $buildDir 'CLAUDE.md') $claude
 # ---------- .github/copilot-instructions.md ----------
 $copilot = Read-Text (Join-Path $aiDocs 'copilot-instructions.template.md')
 $copilot = Slice-From $copilot '# Coding rules for GitHub Copilot' 'copilot-instructions.md body'
+$copilot = Remove-ModuleLines $copilot $selected "$OutDir/.github/copilot-instructions.md"
 $copilot = $copilot.TrimEnd() + "`n"
 Write-Text (Join-Path $buildDir '.github\copilot-instructions.md') $copilot
 
 # ---------- ai-governance verbatim files ----------
+# core-rules.md is always installed; the optional modules land only if selected.
 # No client-profiles/*.md is bundled - this build has no client, sample or
 # otherwise.
-Copy-Verbatim (Join-Path $aiDocs 'core-rules.md')      (Join-Path $buildDir 'ai-governance\core-rules.md')
-Copy-Verbatim (Join-Path $aiDocs 'coding-rules.md')    (Join-Path $buildDir 'ai-governance\coding-rules.md')
-Copy-Verbatim (Join-Path $aiDocs 'writing-rules.md')   (Join-Path $buildDir 'ai-governance\writing-rules.md')
-Copy-Verbatim (Join-Path $aiDocs 'coding-patterns.md') (Join-Path $buildDir 'ai-governance\coding-patterns.md')
-Copy-Verbatim (Join-Path $aiDocs 'writing-patterns.md') (Join-Path $buildDir 'ai-governance\writing-patterns.md')
-Copy-Verbatim (Join-Path $aiDocs 'agent-workflow.md')  (Join-Path $buildDir 'ai-governance\agent-workflow.md')
+#
+# Verbatim is load-bearing: govern-update replaces these files wholesale and the
+# harness drifts them byte-for-byte against this build, so a partial install must
+# copy the same bytes as a full one - never a pruned variant.
+Copy-Verbatim (Join-Path $aiDocs 'core-rules.md') (Join-Path $buildDir 'ai-governance\core-rules.md')
+foreach ($m in $selected) {
+    Copy-Verbatim (Join-Path $aiDocs $m) (Join-Path $buildDir "ai-governance\$m")
+}
 
 # ---------- ai-governance/client-profiles.md ----------
 # Drop the "Sample profile" section (no sample file is bundled here) and
@@ -148,5 +186,7 @@ $profiles = $profiles.Substring(0, $sampleIdx).TrimEnd() + "`n"
 
 Write-Text (Join-Path $buildDir 'ai-governance\client-profiles.md') $profiles
 
-Write-Host "empty-build/ regenerated (10 files)."
-Write-Host "empty-build/ is gitignored and generated - do not hand-edit it; edit ai-docs/ and rerun this script."
+$fileCount = (Get-ChildItem -LiteralPath $buildDir -Recurse -File).Count
+$moduleList = if ($selected.Count -eq 0) { 'core only' } else { $selected -join ', ' }
+Write-Host "$OutDir/ regenerated ($fileCount files; modules: $moduleList)."
+Write-Host "$OutDir/ is gitignored and generated - do not hand-edit it; edit ai-docs/ and rerun this script."

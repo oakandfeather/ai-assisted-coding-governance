@@ -65,6 +65,10 @@ The arms hold a governance copy installed at a point in time. Once this repo's r
 .\govern-update-run.ps1 -Arm unconfigured -Apply
 ```
 
+```powershell
+.\govern-update-run.ps1 -Arm core-only -Apply
+```
+
 Then re-sync `…-entryfiles-only/`'s three entry files from `…-governed/` (that arm holds no `ai-governance/`, so the updater can't run there, and B-T only discriminates while its entry files match the governed arm's). Finally commit each refreshed arm and move its tag — the hygiene check asserts `tag=pristine, tree clean`:
 
 ```powershell
@@ -79,10 +83,10 @@ Distinguishing the two cases matters: a check that was **green before your edit 
 
 A new file in `ai-docs/` fails **louder and differently**, so it reads as a defect when it is the same staleness: A2.2 fails outright on the item count and `check-layer-a.ps1` throws mid-run, before you reach the refresh step. Same fix — run the updater against the `governed` and `unconfigured` arms — but two things are specific to the add case:
 
-- **The tier-A file list is hardcoded in three scripts**, not derived: `check-layer-a.ps1`'s count, `assert-a3.ps1`, and `govern-update-run.ps1`. All three need the new file, or A3.1a silently asserts against a short list.
+- **The tier-A file list is no longer hardcoded.** It is derived from the target's own `ai-governance/` via `Get-TierAFiles` in `harness-common.ps1`, which in turn dot-sources `scripts/module-lines.ps1` — the same contract the procedures read. Nothing to update in three places any more; that is the point.
 - **Model the new file's line endings on an already-installed sibling** (`core-rules.md`) rather than the OS default, or it lands as the odd one out and A2.9c records the mismatch.
 
-The runner handles an added file as of the `writing-patterns.md` change — it prints `ADDED` in the plan and writes the file on `-Apply`. Before that it threw on `Read-Doc` of a file the target didn't have.
+**A new *optional* module will not be installed by the updater**, and that is correct. Since the package became modular, absence means declined: `govern-update-run.ps1` reports an absent module as `AVAILABLE` and never writes it (the mirror of A3.10's never-auto-delete, asserted by A3.1b and A3.13). To put a genuinely new module into an existing arm, add it to that arm deliberately and commit — don't expect the refresh to do it, and don't "fix" the runner to do it either.
 
 ## Two traps these scripts exist to avoid
 

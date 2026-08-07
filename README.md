@@ -15,7 +15,11 @@ Alongside them, **[`testing/`](./testing/)** holds the plan for verifying that t
 
 ## Adopting this in a client project
 
-**The same package installs the same way for everyone.** Every install lands three entry files — `AGENTS.md`, `CLAUDE.md`, and `.github/copilot-instructions.md` — plus an `ai-governance/` rules directory, covering Claude Code, GitHub Copilot, and OpenAI Codex (and other `AGENTS.md` readers — Cursor, Windsurf, VS Code's agent) in one pass. **Which AI tool you use doesn't change *what* gets installed — only *how* you install it, and which entry file that tool then reads.**
+**One package, one install procedure, whatever tool you use.** Every install lands three entry files — `AGENTS.md`, `CLAUDE.md`, and `.github/copilot-instructions.md` — plus an `ai-governance/` rules directory, covering Claude Code, GitHub Copilot, and OpenAI Codex (and other `AGENTS.md` readers — Cursor, Windsurf, VS Code's agent) in one pass. **Which AI tool you use doesn't change *what* gets installed — only *how* you install it, and which entry file that tool then reads.**
+
+**What does change is which rule modules you take.** `core-rules.md` — the task-agnostic safety base — is never optional, and neither is `client-profiles.md`. The rest are chosen per repository at install time: `coding-rules.md` (and its craft companion `coding-patterns.md`), `writing-rules.md` (and `writing-patterns.md`), and `agent-workflow.md`. The install asks; if you have no opinion, it installs everything. A repo that will never hold a written deliverable shouldn't pay the context cost of the writing modules — see [`context-cost.md`](./context-cost.md) for what that actually costs.
+
+Two consequences worth knowing up front. **Nothing records the choice except the directory itself** — the files in `ai-governance/` *are* the record, so `govern-update` reads your selection back off disk and will never re-add a module you declined (it offers, you decide). And **a partial install leaves pointers to modules that aren't there**, because the rule files cross-reference each other and are copied verbatim, never edited. That is deliberate and safe: `core-rules.md` states plainly that a pointer to an absent module simply doesn't apply. The entry files are trimmed, so nothing an agent loads first ever points at a file you don't have.
 
 ### Step 1 — Find your AI tool
 
@@ -27,7 +31,7 @@ Every tool ends up covered no matter how you install, so this table is really "w
 | **OpenAI Codex, Cursor, Windsurf, VS Code agent, or Copilot *agent* workflows** | `AGENTS.md` | **Path B** — hand your agent the procedure |
 | **GitHub Copilot** repository-wide custom instructions (Chat, inline, and supported features) | `.github/copilot-instructions.md` | **Path C** — copy the files by hand |
 
-All three land the identical file set; they differ only in who does the work. **Path A** is a one-time setup that buys you a slash command. **Path B** needs no setup at all — you paste one instruction into any agent that can read and write files, which is the fastest route if you're not on Claude Code (and works in Claude Code too, without installing the skill). **Path C** is you, a file manager, and ten minutes; take it when no agent is in the loop.
+All three land the same *shape* — three entry files plus `ai-governance/`, with the modules you chose — and differ only in who does the work. **Path A** is a one-time setup that buys you a slash command. **Path B** needs no setup at all — you paste one instruction into any agent that can read and write files, which is the fastest route if you're not on Claude Code (and works in Claude Code too, without installing the skill). **Path C** is you, a file manager, and ten minutes; take it when no agent is in the loop.
 
 One honest caveat, whichever path you take: **Claude Code's `@import` reliably pulls `AGENTS.md` into context; Copilot and Codex load their entry file but do not reliably pull the relative-linked `ai-governance/*.md` files in the same way.** That is why each entry file restates the non-negotiable core inline and tells the agent, in imperative terms, to open `core-rules.md` before any task (and `coding-rules.md` / `writing-rules.md` before code / content). The core binds regardless; the full rules bind reliably on Claude and depend on the agent following the link elsewhere. Human review before merge (below) is the backstop.
 
@@ -109,21 +113,32 @@ The agent needs read access to this repo and write access to the target. Both pr
 
 This path is **pure file-copying — no scripts, identical on macOS, Linux, and Windows.** Put the three entry files where each tool looks for them and the rest in an `ai-governance/` directory beside them, renaming the templates:
 
+**Always copy these:**
+
 | From | To | Why |
 | --- | --- | --- |
 | `ai-docs/AGENTS.template.md` | `AGENTS.md` *(repo root)* | The **canonical entry** — the one full body. Codex, the Copilot coding agent/CLI, Cursor, Windsurf, and VS Code's agent read `AGENTS.md` from the root. Fill its placeholders. |
 | `ai-docs/CLAUDE.template.md` | `CLAUDE.md` *(repo root)* | Thin Claude Code pointer: `@AGENTS.md`. Claude Code auto-loads `CLAUDE.md` from the root only — not a subfolder, not under the `.template` name — and imports the shared body. |
 | `ai-docs/copilot-instructions.template.md` | `.github/copilot-instructions.md` | Repository-wide Copilot custom instructions for Chat, inline suggestions, and supported Copilot features. Copilot agent workflows can also use `AGENTS.md`; this file carries the non-negotiable core inline and links out with `../`. |
-| `ai-docs/core-rules.md` | `ai-governance/core-rules.md` | The task-agnostic base rules — mandatory for every task. |
-| `ai-docs/coding-rules.md` | `ai-governance/coding-rules.md` | Code-specific rules: dependencies, security, testing, accessibility. |
-| `ai-docs/writing-rules.md` | `ai-governance/writing-rules.md` | Content-specific rules: grounding, citations, confidentiality, voice, accessible docs, verified documentation. |
-| `ai-docs/coding-patterns.md` | `ai-governance/coding-patterns.md` | Engineering-craft patterns. |
-| `ai-docs/writing-patterns.md` | `ai-governance/writing-patterns.md` | Writing-craft patterns, including documentation of software. |
-| `ai-docs/agent-workflow.md` | `ai-governance/agent-workflow.md` | How to work: loop, ask-vs-proceed, verification, hand-off, iteration and self-review, economy of effort, subagent delegation. |
-| `ai-docs/client-profiles.md` | `ai-governance/client-profiles.md` | Index of per-client overrides. |
+| `ai-docs/core-rules.md` | `ai-governance/core-rules.md` | The task-agnostic base rules — mandatory for every task, and never optional. |
+| `ai-docs/client-profiles.md` | `ai-governance/client-profiles.md` | Index of per-client overrides. Omitting it dead-ends every §8 client-override pointer in the package. |
 | `ai-docs/client-profiles/` | `ai-governance/client-profiles/` | The profiles themselves — **excluding `example-university.md`**, which is a fictional sample and must never land in a real client's repo. |
 
-The three entry files go at their locations above; the seven companion files and `client-profiles/` travel together into `ai-governance/`. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` imports `AGENTS.md`, `.github/copilot-instructions.md` links back with `../`, and the files inside `ai-governance/` link each other with relative `./` paths — so keep them together; separating them breaks the chain. Then fill in the italicized `*(placeholders)*` **in `AGENTS.md`** (the thin companions carry none), and write the active client's profile into `ai-governance/client-profiles/`. **Unfilled placeholders mean the repo is unconfigured:** ask before assuming a stack, client, or command. Never guess a client's rules — no profile at all is safer than an invented one, because `core-rules.md` §8 only falls back to sensitive-by-default when the profile is *absent*.
+**Then decide, module by module.** Take all of them if you're unsure — that's what the guided paths default to. A craft companion needs its rules module: don't take `coding-patterns.md` without `coding-rules.md`, or `writing-patterns.md` without `writing-rules.md`.
+
+| From | To | Take it when |
+| --- | --- | --- |
+| `ai-docs/coding-rules.md` | `ai-governance/coding-rules.md` | Agents will write, edit, or run code here. Dependencies, security, testing, accessibility. |
+| `ai-docs/coding-patterns.md` | `ai-governance/coding-patterns.md` | You took `coding-rules.md` and want the engineering-craft patterns too. |
+| `ai-docs/writing-rules.md` | `ai-governance/writing-rules.md` | Agents will produce or edit documents — **including READMEs, API references, and runbooks**, which a code-only repo produces more often than teams expect. Grounding, citations, confidentiality, voice, accessible docs, verified documentation. |
+| `ai-docs/writing-patterns.md` | `ai-governance/writing-patterns.md` | You took `writing-rules.md` and want the writing-craft patterns too, including documentation of software. |
+| `ai-docs/agent-workflow.md` | `ai-governance/agent-workflow.md` | You want the work loop, ask-vs-proceed, verification, hand-off, iteration and self-review, economy of effort, and subagent delegation. |
+
+**Copy each selected file verbatim — never a pruned variant.** They cross-reference each other, so a partial install leaves pointers to files you didn't take. Leave those alone: `core-rules.md` says a pointer to an absent module doesn't apply, and editing a rule file makes every future update read it as local drift.
+
+**Then trim the two entry files.** `AGENTS.md` and `.github/copilot-instructions.md` each carry a bullet list with one line per optional module — delete the line for each module you skipped. If you skipped all of them, delete the whole list along with its lead-in paragraph and the "Where craft meets safety" line that follows. This is the one place a dangling pointer would actually mislead an agent, which is why it's the one place you edit.
+
+The three entry files go at their locations above; `core-rules.md`, `client-profiles.md`, `client-profiles/`, and every module you selected travel together into `ai-governance/`. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` imports `AGENTS.md`, `.github/copilot-instructions.md` links back with `../`, and the files inside `ai-governance/` link each other with relative `./` paths — so keep them together; separating them breaks the chain. Then fill in the italicized `*(placeholders)*` **in `AGENTS.md`** (the thin companions carry none), and write the active client's profile into `ai-governance/client-profiles/`. **Unfilled placeholders mean the repo is unconfigured:** ask before assuming a stack, client, or command. Never guess a client's rules — no profile at all is safer than an invented one, because `core-rules.md` §8 only falls back to sensitive-by-default when the profile is *absent*.
 
 `human-docs/` stays here. It is not copied into client repos. The copied `AGENTS.md` carries a short "For the humans on this project" note pointing developers back to it — that travels automatically, no extra copy step. To put the same pointer where people look first, add a block like this to the target repo's `README.md` (or `CONTRIBUTING.md`) — the install procedure offers this automatically on Paths A and B; on Path C you add it by hand:
 
@@ -143,9 +158,11 @@ Every path leaves a **copy** in the client repo, and a copy drifts: when `core-r
 
 **Claude Code:** run `/govern-update` from the target repo's root. **Any other agent:** the Path B instruction above, pointed at [`ai-docs/procedures/govern-update.md`](./ai-docs/procedures/govern-update.md) — same procedure, no setup.
 
-Either way it shows you what changed before changing anything, then works in tiers — the six portable rule files and the two thin entry files are replaced outright, while `AGENTS.md` and `ai-governance/client-profiles.md` are **merged**, because those two carry local content an overwrite would destroy. `ai-governance/client-profiles/` is never touched at all.
+Either way it shows you what changed before changing anything, then works in tiers — the portable rule files you have installed and the two thin entry files are replaced outright, while `AGENTS.md` and `ai-governance/client-profiles.md` are **merged**, because those two carry local content an overwrite would destroy. `ai-governance/client-profiles/` is never touched at all.
 
-**By hand** (no agent in the loop), the same split is what matters. Safe to re-copy straight from `ai-docs/`: `core-rules.md`, `coding-rules.md`, `writing-rules.md`, `coding-patterns.md`, `agent-workflow.md`, and the two thin entry files (`CLAUDE.md`, `.github/copilot-instructions.md` — re-strip their banners). **Do not re-copy** `AGENTS.md` or `ai-governance/client-profiles.md`: bring the upstream changes into them by hand instead, keeping your filled placeholders, your `Active client` value — it appears **twice**, in the header *and* inside the mandatory-rules block — and your active-client list. Leave `ai-governance/client-profiles/` alone.
+**A module you declined stays declined.** The updater reads your installed set off `ai-governance/` and reports the rest as available rather than adding them — the mirror of its refusal to delete a file that vanished upstream. If you want one after all, say so and it lands, entry-file links included. Re-derived entry files are filtered to what you actually have, so an update never re-links a module you skipped.
+
+**By hand** (no agent in the loop), the same split is what matters. Safe to re-copy straight from `ai-docs/`: `core-rules.md`, **whichever modules you installed**, and the two thin entry files (`CLAUDE.md`, `.github/copilot-instructions.md` — re-strip their banners, and re-trim the module list). **Do not re-copy** `AGENTS.md` or `ai-governance/client-profiles.md`: bring the upstream changes into them by hand instead, keeping your filled placeholders, your `Active client` value — it appears **twice**, in the header *and* inside the mandatory-rules block — and your active-client list. Leave `ai-governance/client-profiles/` alone.
 
 One thing no path can do: a repo scaffolded before the `ai-governance/` restructure (rule files at the root, a since-split `ai-coding-rules.md`) cannot be mechanically updated, because that file's contents were reorganized into three. The update procedure detects that shape and refuses rather than guessing; re-install fresh, or migrate with a human reading both versions.
 
@@ -153,7 +170,7 @@ One thing no path can do: a repo scaffolded before the `ai-governance/` restruct
 
 > **client profile > `core-rules.md` > `coding-rules.md` / `writing-rules.md` > `coding-patterns.md` / `writing-patterns.md` / `agent-workflow.md` > project entry file** *(`AGENTS.md` / `CLAUDE.md` / `.github/copilot-instructions.md`)*
 
-The stricter rule always wins. Above all of it sits the client's own AI policy, where they have one: it is the upstream authority and controls where anything here conflicts with it. Reproduce it in [`human-docs/Example-Client-AI-Policy.md`](./human-docs/Example-Client-AI-Policy.md), which explains the slot and what such a policy covers.
+The stricter rule always wins, and the chain simply skips any module a repo didn't install. Above all of it sits the client's own AI policy, where they have one: it is the upstream authority and controls where anything here conflicts with it. Reproduce it in [`human-docs/Example-Client-AI-Policy.md`](./human-docs/Example-Client-AI-Policy.md), which explains the slot and what such a policy covers.
 
 The client profiles ship with one **sample** profile — Example State University, a fictional public university — to show the expected shape. It is not a live client; replace it with the real thing.
 
