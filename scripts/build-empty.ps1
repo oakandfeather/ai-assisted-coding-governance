@@ -123,8 +123,8 @@ Copy-Verbatim (Join-Path $aiDocs 'agent-workflow.md')  (Join-Path $buildDir 'ai-
 # Drop the "Sample profile" section (no sample file is bundled here) and
 # rewrite the empty state to govern-init's wording, exactly as step 4 of that
 # procedure does. The source paragraph cannot be carried over verbatim: it reads
-# "Do not treat the sample below as one" and "there is no live client profile
-# in this package" - a pointer to the section we just stripped, and a
+# "The sample below is not one" and "no live client profile ships in this
+# package" - a pointer to the section we just stripped, and a
 # statement about the source repo rather than the target. Reproducing it here
 # would make empty-build/ reference something absent and describe the wrong
 # repo, when its whole purpose is to show what a real no-client install looks
