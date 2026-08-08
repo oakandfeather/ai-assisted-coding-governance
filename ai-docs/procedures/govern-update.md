@@ -70,7 +70,7 @@ The file splits at the first `---` after the mandatory-rules block:
 **Version:** … · **Last reviewed:** … · **Active client:** …                  <- target's
 (lead-in sentence)                                                            <- target's
 ## ⚠️ Mandatory rules
-   (four paragraphs of links, the always-on core, precedence)                  <- the package's
+   (the load-these-first list, the Active client line, the always-on core)     <- the package's
 ---                                                                            <- the seam
 ## Project overview  …through…  ## Escalation                                   <- target's
 ```
