@@ -2,7 +2,7 @@
 
 *Craft guide for written deliverables: clear, useful, maintainable content. Companion to the safety/risk rules — [`core-rules.md`](./core-rules.md) (the task-agnostic base) and [`writing-rules.md`](./writing-rules.md) (the content rules); this file governs writing quality, [`agent-workflow.md`](./agent-workflow.md) governs how to work. Content-track sibling of [`coding-patterns.md`](./coding-patterns.md). On overlap or conflict, **accuracy and fidelity win over elegance and concision**, and a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over both.*
 
-**Version:** 1.1 · **Last reviewed:** 2026-08-07 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.2 · **Last reviewed:** 2026-08-08 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -12,7 +12,7 @@
 2. **Front-load the answer.** The conclusion first, the reasoning after.
 3. **Let the form match the content.** Comparison → table; ordered steps → numbered list; argument → prose.
 4. **Cut what carries no information.** Preamble, restatement, throat-clearing, padding.
-5. **Show what success looks like.** What to type without what to expect leaves the reader unable to tell it worked. *(Running the example at all is `writing-rules.md` §6 — a risk rule, and it binds regardless.)*
+5. **Show what success looks like.** What to type without what to expect leaves the reader unable to tell it worked.
 6. **State each fact in one owning place** and link to it from everywhere else.
 7. **Edit the draft; don't regenerate it.** A rewrite discards the edits a human already made.
 
@@ -61,7 +61,7 @@ If a request can't satisfy these, flag the tension rather than quietly trading o
 
 Applies when the deliverable documents software — a README, API reference, runbook, release note, help-center article, or in-repo guide. Everything above applies; this section adds what software documentation owes its reader. *(Comments and docstrings that travel inside a source file are [`coding-patterns.md`](./coding-patterns.md) §2.)*
 
-**One documentation rule is not in this file: run every example before you ship it.** That one is [`writing-rules.md`](./writing-rules.md) §6: an unrun command is an unverified claim, so it is a risk rule rather than a craft one. It binds whether or not you opened this file, and everything below assumes it.
+**One documentation rule is not in this file: run every example before you ship it.** An unrun command is an unverified claim, so it is risk rather than craft — [`writing-rules.md`](./writing-rules.md) §6, binding whether or not you opened this file.
 
 - **Pick the document type and hold it.** Four shapes, each with a different job: **tutorial** (learning by doing), **how-to** (one specific goal), **reference** (exhaustive lookup), **explanation** (why it works this way). Blending all four in one document is the default failure of generated documentation — too long to look something up in, too shallow to learn from. §1's audience question decides which one you're writing.
 - **Show what success looks like.** A step that says what to type but not what to expect leaves the reader unable to tell whether it worked. Give the meaningful part of the output, the resulting state, or the error that means they got it wrong.
@@ -86,4 +86,4 @@ Applies when the deliverable documents software — a README, API reference, run
 
 ## Self-check before presenting content
 
-Re-run the TL;DR above, and name in your hand-off any trade-off a requirement forced against it. Then run the safety self-checks in `core-rules.md` and `writing-rules.md` — all gates apply, including §6's run-every-example rule, and accuracy wins over polish.
+Re-run the TL;DR above, and name in your hand-off any trade-off a requirement forced against it. Then run the safety self-checks in `core-rules.md` and `writing-rules.md` — all gates apply, including [`writing-rules.md`](./writing-rules.md) §6 — run every example before you ship it — and accuracy wins over polish.

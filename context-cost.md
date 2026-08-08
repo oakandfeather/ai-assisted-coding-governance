@@ -19,11 +19,11 @@ wc -w -c ai-docs/*.md ai-docs/client-profiles/*.md
 | File | Words | Est. tokens |
 |---|---:|---:|
 | `core-rules.md` | 1,531 | ~2,700 |
-| `coding-rules.md` | 704 | ~1,250 |
+| `coding-rules.md` | 707 | ~1,250 |
 | `writing-rules.md` | 1,275 | ~2,200 |
 | `coding-patterns.md` | 1,085 | ~1,900 |
-| `writing-patterns.md` | 1,622 | ~2,700 |
-| `agent-workflow.md` | 2,454 | ~4,000 |
+| `writing-patterns.md` | 1,600 | ~2,700 |
+| `agent-workflow.md` | 2,434 | ~3,950 |
 | `client-profiles.md` + one profile | 414 | ~750 |
 | entry file (`AGENTS.md`, placeholders filled) | 909 | ~1,700 |
 
@@ -32,6 +32,18 @@ wc -w -c ai-docs/*.md ai-docs/client-profiles/*.md
 **`agent-workflow.md`'s second pass returned ~3%, and that number is the finding.** Applied to already-compressed prose, it reached the floor `core-rules.md` hit at ~5%: what remained after v1.9 was rule text, the citations that route between sections, and one clause of rationale each on the rules an agent would otherwise pattern-match past. The available structural cuts were all *cross-section* — §6's and §7's blast-radius paragraphs state the same scaling rule, and §7's floor list restates `core-rules.md` TL;DR 1–2, §3, `core-rules.md` §5, and §6 — and they were **deliberately not taken**, for the reason [`coverage-matrix.md`](./testing/coverage-matrix.md) records against B-F10: an agent reaches these sections independently, so a rule that survives only as a pointer is unreachable at the moment it is needed. That is the same argument that put the blast-radius gate inline in the entry file rather than delegating it to §7. What the pass did take was within-section: §8's four bullet groups folded to three (660 → 610 words, the largest single saving), and restatement tails throughout. Treat ~3% as this file's floor under the reachability constraint, not a pass left unfinished — the next real reduction would have to come from removing a rule, which is a governance decision, not a density one.
 
 **v1.11 took one of those cross-section cuts, and narrows the claim above.** Two of them turned out to be genuine duplication rather than the pointer-vs-reachability trade v1.10 weighed: §3's honest-verification bullet restated `core-rules.md` §4 with neither file citing the other, and the blast-radius rule was stated three times *inside this file* (§1, §6, §7), its "design-bearing, security-touching, multi-file, or fact-asserting" enumeration verbatim in two. Both collapsed to one owner — −27 words, with `core-rules.md` untouched. Reachability survives in two of the three spots: §3 still states its rule and names the owner, and §7's floor still states the gate. But **§6 now delegates the enumeration to §7's floor**, so an agent reading §6 alone learns that a typo is exempt without learning what always qualifies. That is the trade v1.10 declined, taken here because §6 and §7 are adjacent sections of one file an agent loads whole — not two files it may load separately, which is what the reachability argument was written about. If a Layer B run shows the falsification pass skipped on design-bearing work, restore the enumeration first.
+
+**A package-wide deduplication sweep followed, and returned 0.4% — that number is the finding.** v1.11 deduplicated one file against `core-rules.md` and against itself; this pass ran the same search across all six rule and craft files at once, mechanically (repeated 7-word shingles across `ai-docs/`, then read for genuine restatement rather than shared link boilerplate). It found eleven candidates and took three, all **within-file**, for −39 words net — 0.4% of the six files' 8,671, or 0.8% of the three actually edited:
+
+- **`writing-patterns.md` v1.2 (−22).** The run-every-example deferral to `writing-rules.md` §6 was stated three times (TL;DR item 5, §4's opening paragraph, the self-check). It now states it twice: §4's boundary, which root `AGENTS.md` protects by name, and the self-check, which was reworded to state the rule rather than merely name it — dropping the TL;DR parenthetical made the self-check load-bearing for a reader who skims TL;DR → self-check without opening §4.
+- **`agent-workflow.md` v1.12 (−20).** §8's first bullet re-derived the anchoring rationale §6 owns and already points at §8 for.
+- **`coding-rules.md` v2.4 (+3).** §4 ended with two adjacent parentheticals both routing to `writing-rules.md`; they are now one. **It got three words longer.** Merging two framings into one saved less than restoring the Markdown link the merge had demoted to bare backticks cost — and that link had to be restored, because `coding-rules.md` §6 is the pointer a Copilot or Codex agent that loaded only this file most needs to be able to follow. Recorded as a readability consolidation, not a saving.
+
+A fourth within-file cut was drafted and **reverted**, and it is the cautionary one: §8's closing "scope delegated work to reading and proposing rather than to acting" looks like a restatement of the same section's least-access bullet, but it is a stricter default than that bullet's "write only for a specific named change," and replacing it with a backreference swapped an actionable rule for a pointer. Within-file is a licence to delete a *duplicate*, not a licence to delete a rule that merely resembles one — and the replacement ran four words longer than the sentence it displaced.
+
+**The seven declined candidates are the more useful record, because six of them were cross-file.** `writing-rules.md` §3 restating `core-rules.md` §1's do-not-transmit rule, the WCAG 2.1 AA baseline in `coding-rules.md` §4 and `writing-rules.md` §5, the three self-check footers' "so the human reviewer sees the check rather than assuming it," `agent-workflow.md` §7's routing list against the entry file's, and the blast-radius scaling paragraph in both task modules' TL;DRs — each is real duplication and each was left. (The seventh is within-file and was declined on yield, not reachability: `core-rules.md` §5's "don't exfiltrate data to external endpoints" restates §1's do-not-transmit bullet, but the delta is ~7 words in the package's highest-risk file.) The reachability constraint is exactly the one v1.11 narrowed: cuts within a file an agent loads whole are safe, cuts between files it may load separately are not, and `coding-rules.md` §4 versus `writing-rules.md` §5 is the sharpest case, since those two are *alternative* loads and deleting either leaves a hole rather than a pointer. The footers are a different refusal: that trailing clause is the "one clause of rationale each on the rules an agent would otherwise pattern-match past" this file already identifies as the floor. **The strongest remaining candidate, if a future pass revisits the cross-file line:** `writing-rules.md` §2's "prefer primary and current sources… note the date where currency matters" restates `core-rules.md` §9's third bullet nearly verbatim, in a section whose own last bullet *already* delegates staleness to §9 — so unlike the others, the file has declared the topic delegated and then restated it anyway. It was left in place here to hold this pass to the within-file line rather than relitigating that constraint mid-sweep.
+
+**Treat ~1% as what deduplication is worth on this package, not as a pass left unfinished.** Every file had already had a density pass and each is recorded above as at its floor; what remained was duplication, and most of that duplication is load-bearing under reachability. The next real reduction would have to remove a rule or relax the reachability constraint — both governance decisions, not density ones.
 
 **`client-profiles.md`'s headline 17% overstates what an agent saves.** Measured on the *source* file, but roughly half of it never reaches an installed repo: both build scripts replace the `*(none yet)*` paragraph and strip the `## Sample profile` section, so compressing those costs an agent nothing. On the installed file the pass is 117 → 102 words (~13%), and only the banner and the "Add each client as…" paragraph are compressible at all — everything else is a heading, the version line, or the generated client list. That ~15-word ceiling is under 1% of a full load; the file is already the smallest in the package, so measure this pass against the source-repo reader, not the context window.
 
@@ -46,12 +58,12 @@ Per the graduated loading rule in `AGENTS.md` ("scale that set to the blast radi
 | Scenario | Files loaded | Est. tokens |
 |---|---|---:|
 | Trivial edit | entry file + `core-rules.md` | ~4,400 |
-| Non-trivial coding task | entry + core-rules + coding-rules + coding-patterns + agent-workflow + client profile | ~12,300 |
-| Non-trivial writing task | entry + core-rules + writing-rules + writing-patterns + agent-workflow + client profile | ~14,050 |
-| Everything at once | entry + all seven `ai-docs/` files | ~17,200 |
+| Non-trivial coding task | entry + core-rules + coding-rules + coding-patterns + agent-workflow + client profile | ~12,250 |
+| Non-trivial writing task | entry + core-rules + writing-rules + writing-patterns + agent-workflow + client profile | ~14,000 |
+| Everything at once | entry + all seven `ai-docs/` files | ~17,150 |
 
 ## Caveats
 
-- This is a one-time context-window cost **per session**, paid when files are actually `Read` — not merely linked to. The graduated-loading rule exists specifically to avoid paying the ~17.3k full cost on every task.
+- This is a one-time context-window cost **per session**, paid when files are actually `Read` — not merely linked to. The graduated-loading rule exists specifically to avoid paying the ~17.1k full cost on every task.
 - Prompt caching (where the harness supports it) makes repeat reference *cheap in billing* within a session once a file is cached, but it does not reduce how much of the context window that file occupies.
 - These numbers reflect `ai-docs/` as of 2026-08-08. Re-measure after any material edit to a file listed above.

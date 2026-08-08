@@ -2,7 +2,7 @@
 
 *How to work — the sections below are the whole scope. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus the craft companions [`coding-patterns.md`](./coding-patterns.md) / [`writing-patterns.md`](./writing-patterns.md). Precedence: a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) > `core-rules.md` > the task module > this file and the craft companions > project entry file (`AGENTS.md` / `CLAUDE.md` / `.github/copilot-instructions.md`). Safety wins over speed, correctness over throughput; the stricter rule always wins.*
 
-**Version:** 1.11 · **Last reviewed:** 2026-08-08 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.12 · **Last reviewed:** 2026-08-08 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -118,7 +118,7 @@ Delegation trades context isolation against re-derivation. It pays when the subt
 
 **Where it pays — and where it doesn't:**
 
-- **A fresh-context reviewer,** because §6's falsification pass is weakest exactly where you are anchored to what you built, and an agent that never saw you build it cannot be. Give it the requirement and the change; ask it to find the defect, not to confirm the work. Without one, §6's cold requirement-first re-read is the fallback.
+- **A fresh-context reviewer,** for the anchoring reason §6 gives. Give it the requirement and the change; ask it to find the defect, not to confirm the work. Without one, §6's cold requirement-first re-read is the fallback.
 - **Broad search** — every call site, whether a convention holds across a tree. Large reading, small answer.
 - **Not the change itself.** One coherent piece of work split across agents that each hold part of the context produces exactly the plausible-but-wrong result §1 warns about — and you still own it.
 

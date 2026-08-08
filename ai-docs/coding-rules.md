@@ -2,7 +2,7 @@
 
 *Rules for writing, editing, or running code, with §§1–4 below the whole scope. **Read [`core-rules.md`](./core-rules.md) first:** it holds the task-agnostic base that binds on every task; this file adds only the code rules on top of it. Reference it from your project's entry file alongside `core-rules.md`. Where a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, it wins. Companions: [`coding-patterns.md`](./coding-patterns.md) (engineering craft) and [`agent-workflow.md`](./agent-workflow.md) (how to work).*
 
-**Version:** 2.3 · **Last reviewed:** 2026-08-07 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 2.4 · **Last reviewed:** 2026-08-08 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -55,9 +55,7 @@ Generate secure code the first time; don't rely on a later pass to fix it.
 - Use semantic HTML and keyboard-navigable, screen-reader-friendly structures.
 - Don't ship inaccessible defaults and leave it to the reviewer to catch.
 
-*(Non-UI document accessibility — headings, alt text, plain language, contrast in produced content — is [`writing-rules.md`](./writing-rules.md) §5.)*
-
-*(Documentation a change ships — README, API reference, runbook, release note — is a written deliverable: [`writing-rules.md`](./writing-rules.md) governs its risks, §6 in particular (actually run any command or snippet you document), and [`writing-patterns.md`](./writing-patterns.md) §4 its craft. This file governs the code it describes.)*
+*(This file governs code, not the documents around it. Non-UI document accessibility — headings, alt text, plain language, contrast — is [`writing-rules.md`](./writing-rules.md) §5. Documentation a change ships — README, API reference, runbook, release note — is a written deliverable: [`writing-rules.md`](./writing-rules.md) §6 governs its risks (actually run any command or snippet you document), [`writing-patterns.md`](./writing-patterns.md) §4 its craft. This file governs the code they describe.)*
 
 ---
 
