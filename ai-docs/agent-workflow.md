@@ -2,7 +2,7 @@
 
 *How to work — the sections below are the whole scope. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus the craft companions [`coding-patterns.md`](./coding-patterns.md) / [`writing-patterns.md`](./writing-patterns.md). Precedence: a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) > `core-rules.md` > the task module > this file and the craft companions > project entry file (`AGENTS.md` / `CLAUDE.md` / `.github/copilot-instructions.md`). Safety wins over speed, correctness over throughput; the stricter rule always wins.*
 
-**Version:** 1.10 · **Last reviewed:** 2026-08-07 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.11 · **Last reviewed:** 2026-08-08 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -48,7 +48,7 @@ Self-verify against an explicit contract; the project's entry file (`AGENTS.md`,
 
 - **Verify narrow first, then wide.** Run the single most relevant test or direct exercise of the changed path — for content, check the claims you changed against their sources — then the full gate (tests, lint, type-check) or a whole-deliverable read before hand-off.
 - **Exercise the change, don't just assert it.** Drive the affected flow at least once; a passing unrelated suite proves little. Trace each claim, quote, and citation to a real source rather than trusting that it reads plausibly.
-- **Never present unverified work as verified.** "Tested and passing" / "checked against sources" and "should be right, unverified" are different claims — say which is true. Inflating verification destroys the value of every future hand-off.
+- **Never claim more verification than you ran** (`core-rules.md` §4): "tested and passing" and "unverified because X" are different hand-offs — say which is true.
 - **On failure, fix the cause.** Don't weaken assertions, skip tests, or loosen checks to get green (`coding-rules.md` §3); don't paper over an unverified claim — cut it, source it, or flag it (`writing-rules.md` §1). This applies doubly under time pressure.
 
 ## 4. Structured hand-off
@@ -85,7 +85,7 @@ When you discover something non-obvious the docs don't capture — a convention,
 - **This is a check on finished work, not a license to defer quality** — write it correctly the first time (`coding-rules.md` §2).
 - **The pass must produce output.** What it finds is fixed, or it goes in **Flags** (§4). A pass that reports "looks good" every time is not being run; if it genuinely finds nothing, say what you checked.
 
-**Scale this to the blast radius,** as `core-rules.md` does for its checklist. A typo, a comment, or a one-word wording fix does not earn a cold requirement-first re-read. Anything design-bearing, security-touching, multi-file, or fact-asserting does — and say in your hand-off that you ran it.
+**Scale this pass to the blast radius (§7)** — a typo doesn't earn a cold re-read; §7's floor names what always does. Say in your hand-off when you ran it.
 
 ## 7. Economy of effort
 
@@ -94,7 +94,7 @@ Put effort where it buys correctness; don't do less of the work that catches def
 **The floor — what efficiency never buys:**
 
 - **`core-rules.md` TL;DR items 1 and 2** (secrets, data) — unconditional, at any size of change.
-- **Honest verification claims (§3).** Compressing a check is a choice you are allowed to make; describing an uncompressed check you didn't run is not.
+- **Honest verification claims (`core-rules.md` §4).** Compressing a check is a choice you are allowed to make; describing an uncompressed check you didn't run is not.
 - **The confirm-before-irreversible gate (`core-rules.md` §5).**
 - **The falsification pass (§6)** on anything design-bearing, security-touching, multi-file, or fact-asserting.
 
@@ -105,7 +105,7 @@ Under time pressure, cut scope and say so in the hand-off. Cutting one of these 
 - **The scarce resource is the human's review time, not yours.** Small scoped diffs, a hand-off with no filler (§4), and no unrequested refactors or drive-by reformatting (`core-rules.md` §2).
 - **Load the rules module your task needs, not all of them:** `core-rules.md`, the one task module your work calls for (`coding-rules.md` for code, `writing-rules.md` for content), the active profile from `client-profiles.md`, and the matching craft companion — `coding-patterns.md` for non-trivial code, `writing-patterns.md` for a non-trivial document — not to fix a typo. Reading everything crowds out what you have to reason over: the requirement and the existing material.
 - **Gather context in one deliberate pass, not by discovery.** Work out what you need and read it together; issue independent searches and reads at once; don't re-read what's already in front of you. Under-reading is the more expensive error — this budgets §1 step 2, it does not waive it.
-- **Scale the whole loop to the blast radius** (as §6 and the `core-rules.md` checklist do): a small, reversible change with no design or security surface earns a shorter path through §1 — the floor above still intact.
+- **Scale the whole loop to the blast radius** (as the `core-rules.md` checklist does): a small, reversible change with no design or security surface earns a shorter path through §1 — the floor above still intact.
 - **Narrow check per increment, wide gate once (§3)** — the full gate belongs before hand-off, not after every edit.
 - **Batch the interrupts.** One round of questions carrying a recommendation (§2) beats three serial ones, and describing the whole set of actions you intend costs the human one answer instead of several. Bundling never means acting on something you didn't describe (`core-rules.md` §5).
 - **Spend what you save on §6 and §5.** The falsification pass and writing down what you had to work out compound — the last things to cut, not the first.
