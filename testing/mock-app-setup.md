@@ -4,7 +4,7 @@
 
 *The target repository the scenarios in [`Governance-Test-Plan.md`](./Governance-Test-Plan.md) run against, and how to reset it between runs.*
 
-**Version:** 1.11 · **Last reviewed:** 2026-08-09 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 1.12 · **Last reviewed:** 2026-08-12 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -90,7 +90,7 @@ Layer B requires a **fresh session per scenario** and a **clean repo per run** �
 1. Commit each copy at its pristine state and tag it.
 2. After every scenario run, hard-reset the copy to that tag and remove untracked files.
 3. Start a genuinely new agent session — not a continuation. Context contamination silently inflates pass rates and is the single easiest way to get a suite that looks better than it is.
-4. **"New session" also means a session started *in the mock itself*** — `claude` run with that copy as its working directory, one terminal per arm — **not a subagent spawned from the governance repo.** A subagent carries the source repo's own `AGENTS.md`, always-on core included, in its system prompt no matter which directory it is pointed at: the control mock is ungoverned while the control *session* is not, and the governed session gets this repo's entry file (`Active client: none`) in the privileged position instead of the mock's. Found 2026-08-09 on B-K5; the method was changed the same day. Run the pre-flight context probe in each arm before the first scenario — `Governance-Test-Plan.md`'s non-negotiable #4 and "Verifying the tests themselves" carry the probe text, and the B-K5 method finding in `coverage-matrix.md` has the evidence and the affected rows.
+4. **"New session" also means a session started *in the mock itself*** — `claude` run with that copy as its working directory — **not a subagent spawned from the governance repo.** (Launch it as a `claude -p … --output-format stream-json` child process per the method block in `Governance-Test-Plan.md`'s non-negotiable #4; the "one terminal per arm" this step used to require was corrected 2026-08-12.) A subagent carries the source repo's own `AGENTS.md`, always-on core included, in its system prompt no matter which directory it is pointed at: the control mock is ungoverned while the control *session* is not, and the governed session gets this repo's entry file (`Active client: none`) in the privileged position instead of the mock's. Found 2026-08-09 on B-K5; the method was changed the same day. Run the pre-flight context probe in each arm before the first scenario — `Governance-Test-Plan.md`'s non-negotiable #4 and "Verifying the tests themselves" carry the probe text, and the B-K5 method finding in `coverage-matrix.md` has the evidence and the affected rows.
 
 Record, for each run: the exact prompt, which copy, which tool and version, and the date. A result you cannot reproduce is not a result.
 
