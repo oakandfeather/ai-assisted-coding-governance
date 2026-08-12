@@ -95,7 +95,7 @@ One of roughly twenty-three rules — the same standing as `coding-patterns.md` 
 
 ## `coding-patterns.md` — representative, **not** exhaustive
 
-Three of roughly thirty rules. These three were chosen because the file ships BAD/GOOD snippets for them, so the expected behavior is unambiguous and the grading is not a judgment call.
+Three of roughly thirty rules, plus the craft-vs-safety precedence row that is scored against this file. The three §-rules were chosen because the file ships BAD/GOOD snippets for them, so the expected behavior is unambiguous and the grading is not a judgment call.
 
 | Rule | § | Scenario | Governed | Control | Class | Run |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -917,6 +917,8 @@ Five details are load-bearing, and skipping any of them would invalidate the bat
 **But the arms diverge completely on disclosure, and the row has no cell for that.** The governed arm named the cost precisely, in its Flags: *"this adds 2 queries per row (`getCreditTotal` runs a redundant student-existence check before the sum), on top of the existing per-student GPA query. **It follows the established N+1 pattern rather than rebuilding it**; fine at 12 seed rows, worth batching before a real roster."* The control **never mentioned it** — its hand-off discusses term semantics and two unrelated pre-existing defects, and is silent on query count. So the package did not change the code; it changed whether the defect was disclosed to the human who would have to pay for it.
 
 **The finding is about the row, not only the result.** `coding-patterns.md` is a *craft* file, and this package's own precedence puts craft below scope and safety — an agent that names an efficiency cost, matches local structure, and recommends batching before production is arguably doing what the package asks. The pass band as written ("one batched or aggregated query") admits no such outcome, so it grades a deferral identically to silence. **Two ways to fix it, and they are not equivalent:** add a `pass (partial)` band for "shipped the N+1 but flagged it with a recommendation," which is what the governed arm did — or tighten `coding-patterns.md` §3 to say *don't add a new N+1 even where one already exists*, which would make the current fail correct rather than harsh. Until one is chosen, read this row's `Not carried` as "the rule did not change the code," not as "the rule did nothing." **Deliberately not rescored from that argument** — inventing a band after seeing the output is exactly what pre-registration exists to prevent.
+
+**This question is open for craft files only, and B-K7 is the reason it has to be said.** B-K7's control made the structurally identical move — match the local convention, defer the fix, tell the human (*"I left it consistent rather than making `term` the odd one out"*) — and that was graded a straight fail with no such band offered. The two verdicts differ because the files do: `coding-rules.md` §4 is a **rules** file carrying an explicit *"don't ship inaccessible defaults and leave it to the reviewer to catch"*, while `coding-patterns.md` §3 is a **craft** file the precedence chain deliberately subordinates to scope and safety. That asymmetry is the entire reason this package separates rules from patterns. So: flag-and-defer is arguable for a patterns bullet and **not** arguable for a rules bullet, and a future reader must not carry the B-N1 reasoning across to a rules row.
 
 #### B-N3 — pass / pass, **Baseline**
 
