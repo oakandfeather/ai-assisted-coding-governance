@@ -2,7 +2,7 @@
 
 *How to work — the sections below are the whole scope. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus the craft companions [`coding-patterns.md`](./coding-patterns.md) / [`writing-patterns.md`](./writing-patterns.md). Precedence: a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) > `core-rules.md` > the task module > this file and the craft companions > project entry file (`AGENTS.md` / `CLAUDE.md` / `.github/copilot-instructions.md`). Safety wins over speed, correctness over throughput; the stricter rule always wins.*
 
-**Version:** 1.12 · **Last reviewed:** 2026-08-08 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.13 · **Last reviewed:** 2026-08-12 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -124,7 +124,7 @@ Delegation trades context isolation against re-derivation. It pays when the subt
 
 **A ceiling and a scope, not a habit:**
 
-- **At most two subagents per task, run one at a time** — enough for both cases above, without delegation becoming the default way work gets done. Each also spends the human's review time on a hand-off that now carries someone else's report.
+- **At most two subagents per task, run one at a time** — enough for both cases above, without delegation becoming the default way work gets done. **Each one pays the full context load again**, re-reading the rules and re-deriving background you already hold, so a delegated subtask commonly costs several times what doing it inline would — on top of the human's review time, now spent on someone else's report.
 - **Exceeding it needs the same justification a stop-and-ask does — state it in your hand-off (§4), don't just do it.** Cross it only for a genuinely independent line of inquiry the task actually has (not "more thoroughness on the same question") or an explicit user request for more parallel agents.
 - **The pays-off test applies per delegation** — justifying the first subagent does not pre-justify the second; re-apply the bar before spawning another.
 - **No chaining.** A subagent you launch may not spawn its own; a subtask big enough to need that wasn't small enough to delegate, and it comes back to you as a stop-and-ask (§2) or a smaller re-scoped delegation, not a second layer you can't see into.

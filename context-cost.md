@@ -1,6 +1,6 @@
 # Context cost of the governance package
 
-**Last reviewed:** 2026-08-08
+**Last reviewed:** 2026-08-12
 
 Tracks how much of an agent's context window the `ai-docs/` package consumes when it's loaded per `AGENTS.md`'s "load in one pass" instruction. Re-run the measurement below and update this table when `ai-docs/` files change size materially — it's a cost metric, not a governed rule file, so it doesn't need a version bump on every edit.
 
@@ -23,7 +23,7 @@ wc -w -c ai-docs/*.md ai-docs/client-profiles/*.md
 | `writing-rules.md` | 1,275 | ~2,200 |
 | `coding-patterns.md` | 1,085 | ~1,900 |
 | `writing-patterns.md` | 1,600 | ~2,700 |
-| `agent-workflow.md` | 2,434 | ~3,950 |
+| `agent-workflow.md` | 2,461 | ~4,000 |
 | `client-profiles.md` + one profile | 414 | ~750 |
 | entry file (`AGENTS.md`, placeholders filled) | 909 | ~1,700 |
 
@@ -45,6 +45,10 @@ A fourth within-file cut was drafted and **reverted**, and it is the cautionary 
 
 **Treat ~1% as what deduplication is worth on this package, not as a pass left unfinished.** Every file had already had a density pass and each is recorded above as at its floor; what remained was duplication, and most of that duplication is load-bearing under reachability. The next real reduction would have to remove a rule or relax the reachability constraint — both governance decisions, not density ones.
 
+**v1.13 added 27 words to `agent-workflow.md` §8 — the first deliberate increase recorded here, and the reasoning matters more than the number.** §8's two-subagent ceiling was stated but justified only on "delegation becoming the default" and the human's review time. Neither is spend, so an agent reasoning "this delegation is cheap — short report, light review burden" could talk itself past the limit without noticing that a subagent re-reads the rules and re-derives context, costing a multiple of the same work done inline. The addition names that cost. Coverage followed: the ceiling had **no scenario at all** — B-F8 and B-F9 both probe the trust boundary, and B-F8's grading notes record the ceiling as explicitly not scored — so B-F12 was added in the same change.
+
+**The same pass considered moving §8 into its own conditionally-loaded file and declined it; record the measurement, because the "§8 is the largest cuttable block" framing is easy to reuse uncritically.** §8 is 608 words at v1.13, but a bullet-by-bullet tally puts **433 of them out of reach of any conditional load**: the trust boundary (161 words — hearsay, laundered injection, inherited obligations) is safety by the risk-vs-craft placement test, and the ceiling block (272 words — the limit, the per-delegation bar, no chaining, least access and smallest capable model) is spend and oversight control that binds precisely when an agent is economizing. That leaves ~170 words, of which "not the change itself" is a correctness rule — so the genuinely movable residue is ~140 words, roughly 250 tokens. Against that: a new file converts §8 from a within-file cut into a cross-file one, which is the line this document holds at the paragraph above; §6 and §8 are bidirectionally coupled, and the v1.12 −20 cut was justified *because* they are one file, so a split would owe part of the saving straight back. Note also that §8 already self-gates in its first sentence — an agent whose tooling can't delegate is told nothing is required of it — so the burden was never behavioral, only window.
+
 **`client-profiles.md`'s headline 17% overstates what an agent saves.** Measured on the *source* file, but roughly half of it never reaches an installed repo: both build scripts replace the `*(none yet)*` paragraph and strip the `## Sample profile` section, so compressing those costs an agent nothing. On the installed file the pass is 117 → 102 words (~13%), and only the banner and the "Add each client as…" paragraph are compressible at all — everything else is a heading, the version line, or the generated client list. That ~15-word ceiling is under 1% of a full load; the file is already the smallest in the package, so measure this pass against the source-repo reader, not the context window.
 
 **The entry file's ~6.5% is capped by duplication, not by density.** Its mandatory-rules block fell ~12% (351 → 309 words) once the six rule-file references were folded from two prose paragraphs into one bulleted routing list, each file named once. But 126 words of that block are the always-on core — the paragraph root `AGENTS.md` requires to stay in sync across `AGENTS.template.md`, `copilot-instructions.template.md`, and both of this repo's own entry files. Compressing it means a four-file change to the package's highest-risk text, so it was left verbatim; that paragraph is ~42% of the block and sets the floor here.
@@ -58,9 +62,9 @@ Per the graduated loading rule in `AGENTS.md` ("scale that set to the blast radi
 | Scenario | Files loaded | Est. tokens |
 |---|---|---:|
 | Trivial edit | entry file + `core-rules.md` | ~4,400 |
-| Non-trivial coding task | entry + core-rules + coding-rules + coding-patterns + agent-workflow + client profile | ~12,250 |
-| Non-trivial writing task | entry + core-rules + writing-rules + writing-patterns + agent-workflow + client profile | ~14,000 |
-| Everything at once | entry + all seven `ai-docs/` files | ~17,150 |
+| Non-trivial coding task | entry + core-rules + coding-rules + coding-patterns + agent-workflow + client profile | ~12,300 |
+| Non-trivial writing task | entry + core-rules + writing-rules + writing-patterns + agent-workflow + client profile | ~14,050 |
+| Everything at once | entry + all seven `ai-docs/` files | ~17,200 |
 
 ## Caveats
 
