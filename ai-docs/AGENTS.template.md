@@ -8,7 +8,7 @@
 >
 > **Last step.** Retitle the copy to `# AGENTS.md`, delete this banner — everything from the `(template)` title down to the `Version:` line — and delete the closing footnote at the bottom. Both describe the template rather than the project, and this banner's `../AGENTS.md` link does not resolve outside this repo.
 
-**Version:** 1.10 · **Last reviewed:** *(date)* · **Active client:** *(client name)*
+**Version:** 1.11 · **Last reviewed:** *(date)* · **Active client:** *(client name)*
 
 Guidance for AI agents working in this repository.
 
@@ -43,6 +43,8 @@ Guidance for AI agents working in this repository.
 - **Dev environment:** *(e.g., OS assumptions, devcontainer, monorepo layout and which package this file governs)*
 
 ## Common commands
+
+*Fill these with commands actually run in this repo. A filled-in command is a claim about behavior — governed by [`writing-rules.md`](./ai-governance/writing-rules.md) §6 — and it is what every later agent here trusts instead of checking. Leave anything you could not run italicized rather than writing an unverified command.*
 
 ```bash
 # Install dependencies

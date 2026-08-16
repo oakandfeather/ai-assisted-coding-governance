@@ -2,7 +2,7 @@
 
 *Rules for producing or editing written deliverables — documents, research, analysis, technical documentation — with §§1–6 below the whole scope. **Read [`core-rules.md`](./core-rules.md) first:** it holds the task-agnostic base that binds on every task; this file adds only the content rules on top of it. **Documentation about code** — READMEs, API references, runbooks, release notes — is a written deliverable, so it is governed here, and by `coding-rules.md` only when you also change code. Where a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, it wins. Companions: [`writing-patterns.md`](./writing-patterns.md) (writing craft) and [`agent-workflow.md`](./agent-workflow.md) (how to work).*
 
-**Version:** 1.5 · **Last reviewed:** 2026-08-07 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.6 · **Last reviewed:** 2026-08-15 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -66,9 +66,10 @@ Make documents, pages, and other content artifacts accessible by default (the AD
 
 ## 6. Verified documentation
 
-Applies when the deliverable documents software — a README, API reference, runbook, release note, help-center article, or in-repo guide.
+Applies when the deliverable documents software — a README, API reference, runbook, release note, help-center article, in-repo guide, or an agent instruction file such as `AGENTS.md` and its companions.
 
 - **Run every example before you ship it.** Commands, snippets, config fragments, and API calls in documentation are claims about behavior — verify them the way `coding-rules.md` §3 requires of tests: actually execute the command, compile the snippet, hit the endpoint. `core-rules.md` §2 forbids inventing a flag or config key; this goes further — a *real* flag in an unrun example is still an unverified claim, failing the way a fabricated citation does. If you cannot run it, say so in the document or your hand-off rather than presenting it as working.
+- **Running it once doesn't license the generalization you write about it.** Verify the form you ship, not a neighbour of it. Suppose you ran a filtered-test invocation once, with a `--` separator before the filter flag, and it worked: that establishes *that* invocation, not that the separator is **required** — which is a claim about the runs you didn't make. Write it anyway and you have documented a rule you never tested — often one your own transcript already contradicts, which is the failure mode §1 calls presenting inference as established fact. When a sentence claims more than the run does — *always*, *required*, *only*, *any* — either run the variant that proves it or narrow the sentence to what you actually observed.
 
 *(The rest of what documentation owes its reader — audience and document type, showing what success looks like, the *why*, per-type completeness, keeping docs true as behavior changes — is **craft**, in [`writing-patterns.md`](./writing-patterns.md) §4. This file governs risk; that one quality.)*
 

@@ -79,6 +79,8 @@ Interview the user for each italicized `*(placeholder)*` in the new `AGENTS.md` 
 
 **Infer from the repo where you can** — read `package.json`, `pyproject.toml`, CI config, and existing test layout, and propose what you found rather than asking cold. But **never invent**. If you cannot determine something and the user cannot supply it, leave the placeholder italicized and tell them: an unfilled placeholder correctly signals "unconfigured — ask before assuming," which is the template's own instruction and is far better than a confident wrong command.
 
+**Never invent is not enough here — run what you write.** Every line you put into **Common commands** and the **Verification contract** is a claim about this repo's behavior, and it is the claim every future agent in the repo will trust instead of checking. A real command sourced from `package.json` still fails `ai-governance/writing-rules.md` §6 if you never executed it: scripts get renamed, a test runner needs a flag the script omits, the build wants an env var nobody set. So run each one and record the invocation that actually worked. **Couldn't run it is the same outcome as couldn't determine it** — leave the placeholder italicized, and say which commands you verified and which you didn't.
+
 ### 6. Onboard the client profile
 
 Fill the **Active client** line in the new `AGENTS.md`, then author that client's profile. This is the step that makes the package specific to the engagement; without it the repo is scaffolded but unconfigured.
