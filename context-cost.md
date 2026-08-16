@@ -1,6 +1,6 @@
 # Context cost of the governance package
 
-**Last reviewed:** 2026-08-12
+**Last reviewed:** 2026-08-15
 
 Tracks how much of an agent's context window the `ai-docs/` package consumes when it's loaded per `AGENTS.md`'s "load in one pass" instruction. Re-run the measurement below and update this table when `ai-docs/` files change size materially — it's a cost metric, not a governed rule file, so it doesn't need a version bump on every edit.
 
@@ -18,14 +18,14 @@ wc -w -c ai-docs/*.md ai-docs/client-profiles/*.md
 
 | File | Words | Est. tokens |
 |---|---:|---:|
-| `core-rules.md` | 1,531 | ~2,700 |
+| `core-rules.md` | 1,751 | ~3,000 |
 | `coding-rules.md` | 707 | ~1,250 |
-| `writing-rules.md` | 1,275 | ~2,200 |
-| `coding-patterns.md` | 1,085 | ~1,900 |
+| `writing-rules.md` | 1,405 | ~2,400 |
+| `coding-patterns.md` | 1,096 | ~1,900 |
 | `writing-patterns.md` | 1,600 | ~2,700 |
-| `agent-workflow.md` | 2,461 | ~4,000 |
+| `agent-workflow.md` | 2,505 | ~4,100 |
 | `client-profiles.md` + one profile | 414 | ~750 |
-| entry file (`AGENTS.md`, placeholders filled) | 909 | ~1,700 |
+| entry file (`AGENTS.md`, placeholders filled) | 955 | ~1,800 |
 
 `agent-workflow.md` is still the single largest file — over a fifth of the cost of a full load — after two compression passes: v1.9 cut it ~16% (3,039 → 2,555 words), v1.10 a further ~3% (2,555 → 2,481 words), and v1.11 ~1% (2,481 → 2,454 words) by deduplication rather than density. The same treatment has run over `writing-rules.md` at v1.5, ~14% (1,481 → 1,275 words); `writing-patterns.md` at v1.1, ~9% (1,792 → 1,622 words); `coding-rules.md` at v2.3, ~12% (799 → 704 words); `coding-patterns.md` at v1.4, ~15% (1,272 → 1,085 words); `core-rules.md` at v1.3, ~5% (1,614 → 1,531 words); the entry file (`AGENTS.template.md` at v1.10), ~6.5% (973 → 909 words as measured on `build/AGENTS.md`); and `client-profiles.md` at v1.4, ~17% (192 → 160 words) — no pass dropped a rule. The `coding-patterns.md`, `core-rules.md`, entry-file, and `client-profiles.md` passes were briefed to favor agent consumption over human readability, and so also cut trailing clauses that only restated their own bold lead-in.
 
@@ -55,19 +55,21 @@ A fourth within-file cut was drafted and **reverted**, and it is the cautionary 
 
 **`core-rules.md`'s ~5% is the outlier, and it is the informative one.** The same brief that yielded 15% on `coding-patterns.md` yielded a third as much here, because `core-rules.md` carries almost no prose written for human comfort to begin with — what fills it is rule text and *conditions on* rule text. Its §9 in particular is built almost entirely of qualifiers ("when a claim is time-sensitive… or surprising," "check a second source when… the first source is thin," "don't spiral into open-ended research on claims the task doesn't hinge on"); strip those and the remainder reads as an unconditional mandate to search and double-source everything, which is a different and worse rule. §9 and §0 were therefore left substantially intact by design. Treat ~5% as the floor this file can reach, not as a pass left unfinished.
 
+**The 2026-08-15 re-measurement is the first since this file was written to show growth rather than compression, and that's expected, not a regression.** Three files grew from the same Layer B closure recorded in `d91aa7e`: `core-rules.md` v1.3→v1.4 added a §0 clause scoping "prefer proceeding" instructions away from the mandatory-stop list and a §7/§8 pair closing the unconfigured-client-profile gap (1,531→1,751 words, +14%); `writing-rules.md` v1.5→v1.6 added agent instruction files to §6's scope and a bullet against generalizing a single verified run (1,275→1,405 words, +10%); `agent-workflow.md` and the entry file (`AGENTS.template.md`) each picked up a smaller cross-reference to the same fix (+44 and +46 words). `coding-patterns.md` closed a fourth gap (the "existing N+1 nearby" loophole, B-N1) for +11 words; `client-profiles.md` was untouched. None of this is duplication the sweep above would have caught — each addition closes a scenario that previously had no rule behind it (B-C11, B-W6b, B-N1), which is the tradeoff this document exists to make visible: closing a real gap costs window, and the number above is what it cost. `coding-rules.md` and `writing-patterns.md` are unchanged since the 2026-08-08 measurement.
+
 ## Scenario totals
 
 Per the graduated loading rule in `AGENTS.md` ("scale that set to the blast radius"):
 
 | Scenario | Files loaded | Est. tokens |
 |---|---|---:|
-| Trivial edit | entry file + `core-rules.md` | ~4,400 |
-| Non-trivial coding task | entry + core-rules + coding-rules + coding-patterns + agent-workflow + client profile | ~12,300 |
-| Non-trivial writing task | entry + core-rules + writing-rules + writing-patterns + agent-workflow + client profile | ~14,050 |
-| Everything at once | entry + all seven `ai-docs/` files | ~17,200 |
+| Trivial edit | entry file + `core-rules.md` | ~4,800 |
+| Non-trivial coding task | entry + core-rules + coding-rules + coding-patterns + agent-workflow + client profile | ~12,800 |
+| Non-trivial writing task | entry + core-rules + writing-rules + writing-patterns + agent-workflow + client profile | ~14,750 |
+| Everything at once | entry + all seven `ai-docs/` files | ~17,900 |
 
 ## Caveats
 
-- This is a one-time context-window cost **per session**, paid when files are actually `Read` — not merely linked to. The graduated-loading rule exists specifically to avoid paying the ~17.1k full cost on every task.
+- This is a one-time context-window cost **per session**, paid when files are actually `Read` — not merely linked to. The graduated-loading rule exists specifically to avoid paying the ~17.9k full cost on every task.
 - Prompt caching (where the harness supports it) makes repeat reference *cheap in billing* within a session once a file is cached, but it does not reduce how much of the context window that file occupies.
-- These numbers reflect `ai-docs/` as of 2026-08-08. Re-measure after any material edit to a file listed above.
+- These numbers reflect `ai-docs/` as of 2026-08-15. Re-measure after any material edit to a file listed above.
