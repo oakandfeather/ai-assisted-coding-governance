@@ -2,7 +2,7 @@
 
 *Craft guide for code: reliable, efficient, maintainable. Companion to the safety/risk rules — [`core-rules.md`](./core-rules.md) (the task-agnostic base) and [`coding-rules.md`](./coding-rules.md) (the code rules); [`agent-workflow.md`](./agent-workflow.md) governs how to work. Sibling [`writing-patterns.md`](./writing-patterns.md) owns documentation *of* code — READMEs, runbooks, API references; this file owns the comments and docstrings inside a source file. On conflict, **safety and correctness win over efficiency and elegance**, and a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over both.*
 
-**Version:** 1.5 · **Last reviewed:** 2026-08-15 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.6 · **Last reviewed:** 2026-08-16 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -49,7 +49,7 @@ Can't satisfy one? Flag the tension rather than quietly trading it away.
 
 - **Correct first, fast second.** Never trade correctness or clarity for speed the requirement doesn't demand.
 - **Measure before optimizing.** Profile; don't guess at hot paths. Optimizing unmeasured code buys complexity for no proven gain.
-- **Get algorithmic complexity right anyway.** Not premature — an O(n²) loop or an N+1 query is a design defect, not a micro-optimization. Watch for repeated work and per-iteration I/O inside loops. **An existing N+1 nearby is not a reason to add another.**
+- **Get algorithmic complexity right anyway.** Not premature — an O(n²) loop or an N+1 query is a design defect, not a micro-optimization. Watch for repeated work and per-iteration I/O inside loops. **An existing N+1 nearby is not a reason to add another. If you ship one anyway, the hand-off carries the query count, its cause, and the batched alternative.**
 
   ```text
   BAD:  for user in users: orders = db.query(Order, user.id)   # N+1: one query per user

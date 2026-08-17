@@ -1,6 +1,6 @@
 # Context cost of the governance package
 
-**Last reviewed:** 2026-08-15
+**Last reviewed:** 2026-08-16
 
 Tracks how much of an agent's context window the `ai-docs/` package consumes when it's loaded per `AGENTS.md`'s "load in one pass" instruction. Re-run the measurement below and update this table when `ai-docs/` files change size materially — it's a cost metric, not a governed rule file, so it doesn't need a version bump on every edit.
 
@@ -21,7 +21,7 @@ wc -w -c ai-docs/*.md ai-docs/client-profiles/*.md
 | `core-rules.md` | 1,751 | ~3,000 |
 | `coding-rules.md` | 707 | ~1,250 |
 | `writing-rules.md` | 1,405 | ~2,400 |
-| `coding-patterns.md` | 1,096 | ~1,900 |
+| `coding-patterns.md` | 1,113 | ~1,950 |
 | `writing-patterns.md` | 1,600 | ~2,700 |
 | `agent-workflow.md` | 2,505 | ~4,100 |
 | `client-profiles.md` + one profile | 414 | ~750 |
@@ -55,7 +55,7 @@ A fourth within-file cut was drafted and **reverted**, and it is the cautionary 
 
 **`core-rules.md`'s ~5% is the outlier, and it is the informative one.** The same brief that yielded 15% on `coding-patterns.md` yielded a third as much here, because `core-rules.md` carries almost no prose written for human comfort to begin with — what fills it is rule text and *conditions on* rule text. Its §9 in particular is built almost entirely of qualifiers ("when a claim is time-sensitive… or surprising," "check a second source when… the first source is thin," "don't spiral into open-ended research on claims the task doesn't hinge on"); strip those and the remainder reads as an unconditional mandate to search and double-source everything, which is a different and worse rule. §9 and §0 were therefore left substantially intact by design. Treat ~5% as the floor this file can reach, not as a pass left unfinished.
 
-**The 2026-08-15 re-measurement is the first since this file was written to show growth rather than compression, and that's expected, not a regression.** Three files grew from the same Layer B closure recorded in `d91aa7e`: `core-rules.md` v1.3→v1.4 added a §0 clause scoping "prefer proceeding" instructions away from the mandatory-stop list and a §7/§8 pair closing the unconfigured-client-profile gap (1,531→1,751 words, +14%); `writing-rules.md` v1.5→v1.6 added agent instruction files to §6's scope and a bullet against generalizing a single verified run (1,275→1,405 words, +10%); `agent-workflow.md` and the entry file (`AGENTS.template.md`) each picked up a smaller cross-reference to the same fix (+44 and +46 words). `coding-patterns.md` closed a fourth gap (the "existing N+1 nearby" loophole, B-N1) for +11 words; `client-profiles.md` was untouched. None of this is duplication the sweep above would have caught — each addition closes a scenario that previously had no rule behind it (B-C11, B-W6b, B-N1), which is the tradeoff this document exists to make visible: closing a real gap costs window, and the number above is what it cost. `coding-rules.md` and `writing-patterns.md` are unchanged since the 2026-08-08 measurement.
+**The 2026-08-15 re-measurement is the first since this file was written to show growth rather than compression, and that's expected, not a regression.** Three files grew from the same Layer B closure recorded in `d91aa7e`: `core-rules.md` v1.3→v1.4 added a §0 clause scoping "prefer proceeding" instructions away from the mandatory-stop list and a §7/§8 pair closing the unconfigured-client-profile gap (1,531→1,751 words, +14%); `writing-rules.md` v1.5→v1.6 added agent instruction files to §6's scope and a bullet against generalizing a single verified run (1,275→1,405 words, +10%); `agent-workflow.md` and the entry file (`AGENTS.template.md`) each picked up a smaller cross-reference to the same fix (+44 and +46 words). `coding-patterns.md` closed a fourth gap (the "existing N+1 nearby" loophole, B-N1) for +11 words; `client-profiles.md` was untouched. None of this is duplication the sweep above would have caught — each addition closes a scenario that previously had no rule behind it (B-C11, B-W6b, B-N1), which is the tradeoff this document exists to make visible: closing a real gap costs window, and the number above is what it cost. `coding-rules.md` and `writing-patterns.md` are unchanged since the 2026-08-08 measurement. **`coding-patterns.md` v1.6 then added a further +17 on 2026-08-16 (1,096 → 1,113)**, and the contrast with the +11 above is the record worth keeping: the first addition closed a loophole no run had used, the second states the obligation the failure actually turns on — one row, two window costs. The row was re-run on 2026-08-16 and now scores `Carried`, but neither addition was exercised by it — the governed arm batched the query, so the loophole was never reached and the disclosure obligation never bound (see `testing/coverage-matrix.md`).
 
 ## Scenario totals
 
@@ -72,4 +72,4 @@ Per the graduated loading rule in `AGENTS.md` ("scale that set to the blast radi
 
 - This is a one-time context-window cost **per session**, paid when files are actually `Read` — not merely linked to. The graduated-loading rule exists specifically to avoid paying the ~17.9k full cost on every task.
 - Prompt caching (where the harness supports it) makes repeat reference *cheap in billing* within a session once a file is cached, but it does not reduce how much of the context window that file occupies.
-- These numbers reflect `ai-docs/` as of 2026-08-15. Re-measure after any material edit to a file listed above.
+- These numbers reflect `ai-docs/` as of 2026-08-16. Re-measure after any material edit to a file listed above. (The scenario totals above are unchanged at this precision — v1.6's +17 words is ~50 tokens, inside the rounding of a `~4 chars/token` estimate.)

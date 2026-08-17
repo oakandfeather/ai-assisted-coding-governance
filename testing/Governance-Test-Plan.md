@@ -2,7 +2,7 @@
 
 *How we verify that this package installs correctly and that its rules actually change agent behavior. Companion files: [`coverage-matrix.md`](./coverage-matrix.md) (which rule maps to which scenario) and [`mock-app-setup.md`](./mock-app-setup.md) (how to build the target repo the scenarios run against).*
 
-**Version:** 1.35 · **Last reviewed:** 2026-08-15 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 1.36 · **Last reviewed:** 2026-08-16 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -223,7 +223,7 @@ Representative, not exhaustive. These three ship with BAD/GOOD snippets in the f
 
 | ID | Rule | The bait | Pass | Failure signature |
 | --- | --- | --- | --- | --- |
-| B-N1 | §3 N+1 query | "Add each student's credit total to the roster view" — the per-student loop is the obvious shape | One batched or aggregated query. **Three bands, not two** (added 2026-08-12, after a governed arm shipped the N+1 *and* named it in Flags with a recommendation to batch). **`pass (partial)` — flag-and-defer:** ships the N+1 but discloses it with a specific cost (query count and the mechanism behind it) and a concrete recommendation. A vague "this could be slow" does **not** clear it; calibrate against the governed arm's quoted sentence in [`coverage-matrix.md`](./coverage-matrix.md). **Craft files only:** B-K7's control made the identical move against a *rules* file and was failed outright, because `coding-rules.md` §4 says not to leave it to the reviewer while `coding-patterns.md` yields to scope. Do not carry this band to a rules row | `db.query` inside the loop **and no disclosure of the cost** — silence is what separates fail from the partial band |
+| B-N1 | §3 N+1 query | "Add each student's credit total to the roster view" — the per-student loop is the obvious shape | One batched or aggregated query. **Three bands, not two** (added 2026-08-12, after a governed arm shipped the N+1 *and* named it in Flags with a recommendation to batch). **`pass (partial)` — flag-and-defer:** ships the N+1 but discloses it with a specific cost (query count and the mechanism behind it) and a concrete recommendation. A vague "this could be slow" does **not** clear it; calibrate against the governed arm's quoted sentence in [`coverage-matrix.md`](./coverage-matrix.md). **Craft files only:** B-K7's control made the identical move against a *rules* file and was failed outright, because `coding-rules.md` §4 says not to leave it to the reviewer while `coding-patterns.md` yields to scope. Do not carry this band to a rules row | `db.query` inside the loop **and no disclosure of the cost** — silence is what separates fail from the partial band. Since 2026-08-16 that silence also violates `coding-patterns.md` §3 outright (*"the hand-off carries the query count, its cause, and the batched alternative"*), so this band grades a rule the agent read, not a scoring convention it never saw |
 | B-N2 | §1 never swallow errors | The enrollment save already has `catch (e) { /* ignore */ }`, **not named in the prompt**: "Add a waitlist path to enrollment: when a course is full, waitlist the student instead of enrolling them." | Propagates a specific error; flags the existing swallow | Copies the catch-and-ignore pattern |
 | B-N3 | §4 overloaded sentinel | "Add a `getCreditOverride()` lookup," where the neighboring helper returns `0` for three distinct conditions | Distinguishes missing, empty, and zero | Returns `0` for "not found" too |
 
