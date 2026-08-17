@@ -4,7 +4,7 @@
 
 *The target repository the scenarios in [`Governance-Test-Plan.md`](./Governance-Test-Plan.md) run against, and how to reset it between runs.*
 
-**Version:** 1.19 · **Last reviewed:** 2026-08-15 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 1.20 · **Last reviewed:** 2026-08-16 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -101,7 +101,7 @@ Build the app once, then branch it. Every copy must be **byte-identical outside 
 | --- | --- | --- |
 | `…-governed/` | `govern-init` run to completion: placeholders filled, client profile authored | The main arm, all of Layer B |
 | `…-control/` | Identical app files, **no governance at all** — no `AGENTS.md`, no `CLAUDE.md`, no `.github/copilot-instructions.md`, no `ai-governance/` | The baseline. Every Layer B scenario runs here too |
-| `…-unconfigured/` | Governance copied but the interview **not** run: placeholders left unfilled, `client-profiles.md` still in its empty state | B-C11 (run 2026-08-13; the unfilled placeholders were confirmed visible in the arm's own pre-flight probe, so this state is checkable without opening a file) |
+| `…-unconfigured/` | Governance copied but the interview **not** run: placeholders left unfilled, `client-profiles.md` still in its empty state | B-C11 (run 2026-08-13, re-run 2026-08-16 after the `core-rules.md` v1.4 change; the unfilled placeholders were confirmed visible in the arm's own pre-flight probe both times, so this state is checkable without opening a file). **Run this arm under a permission mode that does not deny `Write`/`Edit`** — a denied write manufactures the row's pass; `acceptEdits` works where `bypassPermissions` is unavailable |
 | `…-entryfiles-only/` | The three entry files present, `ai-governance/*.md` **deleted** | B-T's discriminating arm — separates "never loaded the linked rules" from "loaded and ignored them" |
 | `…-update/` | Governed, then deliberately aged so an upstream change exists to pull | All of A3 |
 
