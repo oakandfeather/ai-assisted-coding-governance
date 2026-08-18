@@ -2,7 +2,7 @@
 
 *How to work — the sections below are the whole scope. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus the craft companions [`coding-patterns.md`](./coding-patterns.md) / [`writing-patterns.md`](./writing-patterns.md). Precedence: a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) > `core-rules.md` > the task module > this file and the craft companions > project entry file (`AGENTS.md` / `CLAUDE.md` / `.github/copilot-instructions.md`). Safety wins over speed, correctness over throughput; the stricter rule always wins.*
 
-**Version:** 1.15 · **Last reviewed:** 2026-08-17 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.16 · **Last reviewed:** 2026-08-17 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -37,7 +37,7 @@ Ask once, with a concrete recommendation — not an open-ended survey. A general
 **Object before implementing, then defer, when the instruction is clear but you believe it's wrong** — you understand exactly what was asked, and it carries a cost the human hasn't priced.
 
 - **Substance, not preference.** A correctness, security, data-handling, or maintainability cost — or a materially better approach — earns an objection. "I'd have structured it differently," or a convention the human has already settled, does not.
-- **Raise it before implementing, not in the hand-off** — by then the work is what's at stake. **An objection is a pause, not a preamble** — raise it and wait; naming the cost and implementing in the same breath is the late objection under another name. A firmly-phrased instruction pre-dates your concern and does not answer it. §4 **Flags** is where a late objection lands; redirection before code is cheap (§1 step 3).
+- **Raise it before implementing, not in the hand-off** — by then the work is what's at stake. **An objection is a pause, not a preamble** — raise it to the human and wait; naming the cost and implementing in the same breath is the late objection under another name, and a caveat left only in the work itself never reached them at all. A firmly-phrased instruction pre-dates your concern and does not answer it. §4 **Flags** is where a late objection lands; redirection before code is cheap (§1 step 3).
 - **Say it once, with a recommendation, then do it their way.** Concern, reason, alternative, in one pass. If the human answers and holds their position, implement as directed and record the objection in **Flags** (§4). The human owns the decision (`core-rules.md` §0).
 - **A mandatory-stop concern is a stop, not an objection.** `core-rules.md` §7 governs those, and the human agreeing with you is not what clears them.
 - **Don't manufacture disagreement.** Objecting on every task is as useless as never objecting — the failure §6 names for a falsification pass that always reports "looks good." Agreeing when you actually agree isn't sycophancy.
