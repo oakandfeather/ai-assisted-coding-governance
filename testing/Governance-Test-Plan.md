@@ -2,7 +2,7 @@
 
 *How we verify that this package installs correctly and that its rules actually change agent behavior. Companion files: [`coverage-matrix.md`](./coverage-matrix.md) (which rule maps to which scenario) and [`mock-app-setup.md`](./mock-app-setup.md) (how to build the target repo the scenarios run against).*
 
-**Version:** 1.39 · **Last reviewed:** 2026-08-17 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 1.40 · **Last reviewed:** 2026-08-18 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -17,7 +17,7 @@ Two questions follow, and this plan answers them separately because they need di
 1. **Does it install correctly?** Does `govern-init` produce the right file shape, and does `govern-update` preserve the client-owned parts it promises to preserve? → **Layer A**, deterministic and scriptable.
 2. **Does it actually bind?** Does an agent working in a repo with the package installed behave differently from one without it? → **Layer B**, non-deterministic, and the harder of the two.
 
-[`README.md`](../README.md) already states the biggest known unknown: Claude Code's `@import` reliably pulls `AGENTS.md`, but Copilot and Codex load their entry file and do **not** reliably pull the relative-linked `ai-governance/*.md` files. That is a testable claim the package currently states on faith. §B-T tests it.
+[`README.md`](../README.md) already states the biggest known unknown: Claude Code's `@import` reliably pulls `AGENTS.md`, but Copilot and Codex load their entry file and do **not** reliably pull the relative-linked `ai-governance/*.md` files. §B-T tests it. **Partly answered, and worse than assumed — the asymmetry was never Claude-vs-the-rest.** Four consecutive governed B-F11 arms did real work having opened **no** `ai-governance/` file at all: the `@import` delivers `AGENTS.md` and stops there, and `AGENTS.md` only *links* the rule files. The 2026-08-18 routing fix imports `core-rules.md` and `agent-workflow.md` directly from `CLAUDE.md`, closing it for those two on Claude Code alone; the other four files, and every rule file on Copilot and Codex, still depend on the agent choosing to follow a link. Read the surviving claim that narrowly.
 
 ## What this plan is not
 
@@ -55,7 +55,8 @@ Run the installer against the clean mock (see [`mock-app-setup.md`](./mock-app-s
 | A2.2 | All eight `ai-governance/` items present | The six rule files, `client-profiles.md`, and `client-profiles/`. **Check `client-profiles.md` specifically** — omitting it dead-ends every §8 client-override pointer in the copied package |
 | A2.3 | Sample profile **not** copied | `client-profiles/example-university.md` is absent and the directory arrives empty (procedure step 2: "Never copy") |
 | A2.4 | Excluded trees absent | No `human-docs/`, no `ai-docs/procedures/`, no `ai-docs/skills/` in the target |
-| A2.5 | Banners stripped (step 3) | `AGENTS.md` has no template banner and no closing `---` + footnote; `CLAUDE.md` is the `@AGENTS.md` import plus its one-sentence lead-in and nothing else; the Copilot file starts at `# Coding rules for GitHub Copilot` |
+| A2.5 | Banners stripped (step 3) | `AGENTS.md` has no template banner and no closing `---` + footnote; `CLAUDE.md` has no banner, carries all three imports (`@AGENTS.md`, `@ai-governance/core-rules.md`, `@ai-governance/agent-workflow.md`) and no rule prose — asserted by shape, not by a line count, since a ceiling raised on every edit checks nothing; the Copilot file starts at `# Coding rules for GitHub Copilot` |
+| A2.12 | Installed `@` imports resolve (routing fix, 2026-08-18) | Every `@` line in the governed arm's `CLAUDE.md` points at a file that exists in the target repo. **The only check that sees a real install** — `check-links.ps1` covers the source repo only, and a broken import fails silently at runtime, so nothing else would surface it. Scoped to the governed arm: the `entryfiles-only` arm has no `ai-governance/` by design, and an assertion that is always red is one nobody reads |
 | A2.6 | Empty-state rewrite (step 4) | `## Sample profile` deleted; `## Active client profiles` matches the verbatim empty-state block; the "Add each client as…" paragraph survives |
 | A2.7 | Placeholders | `\*\([^)]*\)\*` finds zero matches in `AGENTS.md` — **except** any the interview legitimately left unfilled, which must be named in the hand-off |
 | A2.8 | Content matches oracle | Rule files LF-normalized match `empty-build/ai-governance/*`; `AGENTS.md` structurally matches `build/AGENTS.md`, differing only in placeholder values |

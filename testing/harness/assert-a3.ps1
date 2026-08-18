@@ -19,6 +19,13 @@ Assert 'A3.1a' ($drift.Count -eq 0) "all 6 rule files match new upstream ($($dri
 $cl = Read-Doc "$tgt\CLAUDE.md"
 $cp = Read-Doc "$tgt\.github\copilot-instructions.md"
 Assert 'A3.2a' ($cl -match '@AGENTS\.md')                        'CLAUDE.md still the @AGENTS.md import'
+# The two rule imports are the whole point of the tier-B replace: they are how
+# core-rules.md and agent-workflow.md reach an agent at all, since AGENTS.md
+# only links them. A tier B that dropped them would leave a file that still
+# looks right and silently governs nothing.
+Assert 'A3.2a2' (($cl -match '(?m)^@ai-governance/core-rules\.md\s*$') -and
+                 ($cl -match '(?m)^@ai-governance/agent-workflow\.md\s*$')) `
+                                                                 'both always-on rule imports survived the tier B replace'
 Assert 'A3.2b' ($cl -notmatch '\(template\)')                    'CLAUDE.md banner stripped'
 Assert 'A3.2c' ($cp -match '^# Coding rules for GitHub Copilot') 'copilot file starts at the right heading'
 Assert 'A3.2d' ($cp -match 'ai-governance/core-rules\.md')       'copilot links point at ai-governance/, not ai-docs/'

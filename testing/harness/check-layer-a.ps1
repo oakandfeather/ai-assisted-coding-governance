@@ -29,10 +29,33 @@ Assert 'A2.4' (-not (Test-Path "$g\human-docs") -and -not (Test-Path "$g\procedu
 $agents  = Read-Doc "$g\AGENTS.md"
 $claude  = Read-Doc "$g\CLAUDE.md"
 $copilot = Read-Doc "$g\.github\copilot-instructions.md"
+# CLAUDE.md is thin because of what it CONTAINS, not how many lines it has.
+# The old `-le 6` line ceiling was a proxy for that, and it broke the moment
+# the two rule imports were added. Raising the number would have been the same
+# as deleting the check, so the shape is asserted positively instead: banner
+# gone, all three imports present, and no rule prose (a `## ` heading is the
+# tell that someone inlined rules into the pointer).
+$claudeThin = ($claude -notmatch '\(template\)') -and
+              ($claude -match '(?m)^@AGENTS\.md\s*$') -and
+              ($claude -match '(?m)^@ai-governance/core-rules\.md\s*$') -and
+              ($claude -match '(?m)^@ai-governance/agent-workflow\.md\s*$') -and
+              ($claude -notmatch '(?m)^## ') -and
+              ($claude.Trim().Split("`n").Count -le 24)
 $bannersOff = ($agents -notmatch '\(template\)') -and ($agents -notmatch 'Fill in the italicized placeholders for this repository') -and
-              ($claude -notmatch '\(template\)') -and ($claude.Trim().Split("`n").Count -le 6) -and
+              $claudeThin -and
               ($copilot -match '^# Coding rules for GitHub Copilot')
-Assert 'A2.5' $bannersOff 'banners and closing footnote stripped from all three entry files'
+Assert 'A2.5' $bannersOff 'banners stripped; CLAUDE.md thin and carries all three imports'
+
+# A broken @ import fails SILENTLY at runtime - no warning, no error, the file
+# just never loads (measured 2026-08-18, Claude Code 2.1.234). So nothing
+# downstream would ever surface a typo'd path; this assertion is the only one
+# that sees a REAL install (check-links.ps1 only ever sees the source repo).
+# Scoped to the governed arm on purpose - see the entryfiles-only note below.
+$dangling = @()
+foreach ($m in [regex]::Matches($claude, '(?m)^@(\S+)')) {
+  if (-not (Test-Path (Join-Path $g $m.Groups[1].Value))) { $dangling += $m.Groups[1].Value }
+}
+Assert 'A2.12' ($dangling.Count -eq 0) "every CLAUDE.md @ import resolves in the install ($($dangling -join ', '))"
 
 $ph = ([regex]'\*\([^)]*\)\*').Matches($agents)
 Assert 'A2.7' ($ph.Count -eq 0) "AGENTS.md placeholder count = $($ph.Count) (expect 0)"
@@ -97,6 +120,16 @@ foreach ($name in $MockArms.Keys) {
 }
 
 "=== entryfiles-only discriminating arm ==="
+# This arm's CLAUDE.md now carries two imports into an ai-governance/ tree that
+# is deleted BY CONSTRUCTION, so they dangle. That is deliberate and inert:
+# a missing import target is silently skipped (measured), and resolution is
+# per-import, so the surviving @AGENTS.md still loads. It is why A2.12 above is
+# scoped to $g - an unscoped version would be a permanent red here, which is
+# exactly how a checker teaches its operator to ignore it.
+# Treat this as the COPILOT arm for anything about rule delivery: Copilot never
+# processes @ imports at all, so "entry files only" still means that for it.
+# For a Claude row it now means "entry files, minus whatever the imports would
+# have carried" - do not reuse it as an entry-files-only Claude arm.
 $e = $MockArms['entryfiles-only']
 Assert 'B-T' ((Test-Path "$e\AGENTS.md") -and (Test-Path "$e\CLAUDE.md") -and (Test-Path "$e\.github\copilot-instructions.md") -and -not (Test-Path "$e\ai-governance")) `
              'three entry files present, whole ai-governance/ tree gone'
