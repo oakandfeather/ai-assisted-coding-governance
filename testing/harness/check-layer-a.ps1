@@ -33,18 +33,23 @@ $copilot = Read-Doc "$g\.github\copilot-instructions.md"
 # The old `-le 6` line ceiling was a proxy for that, and it broke the moment
 # the two rule imports were added. Raising the number would have been the same
 # as deleting the check, so the shape is asserted positively instead: banner
-# gone, all three imports present, and no rule prose (a `## ` heading is the
-# tell that someone inlined rules into the pointer).
+# gone, all four imports present, and no rule prose (a `## ` heading is the
+# tell that someone inlined rules into the pointer). The fourth import
+# (client-profiles.md, added 2026-08-20) is the INDEX - it is what tells the
+# agent which client's profile binds. Asserting it is not pedantry: a missing
+# @ import fails silently, so a trimmed one leaves a file that still looks
+# right while the client's overrides load only if the agent goes looking.
 $claudeThin = ($claude -notmatch '\(template\)') -and
               ($claude -match '(?m)^@AGENTS\.md\s*$') -and
               ($claude -match '(?m)^@ai-governance/core-rules\.md\s*$') -and
               ($claude -match '(?m)^@ai-governance/agent-workflow\.md\s*$') -and
+              ($claude -match '(?m)^@ai-governance/client-profiles\.md\s*$') -and
               ($claude -notmatch '(?m)^## ') -and
               ($claude.Trim().Split("`n").Count -le 24)
 $bannersOff = ($agents -notmatch '\(template\)') -and ($agents -notmatch 'Fill in the italicized placeholders for this repository') -and
               $claudeThin -and
               ($copilot -match '^# Coding rules for GitHub Copilot')
-Assert 'A2.5' $bannersOff 'banners stripped; CLAUDE.md thin and carries all three imports'
+Assert 'A2.5' $bannersOff 'banners stripped; CLAUDE.md thin and carries all four imports'
 
 # A broken @ import fails SILENTLY at runtime - no warning, no error, the file
 # just never loads (measured 2026-08-18, Claude Code 2.1.234). So nothing

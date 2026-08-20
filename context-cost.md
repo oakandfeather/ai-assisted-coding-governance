@@ -1,6 +1,6 @@
 # Context cost of the governance package
 
-**Last reviewed:** 2026-08-18
+**Last reviewed:** 2026-08-20
 
 Tracks how much of an agent's context window the `ai-docs/` package consumes when it's loaded per `AGENTS.md`'s "load in one pass" instruction. Re-run the measurement below and update this table when `ai-docs/` files change size materially — it's a cost metric, not a governed rule file, so it doesn't need a version bump on every edit.
 
@@ -26,7 +26,7 @@ wc -w -c ai-docs/*.md ai-docs/client-profiles/*.md
 | `agent-workflow.md` | 2,618 | ~4,250 |
 | `client-profiles.md` + one profile | 414 | ~750 |
 | entry file (`AGENTS.md`, placeholders filled) | 973 | ~1,800 |
-| entry file (`CLAUDE.md`, the thin pointer itself) | 123 | ~200 |
+| entry file (`CLAUDE.md`, the thin pointer itself) | 181 | ~150 |
 
 `agent-workflow.md` is still the single largest file — over a fifth of the cost of a full load — after two compression passes: v1.9 cut it ~16% (3,039 → 2,555 words), v1.10 a further ~3% (2,555 → 2,481 words), and v1.11 ~1% (2,481 → 2,454 words) by deduplication rather than density. The same treatment has run over `writing-rules.md` at v1.5, ~14% (1,481 → 1,275 words); `writing-patterns.md` at v1.1, ~9% (1,792 → 1,622 words); `coding-rules.md` at v2.3, ~12% (799 → 704 words); `coding-patterns.md` at v1.4, ~15% (1,272 → 1,085 words); `core-rules.md` at v1.3, ~5% (1,614 → 1,531 words); the entry file (`AGENTS.template.md` at v1.10), ~6.5% (973 → 909 words as measured on `build/AGENTS.md`); and `client-profiles.md` at v1.4, ~17% (192 → 160 words) — no pass dropped a rule. The `coding-patterns.md`, `core-rules.md`, entry-file, and `client-profiles.md` passes were briefed to favor agent consumption over human readability, and so also cut trailing clauses that only restated their own bold lead-in.
 
@@ -52,6 +52,12 @@ A fourth within-file cut was drafted and **reverted**, and it is the cautionary 
 
 **The 2026-08-18 routing fix is the largest deliberate increase recorded here, and — like the v1.13 +27 — the reasoning matters more than the number.** `CLAUDE.md` now imports `core-rules.md` and `agent-workflow.md` rather than leaving `AGENTS.md` to link them. The entire cost lands on the trivial-edit tier: **~4,830 → ~9,250, +91%**. Both non-trivial tiers already listed `agent-workflow.md`, so they move only by `CLAUDE.md`'s own ~200 tokens. **But the `+0` on those rows is against the *documented ideal*, and that is the point.** Measured against what agents actually did, the increase is the whole ~7.3k: four consecutive governed Layer B arms completed real work having opened **no** `ai-governance/` file at all, because a linked file is one the agent must choose to open and these did not. The old trivial-edit row was never a measurement of a session; it was a measurement of a policy nobody was executing. A partial offset, worth recording next to the cost: a file the agent chose to `Read` is ordinary conversation content and can be dropped by compaction, whereas an imported file rides on `CLAUDE.md` and is re-injected after `/compact` — so the floor persists across a long session in a way the old voluntary reads did not. The blast-radius rule is untouched for the four conditional files; `agent-workflow.md` simply stops being one an agent is trusted to skip.
 
+**2026-08-20 added a fourth import — the `client-profiles.md` index — and the interesting part is what was *not* imported.** The hole it closes is narrow and real: `core-rules.md` §8 fails safe when a profile is **absent** (treat the client's data as sensitive, ask), but not when a profile **exists and the agent never opens it** — there the agent proceeds believing it is governed, and nothing flags it. The index is the pointer that makes that state impossible to enter unknowingly, and installed it is 102 words / **~200 tokens**. The profile **body** stays linked, at ~430 tokens for the ESU sample and more for a real client: importing it would put a client's full ruleset into every trivial edit and give away exactly the blast-radius scaling this document exists to defend. A measured data point behind leaving it linked: on 2026-08-18 a non-trivial FERPA-shaped task read `client-profiles.md` and the profile at calls 2-3 *before any application file*, while a trivial docstring task read neither — which is the correct outcome, and an unconditional import would have destroyed it.
+
+**Availability was measured before the decision, not assumed** (2026-08-20, Claude Code 2.1.235, five scratch repos, zero tool calls in each). Nested `@` imports do resolve at depth 2, so the profile body *could* have been imported from inside the index; the shape was rejected on cost, not feasibility. One finding is a maintenance trap worth carrying: **a nested `@` path resolves against the importing file's directory, not the repo root.** From `ai-governance/client-profiles.md`, `@client-profiles/acme.md` loads and `@ai-governance/client-profiles/acme.md` silently does not — and the second is the shape a maintainer would copy from `CLAUDE.md`'s own root-relative imports. `check-links.ps1` resolves non-template `@` targets against the file's own directory, which matches.
+
+**One row above was corrected in the same pass, and it moved in the cheap direction.** `CLAUDE.md` is recorded here at 181 words but **~150 tokens**, because the file's maintainer comment is a block-level HTML comment and is *stripped before injection* (measured 2026-08-18) — 1,187 chars on disk, 599 injected. The old ~200 counted the comment. So the comment genuinely costs nothing, and the routing note can stay as long as it needs to be.
+
 **This re-measurement also caught two stale rows, and the drift ran in the expected direction.** `agent-workflow.md` is 2,618 words, not the 2,505 recorded here since 2026-08-08 — the v1.15 and v1.16 §2 edits are the growth, and at ~4,250 tokens it remains the largest file in the package by a wide margin. The entry file is 973 words, not 955, from the "**Load** means open the file with your file-reading tool" clause added in the same change. The scenario totals above are recomputed from the corrected figures, which is why the non-trivial rows read ~13,100 / ~15,000 rather than the ~12,800 / ~14,750 they carried before; roughly half of that movement is the stale `agent-workflow.md` row, not this change.
 
 **`client-profiles.md`'s headline 17% overstates what an agent saves.** Measured on the *source* file, but roughly half of it never reaches an installed repo: both build scripts replace the `*(none yet)*` paragraph and strip the `## Sample profile` section, so compressing those costs an agent nothing. On the installed file the pass is 117 → 102 words (~13%), and only the banner and the "Add each client as…" paragraph are compressible at all — everything else is a heading, the version line, or the generated client list. That ~15-word ceiling is under 1% of a full load; the file is already the smallest in the package, so measure this pass against the source-repo reader, not the context window.
@@ -64,15 +70,17 @@ A fourth within-file cut was drafted and **reverted**, and it is the cautionary 
 
 ## Scenario totals
 
-**There is now a floor.** Since 2026-08-18 the installed `CLAUDE.md` `@`-imports `core-rules.md` and `agent-workflow.md` directly, so on Claude Code those two arrive in every session whether or not the agent decides to open anything — they are no longer a loading *choice*. The graduated rule in `AGENTS.md` ("scale that set to the blast radius") still governs the four conditional files, which is what the second column measures.
+**There is now a floor.** Since 2026-08-18 the installed `CLAUDE.md` `@`-imports `core-rules.md` and `agent-workflow.md` directly, and since 2026-08-20 the `client-profiles.md` index as well, so on Claude Code those three arrive in every session whether or not the agent decides to open anything — they are no longer a loading *choice*. The graduated rule in `AGENTS.md` ("scale that set to the blast radius") still governs the four conditional files **and the client profile's body**, which is what the second column measures.
 
 | Scenario | On top of the floor | Est. tokens |
 |---|---|---:|
-| **Floor — every session** | entry files (`AGENTS.md` + `CLAUDE.md`) + `core-rules.md` + `agent-workflow.md`, imported | **~9,250** |
-| Trivial edit | *nothing* | ~9,250 |
-| Non-trivial coding task | + `coding-rules.md` + `coding-patterns.md` + client profile | ~13,100 |
-| Non-trivial writing task | + `writing-rules.md` + `writing-patterns.md` + client profile | ~15,000 |
-| Everything at once | + all four conditional files + client profile | ~18,200 |
+| **Floor — every session** | entry files (`AGENTS.md` + `CLAUDE.md`) + `core-rules.md` + `agent-workflow.md` + `client-profiles.md` index, imported | **~9,400** |
+| Trivial edit | *nothing* | ~9,400 |
+| Non-trivial coding task | + `coding-rules.md` + `coding-patterns.md` + the client profile body | ~13,050 |
+| Non-trivial writing task | + `writing-rules.md` + `writing-patterns.md` + the client profile body | ~14,950 |
+| Everything at once | + all four conditional files + the client profile body | ~18,150 |
+
+The three non-floor rows each fell slightly despite the floor rising. Two effects, both small: the index moved out of the conditional column into the floor (so it is counted once, not twice), and the `CLAUDE.md` row was corrected downward for its stripped comment. The profile body is measured installed (~430 tokens for the ESU sample) rather than at the source figure the per-file table uses.
 
 On Copilot and Codex there is no floor, because neither has an import mechanism: every rule file including `core-rules.md` still depends on the agent following a link. The first column is a Claude Code guarantee and an aspiration everywhere else.
 
@@ -80,4 +88,4 @@ On Copilot and Codex there is no floor, because neither has an import mechanism:
 
 - This is a one-time context-window cost **per session**. **The floor is paid unconditionally on Claude Code** — `CLAUDE.md` imports those files, so they load whether the agent wants them or not, and they survive `/compact`. Everything above the floor is still paid only when a file is actually `Read`, and **a linked file that is never opened costs nothing and binds nothing** — which is the failure the floor exists to prevent, not a saving. The graduated-loading rule exists to avoid paying the ~18.2k full cost on every task.
 - Prompt caching (where the harness supports it) makes repeat reference *cheap in billing* within a session once a file is cached, but it does not reduce how much of the context window that file occupies.
-- These numbers reflect `ai-docs/` as of 2026-08-18, re-measured file by file rather than carried forward — which is how the two stale rows above were found. Re-measure after any material edit to a file listed above.
+- These numbers reflect `ai-docs/` as of 2026-08-20, re-measured file by file rather than carried forward — which is how the two stale rows above were found. Re-measure after any material edit to a file listed above.
