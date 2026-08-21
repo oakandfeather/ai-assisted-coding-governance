@@ -19,6 +19,12 @@ its output:
   2. Code spans and fenced code blocks that QUOTE link syntax are prose about
      links, not links. They are stripped before matching.
 
+Claude Code `@` imports are checked too, for a reason worth stating: a broken
+import fails SILENTLY at runtime - no warning, no error, no non-zero exit; the
+file simply never loads (measured 2026-08-18 against Claude Code 2.1.234).
+Static checking is therefore the only channel that catches a typo'd import
+path, so an unchecked `@` line is a rule that can quietly stop binding.
+
 Note on encoding: this script only reads files and reports paths, so it never
 retypes source content. Paths are compared as text; no output is written.
 #>
@@ -33,11 +39,17 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 # link targets are checked against the build/ snapshot instead (see below).
 $templateFiles = @(
     'ai-docs/AGENTS.template.md',
-    'ai-docs/copilot-instructions.template.md'
+    'ai-docs/copilot-instructions.template.md',
+    'ai-docs/CLAUDE.template.md'
 )
 
 # Where an ai-governance/ link from a template should resolve once installed.
 $installedRulesDir = Join-Path $repoRoot 'build/ai-governance'
+
+# A template's @ imports are written for the INSTALLED shape - they resolve
+# from the target repo ROOT (`@AGENTS.md`, `@ai-governance/core-rules.md`),
+# not from ai-docs/. build/ is that root.
+$installedRoot = Join-Path $repoRoot 'build'
 
 function Read-Text([string]$path) {
     if (-not (Test-Path -LiteralPath $path)) {
@@ -103,6 +115,33 @@ foreach ($file in $mdFiles) {
             $breaks.Add("$relFile -> $target")
         }
     }
+
+    # Claude Code @ imports. Anchored at line start and matched over the
+    # already-code-span-stripped body, which mirrors Claude Code's own parser:
+    # a backticked `@AGENTS.md` in prose is literal text, not an import.
+    foreach ($match in [regex]::Matches($body, '(?m)^@(\S+)')) {
+        $target = $match.Groups[1].Value
+        $path = ($target -split '#')[0]
+        if ([string]::IsNullOrWhiteSpace($path)) { continue }
+
+        # Carve-out 3: same argument as carve-out 1, different root. A
+        # template's imports resolve against the installed repo root, so they
+        # are verified against build/.
+        if ($isTemplate) {
+            $resolved = Join-Path $installedRoot $path
+            if (-not (Test-Path -LiteralPath $resolved)) {
+                $breaks.Add("$relFile -> @$target  (missing from build/ - run scripts/build.ps1, then check the template)")
+            }
+            $checked++
+            continue
+        }
+
+        $resolved = Join-Path $ownDir $path
+        $checked++
+        if (-not (Test-Path -LiteralPath $resolved)) {
+            $breaks.Add("$relFile -> @$target")
+        }
+    }
 }
 
 if (-not (Test-Path -LiteralPath $installedRulesDir)) {
@@ -121,7 +160,7 @@ if ($breaks.Count -gt 0) {
     exit 1
 }
 
-Write-Output "All $checked relative links resolve. ($($mdFiles.Count) Markdown files checked.)"
+Write-Output "All $checked relative links and @ imports resolve. ($($mdFiles.Count) Markdown files checked.)"
 if ($skipped -gt 0) {
     Write-Output "$skipped template file(s) were not verified against build/ - see the note above."
 }

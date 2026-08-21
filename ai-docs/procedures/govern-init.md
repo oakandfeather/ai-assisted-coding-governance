@@ -20,12 +20,12 @@ Scaffolds the governance package into a target project. This procedure **copies*
 
 ### 2. Copy the file set
 
-The three entry files land at their tool-specific paths; the other eight items travel together into an **`ai-governance/`** directory you create at the root. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` imports `AGENTS.md`, `.github/copilot-instructions.md` links back with `../`, and the files inside `ai-governance/` link each other with relative `./` paths — separating them breaks the chain.
+The three entry files land at their tool-specific paths; the other eight items travel together into an **`ai-governance/`** directory you create at the root. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` imports `AGENTS.md` plus `ai-governance/core-rules.md` and `ai-governance/agent-workflow.md`, `.github/copilot-instructions.md` links back with `../`, and the files inside `ai-governance/` link each other with relative `./` paths — separating them breaks the chain.
 
 | From `ai-docs/` | To target repo |
 | --- | --- |
 | `AGENTS.template.md` | `AGENTS.md` *(repo root, renamed — the canonical entry)* |
-| `CLAUDE.template.md` | `CLAUDE.md` *(repo root, renamed — thin `@AGENTS.md`)* |
+| `CLAUDE.template.md` | `CLAUDE.md` *(repo root, renamed — thin: `@AGENTS.md` plus the two always-on rule imports and the client-profile index)* |
 | `copilot-instructions.template.md` | `.github/copilot-instructions.md` *(create `.github/` if absent)* |
 | `core-rules.md` | `ai-governance/core-rules.md` |
 | `coding-rules.md` | `ai-governance/coding-rules.md` |
@@ -47,7 +47,7 @@ Do not copy `human-docs/` — it is for people and stays in the governance repo.
 Each of the three entry files ships with a "how to use" banner that must come off after copying:
 
 - **`AGENTS.md`** — retitle `# AGENTS.md (template)` to `# AGENTS.md` and delete the banner block above the `Version:` line. It describes the template rather than the project, and its `../AGENTS.md` link does not resolve outside the governance repo. **Also delete the closing footnote** — the trailing `---` and the italic *"Fill in the italicized placeholders for this repository…"* paragraph after it. It is install instructions, not project guidance, and it points at "the note at the top" that you just removed. This is the file whose placeholders you fill (step 5).
-- **`CLAUDE.md`** — retitle `# CLAUDE.md (template)` to `# CLAUDE.md`, delete everything from the `(template)` title down through the horizontal rule, and keep only the `@AGENTS.md` import line (with its one-sentence lead-in). No placeholders here.
+- **`CLAUDE.md`** — retitle `# CLAUDE.md (template)` to `# CLAUDE.md`, delete everything from the `(template)` title down through the horizontal rule, and **keep everything beneath it verbatim**: the `@AGENTS.md` import, the `@ai-governance/core-rules.md`, `@ai-governance/agent-workflow.md`, and `@ai-governance/client-profiles.md` imports, their lead-ins, and the HTML comment. No placeholders here. **Do not trim the three imports as "not thin."** `AGENTS.md` *links* those files rather than importing them, so without these the always-on rules — and the pointer to the client profile that outranks them — load only if the agent chooses to open them, and measured behaviour says it often does not. They are routing, not rules: no rule text is duplicated, and a missing import fails silently, so nothing will tell you it was dropped. **The imported `client-profiles.md` is the index only.** The profile itself stays linked from it, so it is still read at a depth scaled to the task rather than charged to every trivial edit.
 - **`.github/copilot-instructions.md`** — delete the banner block down through the horizontal rule, keeping the `# Coding rules for GitHub Copilot` heading and the core below it. No placeholders here; leave its `../` links intact.
 
 ### 4. Strip the sample from the copied index
