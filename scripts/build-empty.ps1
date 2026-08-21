@@ -80,7 +80,6 @@ Write-Host "Rebuilding empty-build/ from ai-docs/ ..."
 if (Test-Path -LiteralPath $buildDir) {
     Remove-Item -LiteralPath $buildDir -Recurse -Force
 }
-New-Item -ItemType Directory -Path (Join-Path $buildDir '.github') -Force | Out-Null
 New-Item -ItemType Directory -Path (Join-Path $buildDir 'ai-governance\client-profiles') -Force | Out-Null
 
 # ---------- AGENTS.md ----------
@@ -102,12 +101,6 @@ $claude = Read-Text (Join-Path $aiDocs 'CLAUDE.template.md')
 $claude = Slice-From $claude 'Guidance for Claude Code in this repository lives in' 'CLAUDE.md body'
 $claude = "# CLAUDE.md`n`n" + $claude.TrimEnd() + "`n"
 Write-Text (Join-Path $buildDir 'CLAUDE.md') $claude
-
-# ---------- .github/copilot-instructions.md ----------
-$copilot = Read-Text (Join-Path $aiDocs 'copilot-instructions.template.md')
-$copilot = Slice-From $copilot '# Coding rules for GitHub Copilot' 'copilot-instructions.md body'
-$copilot = $copilot.TrimEnd() + "`n"
-Write-Text (Join-Path $buildDir '.github\copilot-instructions.md') $copilot
 
 # ---------- ai-governance verbatim files ----------
 # No client-profiles/*.md is bundled - this build has no client, sample or
@@ -148,5 +141,5 @@ $profiles = $profiles.Substring(0, $sampleIdx).TrimEnd() + "`n"
 
 Write-Text (Join-Path $buildDir 'ai-governance\client-profiles.md') $profiles
 
-Write-Host "empty-build/ regenerated (10 files)."
+Write-Host "empty-build/ regenerated (9 files)."
 Write-Host "empty-build/ is gitignored and generated - do not hand-edit it; edit ai-docs/ and rerun this script."

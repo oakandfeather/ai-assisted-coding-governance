@@ -37,7 +37,7 @@ Each exits 0 on success and non-zero on any failure, so they work as gates.
 | Tier | File to change | Exercises |
 | --- | --- | --- |
 | A | `ai-docs/coding-rules.md` | A3.1 |
-| B | `ai-docs/copilot-instructions.template.md` | A3.2 |
+| B | `ai-docs/CLAUDE.template.md`, **below** the banner | A3.2 |
 | C | `ai-docs/AGENTS.template.md`, **inside** the mandatory-rules block | A3.3–A3.6 |
 | D | `ai-docs/client-profiles.md`, the **"Add each client as…"** paragraph | A3.7 |
 
@@ -65,7 +65,7 @@ The arms hold a governance copy installed at a point in time. Once this repo's r
 .\govern-update-run.ps1 -Arm unconfigured -Apply
 ```
 
-Then re-sync `…-entryfiles-only/`'s three entry files from `…-governed/` (that arm holds no `ai-governance/`, so the updater can't run there, and B-T only discriminates while its entry files match the governed arm's). Finally commit each refreshed arm and move its tag — the hygiene check asserts `tag=pristine, tree clean`:
+Then re-sync `…-entryfiles-only/`'s two entry files from `…-governed/` (that arm holds no `ai-governance/`, so the updater can't run there, and B-T only discriminates while its entry files match the governed arm's). Finally commit each refreshed arm and move its tag — the hygiene check asserts `tag=pristine, tree clean`:
 
 ```powershell
 git add -A; git commit -m "Refresh installed governance to upstream (govern-update)"; git tag -f pristine

@@ -2,7 +2,7 @@
 
 Refreshes an installed governance package in place. This procedure **copies and merges** the rules; it does not contain them. Like `govern-init.md`, it never reconstructs rule text from memory.
 
-**How this is run.** Follow it directly, start to finish. Either run `/govern-update` in Claude Code, or hand any other agent — Codex, Cursor, Windsurf, the Copilot agent — the path to this file and tell it to read the file and follow it exactly. Nothing here needs a tool or a tool-specific feature: every step is reading files, writing files, comparing them, and asking the user before each tier lands.
+**How this is run.** Follow it directly, start to finish. Either run `/govern-update` in Claude Code, or hand any other coding CLI — Codex CLI, the Copilot CLI — the path to this file and tell it to read the file and follow it exactly. Nothing here needs a tool or a tool-specific feature: every step is reading files, writing files, comparing them, and asking the user before each tier lands.
 
 **The whole difficulty of this procedure is that `govern-init` forks part of the package at install time.** The portable rule files are upstream's and can be replaced. But the target's `AGENTS.md` carries ~27 filled placeholders describing *that* project, `ai-governance/client-profiles.md` carries *that* engagement's active-client pointer, and `ai-governance/client-profiles/` carries client-authored profiles. An update that overwrites those is a regression, not an update — it turns a configured repo into one that reads as unconfigured. Know which tier every file is in before you write anything.
 
@@ -25,7 +25,7 @@ Refreshes an installed governance package in place. This procedure **copies and 
 
 ### 2. Learn the current anchors from `build.ps1` — do not hardcode them
 
-`scripts/build.ps1` in the source already performs every transformation this procedure needs: it slices the template banners off the three entry files (`Slice-From`), strips `AGENTS.md`'s closing footnote, replaces placeholder tokens, drops the `## Sample profile` section, and rewrites the active-profiles paragraph (`Replace-Paragraph`). The repo's verification contract **already requires** `build.ps1` to be updated whenever a template's structure changes.
+`scripts/build.ps1` in the source already performs every transformation this procedure needs: it slices the template banners off both entry files (`Slice-From`), strips `AGENTS.md`'s closing footnote, replaces placeholder tokens, drops the `## Sample profile` section, and rewrites the active-profiles paragraph (`Replace-Paragraph`). The repo's verification contract **already requires** `build.ps1` to be updated whenever a template's structure changes.
 
 **Read the anchor strings out of `build.ps1` and use those.** Do not copy an anchor list into this file: `build.ps1`, `build-empty.ps1`, and this procedure would then be three copies of one fact, which is the drift hazard this whole package exists to prevent.
 
@@ -38,7 +38,7 @@ Adopt `build.ps1`'s failure posture too — **if an anchor is not found in the f
 | Tier | Files | Treatment |
 | --- | --- | --- |
 | **A — verbatim** | `ai-governance/core-rules.md`, `coding-rules.md`, `writing-rules.md`, `coding-patterns.md`, `writing-patterns.md`, `agent-workflow.md` | Replace wholesale from source. |
-| **B — banner-stripped** | `CLAUDE.md`, `.github/copilot-instructions.md` | Re-derive from the template (slice the banner per step 2), then replace — but diff first, and gate it separately. See below. |
+| **B — banner-stripped** | `CLAUDE.md` | Re-derive from the template (slice the banner per step 2), then replace — but diff first, and gate it separately. See below. |
 | **C — merge** | `AGENTS.md` | Replace **only** the mandatory-rules block. See step 5. |
 | **D — merge** | `ai-governance/client-profiles.md` | Preserve the active-client paragraph. See step 6. |
 | **E — never touch** | `ai-governance/client-profiles/*.md` | Leave alone entirely. Report as untouched. |
@@ -53,6 +53,8 @@ Adopt `build.ps1`'s failure posture too — **if an anchor is not found in the f
 
 - **Added upstream** (e.g. a new rules module): copy it into `ai-governance/`, and note that the link to it arrives automatically with the tier-C block replacement in step 5 — that block is where the rules files are linked. Verify afterwards that the link is present and resolves.
 - **Removed upstream:** report it and ask. **Never auto-delete** a governance file from a client's repo; a rule that vanishes silently is worse than one that lingers.
+
+**The one removal you will actually meet: `.github/copilot-instructions.md`.** As of 2026-08-21 the package supports coding **CLIs** only, and that file — Copilot's in-IDE Chat and inline-suggestions path — is no longer shipped. Any install predating that date still has it, and it is now genuinely stale: it restates an always-on core that has moved on and links `../ai-governance/` paths it no longer travels with. **Raise it as a removal and ask; do not delete it yourself** (`core-rules.md` §5) — the target repo may still run Copilot in the IDE, and that is the user's call, not yours. Say plainly what it costs either way: kept, it is an unmaintained second copy of the core that will drift further with every update; deleted, Copilot Chat in that repo loses its repository-wide instructions and reads no governance at all. If they keep it, note it in the hand-off as unmaintained.
 
 ### 4. Present the plan, then apply tier by tier
 

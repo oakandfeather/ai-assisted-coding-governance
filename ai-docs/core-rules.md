@@ -1,8 +1,8 @@
 # AI Core Rules for AI Agents
 
-*The task-agnostic base rules that bind on **every** task an AI agent does on a client engagement — code, documentation, research, or analysis — with §§0–9 below the whole scope. Reference it from your project's entry file (`AGENTS.md`, `CLAUDE.md`, or `.github/copilot-instructions.md`). Where a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, it wins. Two task modules add to this base — [`coding-rules.md`](./coding-rules.md) (code) and [`writing-rules.md`](./writing-rules.md) (documents and content) — open the one your task calls for. Companion: [`agent-workflow.md`](./agent-workflow.md) (how to work).*
+*The task-agnostic base rules that bind on **every** task an AI agent does on a client engagement — code, documentation, research, or analysis — with §§0–9 below the whole scope. Reference it from your project's entry file (`AGENTS.md` or `CLAUDE.md`). Where a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, it wins. Two task modules add to this base — [`coding-rules.md`](./coding-rules.md) (code) and [`writing-rules.md`](./writing-rules.md) (documents and content) — open the one your task calls for. Companion: [`agent-workflow.md`](./agent-workflow.md) (how to work).*
 
-**Version:** 1.4 · **Last reviewed:** 2026-08-15 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.4 · **Last reviewed:** 2026-08-21 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 

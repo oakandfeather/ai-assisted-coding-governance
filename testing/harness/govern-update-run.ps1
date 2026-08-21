@@ -40,13 +40,11 @@ function Anchor([string]$pattern, [string]$label) {
 }
 $aAgentsBanner = Anchor "Slice-From \`$agents '([^']+)' 'AGENTS\.md banner'"              'AGENTS banner'
 $aClaudeBody   = Anchor "Slice-From \`$claude '([^']+)' 'CLAUDE\.md body'"                'CLAUDE body'
-$aCopilotBody  = Anchor "Slice-From \`$copilot '([^']+)' 'copilot-instructions\.md body'" 'copilot body'
 $aFootnote     = "`n---`n*Fill in the italicized placeholders for this repository."
 
 "ANCHORS LEARNED FROM build.ps1:"
 "  AGENTS banner  : $aAgentsBanner"
 "  CLAUDE body    : $aClaudeBody"
-"  copilot body   : $aCopilotBody"
 ""
 
 $tierA = 'core-rules.md','coding-rules.md','writing-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md'
@@ -87,13 +85,10 @@ $claudeNew = Read-Doc "$src\ai-docs\CLAUDE.template.md"
 $ci = $claudeNew.IndexOf($aClaudeBody); if ($ci -lt 0) { throw "Anchor not found in CLAUDE template" }
 $claudeNew = "# CLAUDE.md`n`n" + $claudeNew.Substring($ci)
 
-$copilotNew = Read-Doc "$src\ai-docs\copilot-instructions.template.md"
-$pi = $copilotNew.IndexOf($aCopilotBody); if ($pi -lt 0) { throw "Anchor not found in copilot template" }
-$copilotNew = $copilotNew.Substring($pi)
-
+# Tier B is CLAUDE.md alone since 2026-08-21: .github/copilot-instructions.md
+# was retired with the CLI-only scope, so there is no second file to re-derive.
 $tierB = @(
-  @{ Label = 'CLAUDE.md';                       Path = "$tgt\CLAUDE.md";                       New = $claudeNew  },
-  @{ Label = '.github/copilot-instructions.md'; Path = "$tgt\.github\copilot-instructions.md"; New = $copilotNew }
+  @{ Label = 'CLAUDE.md'; Path = "$tgt\CLAUDE.md"; New = $claudeNew }
 )
 foreach ($b in $tierB) {
   # Compare LF-normalized. A line-ending-only difference is not local content,
@@ -126,6 +121,17 @@ $added   = $srcSet | Where-Object { $_ -notin $tgtSet }
 $removed = $tgtSet | Where-Object { $_ -notin $srcSet }
 if ($added)   { $added   | ForEach-Object { "    ADDED upstream  : $_" } }   else { '    (none added)' }
 if ($removed) { $removed | ForEach-Object { "    REMOVED upstream: $_  -> REPORT, never auto-delete" } } else { '    (none removed)' }
+
+# The retired entry file lives OUTSIDE ai-governance/, so the set comparison
+# above cannot see it. It is the one removal a real target will actually meet
+# (govern-update.md step 3), and the arm that still carries it is the fixture
+# for A3.2c - so report it here rather than leaving the runner silent about a
+# removal the procedure devotes a paragraph to.
+$retiredEntry = Join-Path $tgt '.github\copilot-instructions.md'
+if (Test-Path -LiteralPath $retiredEntry) {
+  "    REMOVED upstream: .github/copilot-instructions.md  -> REPORT and ASK, never auto-delete"
+  "                      (retired 2026-08-21, CLI-only scope; target may keep it deliberately)"
+}
 
 if (-not $Apply) { ""; "PLAN ONLY - nothing written. Re-run with -Apply."; exit 0 }
 

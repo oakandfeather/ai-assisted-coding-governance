@@ -39,7 +39,6 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 # link targets are checked against the build/ snapshot instead (see below).
 $templateFiles = @(
     'ai-docs/AGENTS.template.md',
-    'ai-docs/copilot-instructions.template.md',
     'ai-docs/CLAUDE.template.md'
 )
 
