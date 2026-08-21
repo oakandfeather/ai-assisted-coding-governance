@@ -38,8 +38,15 @@ $legacyCopilot = @()
 foreach ($name in $MockArms.Keys) {
   if (Test-Path (Join-Path $MockArms[$name] '.github\copilot-instructions.md')) { $legacyCopilot += $name }
 }
+# The update arm is EXPECTED to carry it: it is the deliberately-aged install,
+# and the only fixture where A3.2c can test that govern-update reports the
+# removal instead of performing it. Any OTHER arm listed here is stale.
+$legacyExpected = @('update')
 if ($legacyCopilot.Count) {
-  Note 'legacy-cp' "retired .github/copilot-instructions.md still present in: $($legacyCopilot -join ', ') - refresh these arms, or keep it deliberately"
+  $stale = $legacyCopilot | Where-Object { $_ -notin $legacyExpected }
+  $kept  = $legacyCopilot | Where-Object { $_ -in $legacyExpected }
+  if ($kept)  { Note 'legacy-cp' "retired .github/copilot-instructions.md present in: $($kept -join ', ') - EXPECTED, this is A3.2c's aged-install fixture" }
+  if ($stale) { Note 'legacy-cp' "retired .github/copilot-instructions.md present in: $($stale -join ', ') - STALE, refresh these arms or keep it deliberately" }
 }
 
 foreach ($name in 'governed', 'control', 'unconfigured', 'entryfiles-only', 'update') {

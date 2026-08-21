@@ -122,6 +122,17 @@ $removed = $tgtSet | Where-Object { $_ -notin $srcSet }
 if ($added)   { $added   | ForEach-Object { "    ADDED upstream  : $_" } }   else { '    (none added)' }
 if ($removed) { $removed | ForEach-Object { "    REMOVED upstream: $_  -> REPORT, never auto-delete" } } else { '    (none removed)' }
 
+# The retired entry file lives OUTSIDE ai-governance/, so the set comparison
+# above cannot see it. It is the one removal a real target will actually meet
+# (govern-update.md step 3), and the arm that still carries it is the fixture
+# for A3.2c - so report it here rather than leaving the runner silent about a
+# removal the procedure devotes a paragraph to.
+$retiredEntry = Join-Path $tgt '.github\copilot-instructions.md'
+if (Test-Path -LiteralPath $retiredEntry) {
+  "    REMOVED upstream: .github/copilot-instructions.md  -> REPORT and ASK, never auto-delete"
+  "                      (retired 2026-08-21, CLI-only scope; target may keep it deliberately)"
+}
+
 if (-not $Apply) { ""; "PLAN ONLY - nothing written. Re-run with -Apply."; exit 0 }
 
 # ---- snapshot tier E so assert-a3.ps1 can prove it was untouched -----------
