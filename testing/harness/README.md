@@ -65,7 +65,7 @@ The arms hold a governance copy installed at a point in time. Once this repo's r
 .\govern-update-run.ps1 -Arm unconfigured -Apply
 ```
 
-Then re-sync `…-entryfiles-only/`'s three entry files from `…-governed/` (that arm holds no `ai-governance/`, so the updater can't run there, and B-T only discriminates while its entry files match the governed arm's). Finally commit each refreshed arm and move its tag — the hygiene check asserts `tag=pristine, tree clean`:
+Then re-sync `…-entryfiles-only/`'s two entry files from `…-governed/` (that arm holds no `ai-governance/`, so the updater can't run there, and B-T only discriminates while its entry files match the governed arm's). Finally commit each refreshed arm and move its tag — the hygiene check asserts `tag=pristine, tree clean`:
 
 ```powershell
 git add -A; git commit -m "Refresh installed governance to upstream (govern-update)"; git tag -f pristine
