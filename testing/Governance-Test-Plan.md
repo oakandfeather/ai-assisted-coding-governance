@@ -2,7 +2,7 @@
 
 *How we verify that this package installs correctly and that its rules actually change agent behavior. Companion files: [`coverage-matrix.md`](./coverage-matrix.md) (which rule maps to which scenario) and [`mock-app-setup.md`](./mock-app-setup.md) (how to build the target repo the scenarios run against).*
 
-**Version:** 1.44 · **Last reviewed:** 2026-08-20 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 1.45 · **Last reviewed:** 2026-08-21 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -327,6 +327,8 @@ The claim under test is the README's caveat that Copilot and Codex do not reliab
 | Passes in both | Baseline model behavior; the package is not carrying it either way |
 
 **B-T is human-in-IDE work, not scriptable** like the Claude Code arm. Budget it separately: 4 scenarios × 3 arms × 1 run ≈ 12 sessions, read **qualitatively**. This arm establishes direction, not a pass rate.
+
+**Open gap: Codex is named in the claim, never in the method.** The opening line of this section states the claim under test as "Copilot **and Codex** do not reliably pull the relative-linked rule files," but B-T1–T4 are specified and have only ever been run through **Copilot Chat** — no scenario in this plan targets Codex. Every place the package asserts Codex shares Copilot's fidelity gap (`AGENTS.md`'s *Multi-tool entry points* section, the routing-fix write-ups in `coverage-matrix.md`) does so by mechanism — "no import mechanism" — not by a run. That inference is plausible but unmeasured, and it is the same shape of gap the 2026-08-18 routing fix exists to close for Claude Code, so it deserves the same discipline rather than being asserted from analogy. **To close it:** add a Codex arm to B-T1–T4 (same four probes, same governed / entry-files-only / control split via Codex's CLI or IDE surface) and record it as its own column in the `coverage-matrix.md` B-T table rather than folding it into the existing Copilot cells. Until that runs, cite Codex's fidelity gap as inferred, not tested.
 
 ---
 
