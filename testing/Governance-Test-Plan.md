@@ -2,7 +2,7 @@
 
 *How we verify that this package installs correctly and that its rules actually change agent behavior. Companion files: [`coverage-matrix.md`](./coverage-matrix.md) (which rule maps to which scenario) and [`mock-app-setup.md`](./mock-app-setup.md) (how to build the target repo the scenarios run against).*
 
-**Version:** 1.45 · **Last reviewed:** 2026-08-21 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 1.46 · **Last reviewed:** 2026-08-21 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -328,7 +328,7 @@ The claim under test is the README's caveat that Copilot and Codex do not reliab
 
 **B-T is human-in-IDE work, not scriptable** like the Claude Code arm. Budget it separately: 4 scenarios × 3 arms × 1 run ≈ 12 sessions, read **qualitatively**. This arm establishes direction, not a pass rate.
 
-**Open gap: Codex is named in the claim, never in the method.** The opening line of this section states the claim under test as "Copilot **and Codex** do not reliably pull the relative-linked rule files," but B-T1–T4 are specified and have only ever been run through **Copilot Chat** — no scenario in this plan targets Codex. Every place the package asserts Codex shares Copilot's fidelity gap (`AGENTS.md`'s *Multi-tool entry points* section, the routing-fix write-ups in `coverage-matrix.md`) does so by mechanism — "no import mechanism" — not by a run. That inference is plausible but unmeasured, and it is the same shape of gap the 2026-08-18 routing fix exists to close for Claude Code, so it deserves the same discipline rather than being asserted from analogy. **To close it:** add a Codex arm to B-T1–T4 (same four probes, same governed / entry-files-only / control split via Codex's CLI or IDE surface) and record it as its own column in the `coverage-matrix.md` B-T table rather than folding it into the existing Copilot cells. Until that runs, cite Codex's fidelity gap as inferred, not tested.
+**Codex arm run 2026-08-21 — the gap is measured, not closed.** All four scenarios now have a Codex column in `coverage-matrix.md`'s B-T table (headless via `codex exec`, `gpt-5.6-terra`, n=1 per arm — see that file's "Run of 2026-08-21" write-up for method, confounds, and the full reasoning). The measurement points the other way from the inference this note used to record: Codex opened the linked rule files in 4/4 governed runs and visibly attempted-and-failed to open them in 4/4 entry-files-only runs (never in control), a clean contrast the Copilot arm could never produce because Copilot Chat gave no tool-call log to read. **This does not license editing `AGENTS.md`'s *Multi-tool entry points* claim that Codex shares Copilot's gap** — that is a standing statement in the canonical entry file, and overturning it is a bigger step than filling four blank matrix cells; n=1 per cell, matching this section's own "one run each" convention, isn't enough on its own. Treat the claim as open pending a second Codex draw (ideally a scenario beyond the three that already showed the pattern) before revising `AGENTS.md` itself.
 
 ---
 
