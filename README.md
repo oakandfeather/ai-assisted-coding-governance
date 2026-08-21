@@ -25,7 +25,7 @@ Every tool ends up covered no matter how you install, so this table is really "w
 
 | Your AI tool | Entry file it auto-loads | Easiest install path |
 | --- | --- | --- |
-| **Claude Code** | `CLAUDE.md` (which imports `AGENTS.md`, `core-rules.md`, and `agent-workflow.md`) | **Path A** — the `/govern-init` skill |
+| **Claude Code** | `CLAUDE.md` (which imports `AGENTS.md`, `core-rules.md`, `agent-workflow.md`, and `client-profiles.md`) | **Path A** — the `/govern-init` skill |
 | **OpenAI Codex, the Copilot CLI / coding agent, or any other `AGENTS.md` reader** | `AGENTS.md` | **Path B** — hand your agent the procedure |
 | **No agent in the loop** (you are copying files yourself) | *(both — they land as files)* | **Path C** — copy the files by hand |
 
@@ -146,7 +146,7 @@ Every path leaves a **copy** in the client repo, and a copy drifts: when `core-r
 
 Either way it shows you what changed before changing anything, then works in tiers — the six portable rule files and the thin `CLAUDE.md` are replaced outright, while `AGENTS.md` and `ai-governance/client-profiles.md` are **merged**, because those two carry local content an overwrite would destroy. `ai-governance/client-profiles/` is never touched at all.
 
-**By hand** (no agent in the loop), the same split is what matters. Safe to re-copy straight from `ai-docs/`: `core-rules.md`, `coding-rules.md`, `writing-rules.md`, `coding-patterns.md`, `agent-workflow.md`, and the thin `CLAUDE.md` (re-strip its banner). **Do not re-copy** `AGENTS.md` or `ai-governance/client-profiles.md`: bring the upstream changes into them by hand instead, keeping your filled placeholders, your `Active client` value — it appears **twice**, in the header *and* inside the mandatory-rules block — and your active-client list. Leave `ai-governance/client-profiles/` alone.
+**By hand** (no agent in the loop), the same split is what matters. Safe to re-copy straight from `ai-docs/`: `core-rules.md`, `coding-rules.md`, `writing-rules.md`, `coding-patterns.md`, `writing-patterns.md`, `agent-workflow.md`, and the thin `CLAUDE.md` (re-strip its banner). **Do not re-copy** `AGENTS.md` or `ai-governance/client-profiles.md`: bring the upstream changes into them by hand instead, keeping your filled placeholders, your `Active client` value — it appears **twice**, in the header *and* inside the mandatory-rules block — and your active-client list. Leave `ai-governance/client-profiles/` alone.
 
 One thing no path can do: a repo scaffolded before the `ai-governance/` restructure (rule files at the root, a since-split `ai-coding-rules.md`) cannot be mechanically updated, because that file's contents were reorganized into three. The update procedure detects that shape and refuses rather than guessing; re-install fresh, or migrate with a human reading both versions.
 
