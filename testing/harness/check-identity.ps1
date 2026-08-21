@@ -15,6 +15,11 @@ function Get-Manifest($root) {
     Where-Object {
       $_ -notmatch '^(AGENTS\.md|CLAUDE\.md|\.env)$' -and
       $_ -notmatch '^ai-governance\\' -and
+      # Retired from the package on 2026-08-21 (CLI-only scope), but a repo
+      # installed before then may still legitimately carry it - govern-update
+      # raises its removal and asks, it never deletes on its own. It is a
+      # governance file either way, so it is not an app-file difference. That a
+      # FRESH install no longer creates it is asserted by A2.1 in check-layer-a.
       $_ -ne '.github\copilot-instructions.md'
     } |
     Sort-Object |
@@ -23,6 +28,19 @@ function Get-Manifest($root) {
 
 $ref = Get-Manifest $MockArms.base
 "base: $($ref.Count) app files"
+
+# A2.1 in check-layer-a asserts a FRESH install does not create the retired
+# .github/copilot-instructions.md, but it only ever looks at the governed arm.
+# This loop is the only place that sees all six, so it reports the leftover
+# across every arm - as a NOTE, not a failure, because govern-update lets a
+# target keep the file on purpose. Silence here means no arm still carries it.
+$legacyCopilot = @()
+foreach ($name in $MockArms.Keys) {
+  if (Test-Path (Join-Path $MockArms[$name] '.github\copilot-instructions.md')) { $legacyCopilot += $name }
+}
+if ($legacyCopilot.Count) {
+  Note 'legacy-cp' "retired .github/copilot-instructions.md still present in: $($legacyCopilot -join ', ') - refresh these arms, or keep it deliberately"
+}
 
 foreach ($name in 'governed', 'control', 'unconfigured', 'entryfiles-only', 'update') {
   $m    = Get-Manifest $MockArms[$name]

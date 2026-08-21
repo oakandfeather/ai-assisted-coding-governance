@@ -1,8 +1,8 @@
 # Agent Workflow
 
-*How to work — the sections below are the whole scope. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus the craft companions [`coding-patterns.md`](./coding-patterns.md) / [`writing-patterns.md`](./writing-patterns.md). Precedence: a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) > `core-rules.md` > the task module > this file and the craft companions > project entry file (`AGENTS.md` / `CLAUDE.md` / `.github/copilot-instructions.md`). Safety wins over speed, correctness over throughput; the stricter rule always wins.*
+*How to work — the sections below are the whole scope. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus the craft companions [`coding-patterns.md`](./coding-patterns.md) / [`writing-patterns.md`](./writing-patterns.md). Precedence: a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) > `core-rules.md` > the task module > this file and the craft companions > project entry file (`AGENTS.md` / `CLAUDE.md`). Safety wins over speed, correctness over throughput; the stricter rule always wins.*
 
-**Version:** 1.16 · **Last reviewed:** 2026-08-17 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.16 · **Last reviewed:** 2026-08-21 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -44,7 +44,7 @@ Ask once, with a concrete recommendation — not an open-ended survey. A general
 
 ## 3. Verification discipline
 
-Self-verify against an explicit contract; the project's entry file (`AGENTS.md`, or the `CLAUDE.md` / `.github/copilot-instructions.md` pointing to it) should define one — for code, the commands, single-test invocation, and definition of done; for content, the sources of truth and the review standard.
+Self-verify against an explicit contract; the project's entry file (`AGENTS.md`, or the `CLAUDE.md` pointing to it) should define one — for code, the commands, single-test invocation, and definition of done; for content, the sources of truth and the review standard.
 
 - **Verify narrow first, then wide.** Run the single most relevant test or direct exercise of the changed path — for content, check the claims you changed against their sources — then the full gate (tests, lint, type-check) or a whole-deliverable read before hand-off.
 - **Exercise the change, don't just assert it.** Drive the affected flow at least once; a passing unrelated suite proves little. Trace each claim, quote, and citation to a real source rather than trusting that it reads plausibly.

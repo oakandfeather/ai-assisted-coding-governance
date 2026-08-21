@@ -58,7 +58,7 @@ $stashed = $false
 try {
   if (-not [string]::IsNullOrWhiteSpace((git status --porcelain))) { git stash -q -u; $stashed = $true }
   Add-Content -LiteralPath "$t\ai-governance\core-rules.md" -Value "`nlocal uncommitted edit"
-  $touched = 'core-rules\.md|AGENTS\.md|client-profiles\.md|CLAUDE\.md|copilot-instructions\.md'
+  $touched = 'core-rules\.md|AGENTS\.md|client-profiles\.md|CLAUDE\.md'
   $dirty = git status --porcelain | Where-Object { $_ -match $touched }
   Assert 'A3.9b-1' ([bool]$dirty) 'dirty tree detected on a file the update would touch'
   Note   'A3.9b-2' 'git is the only undo this procedure offers, so the run stops and shows the user'

@@ -37,7 +37,7 @@ Each exits 0 on success and non-zero on any failure, so they work as gates.
 | Tier | File to change | Exercises |
 | --- | --- | --- |
 | A | `ai-docs/coding-rules.md` | A3.1 |
-| B | `ai-docs/copilot-instructions.template.md` | A3.2 |
+| B | `ai-docs/CLAUDE.template.md`, **below** the banner | A3.2 |
 | C | `ai-docs/AGENTS.template.md`, **inside** the mandatory-rules block | A3.3–A3.6 |
 | D | `ai-docs/client-profiles.md`, the **"Add each client as…"** paragraph | A3.7 |
 

@@ -17,7 +17,6 @@ Assert 'A3.1a' ($drift.Count -eq 0) "all 6 rule files match new upstream ($($dri
 
 "=== A3.2 - tier B re-derived, and the diff stayed reviewable ==="
 $cl = Read-Doc "$tgt\CLAUDE.md"
-$cp = Read-Doc "$tgt\.github\copilot-instructions.md"
 Assert 'A3.2a' ($cl -match '@AGENTS\.md')                        'CLAUDE.md still the @AGENTS.md import'
 # The three imports are the whole point of the tier-B replace: they are how
 # core-rules.md, agent-workflow.md, and the client-profile index reach an agent
@@ -28,15 +27,24 @@ Assert 'A3.2a2' (($cl -match '(?m)^@ai-governance/core-rules\.md\s*$') -and
                  ($cl -match '(?m)^@ai-governance/client-profiles\.md\s*$')) `
                                                                  'all three ai-governance imports survived the tier B replace'
 Assert 'A3.2b' ($cl -notmatch '\(template\)')                    'CLAUDE.md banner stripped'
-Assert 'A3.2c' ($cp -match '^# Coding rules for GitHub Copilot') 'copilot file starts at the right heading'
-Assert 'A3.2d' ($cp -match 'ai-governance/core-rules\.md')       'copilot links point at ai-governance/, not ai-docs/'
+# Tier B lost its second file on 2026-08-21 (CLI-only scope). The old A3.2c/d
+# asserted the Copilot file's heading and its ai-governance/ links; both are
+# gone with the file. What replaces them is the never-auto-delete rule: if the
+# target still carries a pre-2026-08-21 Copilot file, govern-update must leave
+# it on disk and raise it, not silently remove it.
+$cpStale = "$tgt\.github\copilot-instructions.md"
+if (Test-Path $cpStale) {
+  Assert 'A3.2c' $true 'pre-2026-08-21 Copilot file left in place (removal is ask-only, never automatic)'
+} else {
+  Note   'A3.2c' 'no legacy .github/copilot-instructions.md in this target - never-auto-delete not exercised'
+}
 
 # The diff-hygiene half of A3.2: a file the plan called identical must not come
 # back with a diff. Line-ending churn slips past a content-only local-content
 # guard and rewrites every line, destroying the audit trail step 7 asks for.
 Push-Location $tgt
 $churn = @()
-foreach ($f in 'CLAUDE.md', '.github/copilot-instructions.md', 'AGENTS.md',
+foreach ($f in 'CLAUDE.md', 'AGENTS.md',
                'ai-governance/core-rules.md', 'ai-governance/coding-rules.md',
                'ai-governance/writing-rules.md', 'ai-governance/coding-patterns.md',
                'ai-governance/writing-patterns.md',

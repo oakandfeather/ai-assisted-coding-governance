@@ -14,8 +14,13 @@ if (-not (Test-Path -LiteralPath (Join-Path $src 'empty-build'))) {
 }
 
 "=== A2 - govern-init file shape (governed copy) ==="
-Assert 'A2.1' ((Test-Path "$g\AGENTS.md") -and (Test-Path "$g\CLAUDE.md") -and (Test-Path "$g\.github\copilot-instructions.md")) `
-              'entry files at correct paths'
+# Two entry files since 2026-08-21 (CLI-only scope). The ABSENCE half is the
+# load-bearing one: a stale govern-init that still lays down the retired
+# .github/copilot-instructions.md produces a repo that looks governed while
+# carrying a second, unmaintained copy of the always-on core.
+Assert 'A2.1' ((Test-Path "$g\AGENTS.md") -and (Test-Path "$g\CLAUDE.md") -and
+               -not (Test-Path "$g\.github\copilot-instructions.md")) `
+              'both entry files at correct paths; retired Copilot file not scaffolded'
 
 $eight = 'core-rules.md','coding-rules.md','writing-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md','client-profiles.md'
 $missing = $eight | Where-Object { -not (Test-Path "$g\ai-governance\$_") }
@@ -28,7 +33,6 @@ Assert 'A2.4' (-not (Test-Path "$g\human-docs") -and -not (Test-Path "$g\procedu
 
 $agents  = Read-Doc "$g\AGENTS.md"
 $claude  = Read-Doc "$g\CLAUDE.md"
-$copilot = Read-Doc "$g\.github\copilot-instructions.md"
 # CLAUDE.md is thin because of what it CONTAINS, not how many lines it has.
 # The old `-le 6` line ceiling was a proxy for that, and it broke the moment
 # the two rule imports were added. Raising the number would have been the same
@@ -47,8 +51,7 @@ $claudeThin = ($claude -notmatch '\(template\)') -and
               ($claude -notmatch '(?m)^## ') -and
               ($claude.Trim().Split("`n").Count -le 24)
 $bannersOff = ($agents -notmatch '\(template\)') -and ($agents -notmatch 'Fill in the italicized placeholders for this repository') -and
-              $claudeThin -and
-              ($copilot -match '^# Coding rules for GitHub Copilot')
+              $claudeThin
 Assert 'A2.5' $bannersOff 'banners stripped; CLAUDE.md thin and carries all four imports'
 
 # A broken @ import fails SILENTLY at runtime - no warning, no error, the file
@@ -131,13 +134,15 @@ foreach ($name in $MockArms.Keys) {
 # per-import, so the surviving @AGENTS.md still loads. It is why A2.12 above is
 # scoped to $g - an unscoped version would be a permanent red here, which is
 # exactly how a checker teaches its operator to ignore it.
-# Treat this as the COPILOT arm for anything about rule delivery: Copilot never
-# processes @ imports at all, so "entry files only" still means that for it.
+# Treat this as the NO-IMPORT-MECHANISM arm for anything about rule delivery:
+# Codex and the other supported CLIs never process @ imports at all, so "entry
+# files only" still means exactly that for them. (It was labelled the Copilot
+# arm until 2026-08-21, when in-IDE Copilot went out of scope.)
 # For a Claude row it now means "entry files, minus whatever the imports would
 # have carried" - do not reuse it as an entry-files-only Claude arm.
 $e = $MockArms['entryfiles-only']
-Assert 'B-T' ((Test-Path "$e\AGENTS.md") -and (Test-Path "$e\CLAUDE.md") -and (Test-Path "$e\.github\copilot-instructions.md") -and -not (Test-Path "$e\ai-governance")) `
-             'three entry files present, whole ai-governance/ tree gone'
+Assert 'B-T' ((Test-Path "$e\AGENTS.md") -and (Test-Path "$e\CLAUDE.md") -and -not (Test-Path "$e\ai-governance")) `
+             'both entry files present, whole ai-governance/ tree gone'
 Assert 'B-T4' ((Read-Doc "$e\AGENTS.md") -match 'we log full request bodies') 'B-P1 conflict line present in the entryfiles-only arm'
 
 "=== control arm ==="

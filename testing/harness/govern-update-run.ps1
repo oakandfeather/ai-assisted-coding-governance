@@ -40,13 +40,11 @@ function Anchor([string]$pattern, [string]$label) {
 }
 $aAgentsBanner = Anchor "Slice-From \`$agents '([^']+)' 'AGENTS\.md banner'"              'AGENTS banner'
 $aClaudeBody   = Anchor "Slice-From \`$claude '([^']+)' 'CLAUDE\.md body'"                'CLAUDE body'
-$aCopilotBody  = Anchor "Slice-From \`$copilot '([^']+)' 'copilot-instructions\.md body'" 'copilot body'
 $aFootnote     = "`n---`n*Fill in the italicized placeholders for this repository."
 
 "ANCHORS LEARNED FROM build.ps1:"
 "  AGENTS banner  : $aAgentsBanner"
 "  CLAUDE body    : $aClaudeBody"
-"  copilot body   : $aCopilotBody"
 ""
 
 $tierA = 'core-rules.md','coding-rules.md','writing-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md'
@@ -87,13 +85,10 @@ $claudeNew = Read-Doc "$src\ai-docs\CLAUDE.template.md"
 $ci = $claudeNew.IndexOf($aClaudeBody); if ($ci -lt 0) { throw "Anchor not found in CLAUDE template" }
 $claudeNew = "# CLAUDE.md`n`n" + $claudeNew.Substring($ci)
 
-$copilotNew = Read-Doc "$src\ai-docs\copilot-instructions.template.md"
-$pi = $copilotNew.IndexOf($aCopilotBody); if ($pi -lt 0) { throw "Anchor not found in copilot template" }
-$copilotNew = $copilotNew.Substring($pi)
-
+# Tier B is CLAUDE.md alone since 2026-08-21: .github/copilot-instructions.md
+# was retired with the CLI-only scope, so there is no second file to re-derive.
 $tierB = @(
-  @{ Label = 'CLAUDE.md';                       Path = "$tgt\CLAUDE.md";                       New = $claudeNew  },
-  @{ Label = '.github/copilot-instructions.md'; Path = "$tgt\.github\copilot-instructions.md"; New = $copilotNew }
+  @{ Label = 'CLAUDE.md'; Path = "$tgt\CLAUDE.md"; New = $claudeNew }
 )
 foreach ($b in $tierB) {
   # Compare LF-normalized. A line-ending-only difference is not local content,

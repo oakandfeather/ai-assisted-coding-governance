@@ -60,13 +60,13 @@ if ($tB -and $oB) {
 # ---------------------------------------------------------------------------
 ""
 "=== A2.9 - encoding (asserted deliberately, not folded into A2.8) ==="
-# BOM absence is a HARD failure: a BOM in a Markdown file that Codex or Copilot
-# reads is a real defect. Line endings are RECORDED, not failed - govern-init is
+# BOM absence is a HARD failure: a BOM in a Markdown file that Codex or another
+# CLI agent reads is a real defect. Line endings are RECORDED, not failed - govern-init is
 # prose an agent follows with ordinary file tools, and CRLF on Windows is the
 # expected outcome, not a bug.
 
 $installed = @()
-$installed += Get-Item "$g\AGENTS.md", "$g\CLAUDE.md", "$g\.github\copilot-instructions.md"
+$installed += Get-Item "$g\AGENTS.md", "$g\CLAUDE.md"
 $installed += Get-ChildItem "$g\ai-governance" -Recurse -File -Filter '*.md'
 
 $bom = @(); $crlf = @(); $lf = @(); $mixed = @()
