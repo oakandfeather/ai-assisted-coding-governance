@@ -2,7 +2,7 @@
 
 *How to work — the sections below are the whole scope. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus the craft companions [`coding-patterns.md`](./coding-patterns.md) / [`writing-patterns.md`](./writing-patterns.md). Precedence: a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) > `core-rules.md` > the task module > this file and the craft companions > project entry file (`AGENTS.md` / `CLAUDE.md`). Safety wins over speed, correctness over throughput; the stricter rule always wins.*
 
-**Version:** 1.16 · **Last reviewed:** 2026-08-21 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.17 · **Last reviewed:** 2026-08-21 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -80,7 +80,7 @@ When you discover something non-obvious the docs don't capture — a convention,
 
 **The falsification pass before hand-off:**
 
-- **Make one cold pass whose goal is to find the defect, not to confirm the work.** Re-read the original requirement **first**, then the change — that order matters: reading your own change first anchors you to what you built, and you will read the requirement as satisfied. An agent that never saw you build it cannot be anchored (§8, where your tool can run one).
+- **Make one cold pass whose goal is to find the defect, not to confirm the work.** Re-read the original requirement **first**, then the change — that order matters: reading your own change first anchors you to what you built, and you will read the requirement as satisfied. An agent that never saw you build it cannot be anchored (§8).
 - **Ask deliberately:** what input breaks this (`coding-patterns.md` §1)? What did the requirement ask for that I did not do? What did I do that it did not ask for (`core-rules.md` §2)? Which line could I not defend if the reviewer challenged it — for content, the sourcing question (`writing-rules.md` §1)?
 - **This is a check on finished work, not a license to defer quality** — write it correctly the first time (`coding-rules.md` §2).
 - **The pass must produce output.** What it finds is fixed, or it goes in **Flags** (§4). A pass that reports "looks good" every time is not being run; if it genuinely finds nothing, say what you checked.
@@ -111,8 +111,6 @@ Under time pressure, cut scope and say so in the hand-off. Cutting one of these 
 - **Spend what you save on §6 and §5.** The falsification pass and writing down what you had to work out compound — the last things to cut, not the first.
 
 ## 8. Delegating to subagents
-
-Some agent tools can run a subtask in a separate agent with its own context; many can't. **Where yours can, this section governs it. Where it can't, nothing here is required of you** — the fallbacks below are the normal path, not a lesser one.
 
 Delegation trades context isolation against re-derivation. It pays when the subtask's **output is small relative to the reading it takes to produce**, and loses when the subtask needs context you already hold.
 
