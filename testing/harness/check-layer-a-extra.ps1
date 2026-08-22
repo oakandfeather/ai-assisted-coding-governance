@@ -66,7 +66,7 @@ if ($tB -and $oB) {
 # expected outcome, not a bug.
 
 $installed = @()
-$installed += Get-Item "$g\AGENTS.md", "$g\CLAUDE.md"
+$installed += Get-Item "$g\AGENTS.md", "$g\CLAUDE.md", "$g\GEMINI.md"
 $installed += Get-ChildItem "$g\ai-governance" -Recurse -File -Filter '*.md'
 
 $bom = @(); $crlf = @(); $lf = @(); $mixed = @()

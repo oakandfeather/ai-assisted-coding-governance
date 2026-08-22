@@ -40,11 +40,13 @@ function Anchor([string]$pattern, [string]$label) {
 }
 $aAgentsBanner = Anchor "Slice-From \`$agents '([^']+)' 'AGENTS\.md banner'"              'AGENTS banner'
 $aClaudeBody   = Anchor "Slice-From \`$claude '([^']+)' 'CLAUDE\.md body'"                'CLAUDE body'
+$aGeminiBody   = Anchor "Slice-From \`$gemini '([^']+)' 'GEMINI\.md body'"                'GEMINI body'
 $aFootnote     = "`n---`n*Fill in the italicized placeholders for this repository."
 
 "ANCHORS LEARNED FROM build.ps1:"
 "  AGENTS banner  : $aAgentsBanner"
 "  CLAUDE body    : $aClaudeBody"
+"  GEMINI body    : $aGeminiBody"
 ""
 
 $tierA = 'core-rules.md','coding-rules.md','writing-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md'
@@ -85,12 +87,27 @@ $claudeNew = Read-Doc "$src\ai-docs\CLAUDE.template.md"
 $ci = $claudeNew.IndexOf($aClaudeBody); if ($ci -lt 0) { throw "Anchor not found in CLAUDE template" }
 $claudeNew = "# CLAUDE.md`n`n" + $claudeNew.Substring($ci)
 
-# Tier B is CLAUDE.md alone since 2026-08-21: .github/copilot-instructions.md
-# was retired with the CLI-only scope, so there is no second file to re-derive.
+$geminiNew = Read-Doc "$src\ai-docs\GEMINI.template.md"
+$gi = $geminiNew.IndexOf($aGeminiBody); if ($gi -lt 0) { throw "Anchor not found in GEMINI template" }
+$geminiNew = "# GEMINI.md`n`n" + $geminiNew.Substring($gi)
+
+# Tier B lost .github/copilot-instructions.md on 2026-08-21 (CLI-only scope)
+# and gained GEMINI.md the same day. GEMINI.md is the ONE addition a real
+# target actually meets: every install predating 2026-08-21 lacks it, so the
+# absent branch below is the common path, not an edge case. It is not an
+# ai-governance/ file, so the added/removed set comparison further down cannot
+# see it - this loop is the only place that reports it.
 $tierB = @(
-  @{ Label = 'CLAUDE.md'; Path = "$tgt\CLAUDE.md"; New = $claudeNew }
+  @{ Label = 'CLAUDE.md'; Path = "$tgt\CLAUDE.md"; New = $claudeNew; Like = "$tgt\AGENTS.md" }
+  @{ Label = 'GEMINI.md'; Path = "$tgt\GEMINI.md"; New = $geminiNew; Like = "$tgt\CLAUDE.md" }
 )
 foreach ($b in $tierB) {
+  # Absent target file: scaffold it rather than throwing on Read-Doc, the same
+  # way tier A handles a new upstream rule file.
+  if (-not (Test-Path -LiteralPath $b.Path)) {
+    "  {0,-32} {1}" -f $b.Label, 'ADDED     (absent in target - new entry file, will be scaffolded)'
+    continue
+  }
   # Compare LF-normalized. A line-ending-only difference is not local content,
   # and treating it as such would put a meaningless gate in front of every run.
   $cur = Read-Doc $b.Path
@@ -168,7 +185,17 @@ foreach ($f in $tierA) {
 }
 
 "--- Tier B ---"
-foreach ($b in $tierB) { Write-DocLike $b.Path $b.New $b.Path; "  $($b.Label) : re-derived" }
+foreach ($b in $tierB) {
+  if (Test-Path -LiteralPath $b.Path) {
+    Write-DocLike $b.Path $b.New $b.Path
+    "  $($b.Label) : re-derived"
+  } else {
+    # Model line endings on an already-installed sibling, not the OS default,
+    # so the scaffolded file matches the rest of the copied set (A2.9c).
+    Write-DocLike $b.Path $b.New $b.Like
+    "  $($b.Label) : ADDED (scaffolded - target predates this entry file)"
+  }
+}
 
 "--- Tier C: AGENTS.md ---"
 $agentsPath = "$tgt\AGENTS.md"

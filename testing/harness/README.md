@@ -2,7 +2,7 @@
 
 *The scripted half of [`../Governance-Test-Plan.md`](../Governance-Test-Plan.md). Layer A is mechanical and belongs in the verification contract, so it has to be fast enough that people actually run it.*
 
-**Version:** 1.3 · **Last reviewed:** 2026-08-05 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 1.4 · **Last reviewed:** 2026-08-22 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -37,7 +37,7 @@ Each exits 0 on success and non-zero on any failure, so they work as gates.
 | Tier | File to change | Exercises |
 | --- | --- | --- |
 | A | `ai-docs/coding-rules.md` | A3.1 |
-| B | `ai-docs/CLAUDE.template.md`, **below** the banner | A3.2 |
+| B | `ai-docs/CLAUDE.template.md` or `ai-docs/GEMINI.template.md`, **below** the banner | A3.2 |
 | C | `ai-docs/AGENTS.template.md`, **inside** the mandatory-rules block | A3.3–A3.6 |
 | D | `ai-docs/client-profiles.md`, the **"Add each client as…"** paragraph | A3.7 |
 
@@ -65,7 +65,7 @@ The arms hold a governance copy installed at a point in time. Once this repo's r
 .\govern-update-run.ps1 -Arm unconfigured -Apply
 ```
 
-Then re-sync `…-entryfiles-only/`'s two entry files from `…-governed/` (that arm holds no `ai-governance/`, so the updater can't run there, and B-T only discriminates while its entry files match the governed arm's). Finally commit each refreshed arm and move its tag — the hygiene check asserts `tag=pristine, tree clean`:
+Then re-sync `…-entryfiles-only/`'s three entry files from `…-governed/` (that arm holds no `ai-governance/`, so the updater can't run there, and B-T only discriminates while its entry files match the governed arm's). Write them through `Write-DocLike` rather than copying: that arm's `AGENTS.md` is LF where the governed arm's is CRLF, and a plain copy silently rewrites every line. Finally commit each refreshed arm and move its tag — the hygiene check asserts `tag=pristine, tree clean`:
 
 ```powershell
 git add -A; git commit -m "Refresh installed governance to upstream (govern-update)"; git tag -f pristine
@@ -83,6 +83,12 @@ A new file in `ai-docs/` fails **louder and differently**, so it reads as a defe
 - **Model the new file's line endings on an already-installed sibling** (`core-rules.md`) rather than the OS default, or it lands as the odd one out and A2.9c records the mismatch.
 
 The runner handles an added file as of the `writing-patterns.md` change — it prints `ADDED` in the plan and writes the file on `-Apply`. Before that it threw on `Read-Doc` of a file the target didn't have.
+
+### When the added file is an *entry* file, not a rule file
+
+`GEMINI.md` (added 2026-08-21) is the first of these, and it takes a different path through the runner: entry files are **tier B**, so the added/removed set comparison — which only ever reads `ai-governance/` — cannot see it at all. Tier B grew the same absent → `ADDED` branch tier A already had, in both the plan loop and the apply loop, and it models the scaffolded file's line endings on the target's `CLAUDE.md`.
+
+**`…-update/` deliberately still has no `GEMINI.md`, and that is the point.** It is the pre-2026-08-21 install every real target looks like, so it is the only fixture that exercises the scaffold path (`A3.2f`–`A3.2h`). `check-identity.ps1` reports its absence as a NOTE naming `update` as expected — the same shape as the retired-Copilot NOTE beside it. Any *other* arm named in that NOTE is stale; refresh it. Do not "fix" the update arm by giving it a `GEMINI.md`.
 
 ## Two traps these scripts exist to avoid
 

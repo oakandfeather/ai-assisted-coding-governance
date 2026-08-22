@@ -1,6 +1,6 @@
 ---
 name: govern-init
-description: Scaffold the AI-assisted coding governance package into a target project repository — copies the two entry files (AGENTS.md at the root and a thin CLAUDE.md) plus the companion rule files into an ai-governance/ directory, then interviews the user to fill in the placeholders and to author the active client's profile. Covers Claude Code, OpenAI Codex, and every other AGENTS.md-reading coding CLI in one pass. Use when setting up a new client engagement repo, when asked to "add the coding rules / governance / AGENTS.md / CLAUDE.md to this project", when asked to set up or add a client profile, or when a repo has an AGENTS.md/CLAUDE.md whose *(placeholders)* are still unfilled.
+description: Scaffold the AI-assisted coding governance package into a target project repository — copies the three entry files (AGENTS.md at the root, a thin CLAUDE.md, and a thin GEMINI.md) plus the companion rule files into an ai-governance/ directory, then interviews the user to fill in the placeholders and to author the active client's profile. Covers Claude Code, OpenAI Codex, Antigravity CLI, the GitHub Copilot CLI, and every other AGENTS.md-reading coding CLI in one pass. Use when setting up a new client engagement repo, when asked to "add the coding rules / governance / AGENTS.md / CLAUDE.md / GEMINI.md to this project", when asked to set up or add a client profile, or when a repo has an AGENTS.md/CLAUDE.md/GEMINI.md whose *(placeholders)* are still unfilled.
 ---
 
 # govern-init

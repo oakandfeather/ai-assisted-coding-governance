@@ -2,7 +2,7 @@
 
 Scaffolds the governance package into a target project. This procedure **copies** the rules; it does not contain them. The rule text lives in the copied files, where it auto-loads every session and stays auditable in the client's repo.
 
-**How this is run.** Follow it directly, start to finish. Either run `/govern-init` in Claude Code, or hand any other coding CLI — Codex CLI, the Copilot CLI — the path to this file and tell it to read the file and follow it exactly. Nothing here needs a tool or a tool-specific feature: every step is reading files, writing files, and asking the user questions.
+**How this is run.** Follow it directly, start to finish. Either run `/govern-init` in Claude Code, or hand any other coding CLI — Codex CLI, the Copilot CLI, Antigravity CLI — the path to this file and tell it to read the file and follow it exactly. Nothing here needs a tool or a tool-specific feature: every step is reading files, writing files, and asking the user questions.
 
 ## Source package
 
@@ -14,18 +14,19 @@ Scaffolds the governance package into a target project. This procedure **copies*
 
 ### 1. Check before writing
 
-- Confirm the target is the intended repo **root**. `AGENTS.md` and `CLAUDE.md` land there — they only auto-load from the root — and the companion files go in an `ai-governance/` directory beneath the root.
-- If an `AGENTS.md` or `CLAUDE.md` already exists: **stop and show the user what's there.** Do not overwrite. Offer to merge the mandatory-rules block into the existing file instead, and let them decide.
+- Confirm the target is the intended repo **root**. `AGENTS.md`, `CLAUDE.md`, and `GEMINI.md` land there — they only auto-load from the root — and the companion files go in an `ai-governance/` directory beneath the root.
+- If an `AGENTS.md`, `CLAUDE.md`, or `GEMINI.md` already exists: **stop and show the user what's there.** Do not overwrite. Offer to merge the mandatory-rules block into the existing file instead, and let them decide.
 - If the companion files or an `ai-governance/` directory already exist, report which ones and ask before replacing — they may carry local edits.
 
 ### 2. Copy the file set
 
-The two entry files land at the repo root; the other eight items travel together into an **`ai-governance/`** directory you create at the root. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` imports `AGENTS.md` plus `ai-governance/core-rules.md` and `ai-governance/agent-workflow.md`, and the files inside `ai-governance/` link each other with relative `./` paths — separating them breaks the chain.
+The three entry files land at the repo root; the other eight items travel together into an **`ai-governance/`** directory you create at the root. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` and `GEMINI.md` each import `AGENTS.md` plus `ai-governance/core-rules.md` and `ai-governance/agent-workflow.md`, and the files inside `ai-governance/` link each other with relative `./` paths — separating them breaks the chain.
 
 | From `ai-docs/` | To target repo |
 | --- | --- |
 | `AGENTS.template.md` | `AGENTS.md` *(repo root, renamed — the canonical entry)* |
 | `CLAUDE.template.md` | `CLAUDE.md` *(repo root, renamed — thin: `@AGENTS.md` plus the two always-on rule imports and the client-profile index)* |
+| `GEMINI.template.md` | `GEMINI.md` *(repo root, renamed — thin: the same imports as `CLAUDE.md`, written `@./AGENTS.md` etc. — Antigravity's resolver documents the `./` prefix)* |
 | `core-rules.md` | `ai-governance/core-rules.md` |
 | `coding-rules.md` | `ai-governance/coding-rules.md` |
 | `writing-rules.md` | `ai-governance/writing-rules.md` |
@@ -47,6 +48,7 @@ Both entry files ship with a "how to use" banner that must come off after copyin
 
 - **`AGENTS.md`** — retitle `# AGENTS.md (template)` to `# AGENTS.md` and delete the banner block above the `Version:` line. It describes the template rather than the project, and its `../AGENTS.md` link does not resolve outside the governance repo. **Also delete the closing footnote** — the trailing `---` and the italic *"Fill in the italicized placeholders for this repository…"* paragraph after it. It is install instructions, not project guidance, and it points at "the note at the top" that you just removed. This is the file whose placeholders you fill (step 5).
 - **`CLAUDE.md`** — retitle `# CLAUDE.md (template)` to `# CLAUDE.md`, delete everything from the `(template)` title down through the horizontal rule, and **keep everything beneath it verbatim**: the `@AGENTS.md` import, the `@ai-governance/core-rules.md`, `@ai-governance/agent-workflow.md`, and `@ai-governance/client-profiles.md` imports, their lead-ins, and the HTML comment. No placeholders here. **Do not trim the three imports as "not thin."** `AGENTS.md` *links* those files rather than importing them, so without these the always-on rules — and the pointer to the client profile that outranks them — load only if the agent chooses to open them, and measured behaviour says it often does not. They are routing, not rules: no rule text is duplicated, and a missing import fails silently, so nothing will tell you it was dropped. **The imported `client-profiles.md` is the index only.** The profile itself stays linked from it, so it is still read at a depth scaled to the task rather than charged to every trivial edit.
+- **`GEMINI.md`** — same treatment as `CLAUDE.md`, retitled from `# GEMINI.md (template)`, same four imports kept verbatim for the same reason — but written `@./AGENTS.md`, `@./ai-governance/core-rules.md`, `@./ai-governance/agent-workflow.md`, `@./ai-governance/client-profiles.md`. **Keep the `./` prefix.** Antigravity resolves a relative `@` mention against the rules file's own location, and the explicit relative form is the one its docs demonstrate, unlike Claude Code's bare `@AGENTS.md` — do not "match" the two files' syntax to each other. No placeholders here either.
 
 ### 4. Strip the sample from the copied index
 
@@ -64,7 +66,7 @@ Leave the paragraph beginning "Add each client as `client-profiles/<client>.md`"
 
 ### 5. Fill the placeholders
 
-Interview the user for each italicized `*(placeholder)*` in the new `AGENTS.md` (the canonical entry — the thin `CLAUDE.md` carries none). Ask in one pass with concrete recommendations, not an open-ended survey:
+Interview the user for each italicized `*(placeholder)*` in the new `AGENTS.md` (the canonical entry — the thin `CLAUDE.md` and `GEMINI.md` carry none). Ask in one pass with concrete recommendations, not an open-ended survey:
 
 - **Header:** active client. Set `Last reviewed` to today, absolute (e.g. `2026-07-14`). Leave `Version` at 1.0 — this is the target repo's first version.
 - **Project overview:** 1–3 sentences — what the app is, who it's for, which engagement.
