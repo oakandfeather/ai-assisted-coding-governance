@@ -102,6 +102,12 @@ $claude = Slice-From $claude 'Guidance for Claude Code in this repository lives 
 $claude = "# CLAUDE.md`n`n" + $claude.TrimEnd() + "`n"
 Write-Text (Join-Path $buildDir 'CLAUDE.md') $claude
 
+# ---------- GEMINI.md ----------
+$gemini = Read-Text (Join-Path $aiDocs 'GEMINI.template.md')
+$gemini = Slice-From $gemini 'Guidance for Gemini CLI in this repository lives in' 'GEMINI.md body'
+$gemini = "# GEMINI.md`n`n" + $gemini.TrimEnd() + "`n"
+Write-Text (Join-Path $buildDir 'GEMINI.md') $gemini
+
 # ---------- ai-governance verbatim files ----------
 # No client-profiles/*.md is bundled - this build has no client, sample or
 # otherwise.
@@ -141,5 +147,5 @@ $profiles = $profiles.Substring(0, $sampleIdx).TrimEnd() + "`n"
 
 Write-Text (Join-Path $buildDir 'ai-governance\client-profiles.md') $profiles
 
-Write-Host "empty-build/ regenerated (9 files)."
+Write-Host "empty-build/ regenerated (10 files)."
 Write-Host "empty-build/ is gitignored and generated - do not hand-edit it; edit ai-docs/ and rerun this script."

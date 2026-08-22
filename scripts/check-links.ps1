@@ -39,7 +39,8 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 # link targets are checked against the build/ snapshot instead (see below).
 $templateFiles = @(
     'ai-docs/AGENTS.template.md',
-    'ai-docs/CLAUDE.template.md'
+    'ai-docs/CLAUDE.template.md',
+    'ai-docs/GEMINI.template.md'
 )
 
 # Where an ai-governance/ link from a template should resolve once installed.
