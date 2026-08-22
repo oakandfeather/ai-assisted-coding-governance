@@ -1,8 +1,8 @@
 # Agent Workflow
 
-*How to work — the sections below are the whole scope. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) (safety/risk), plus the craft companions [`coding-patterns.md`](./coding-patterns.md) / [`writing-patterns.md`](./writing-patterns.md). Precedence: a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) > `core-rules.md` > the task module > this file and the craft companions > project entry file (`AGENTS.md` / `CLAUDE.md`). Safety wins over speed, correctness over throughput; the stricter rule always wins.*
+*How to work — the sections below are the whole scope. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) / [`database-rules.md`](./database-rules.md) (safety/risk), plus the craft companions [`coding-patterns.md`](./coding-patterns.md) / [`writing-patterns.md`](./writing-patterns.md). Precedence: a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) > `core-rules.md` > the task module > this file and the craft companions > project entry file (`AGENTS.md` / `CLAUDE.md`). Safety wins over speed, correctness over throughput; the stricter rule always wins.*
 
-**Version:** 1.17 · **Last reviewed:** 2026-08-21 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.18 · **Last reviewed:** 2026-08-22 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -103,7 +103,7 @@ Under time pressure, cut scope and say so in the hand-off. Cutting one of these 
 **The levers, in rough order of payoff:**
 
 - **The scarce resource is the human's review time, not yours.** Small scoped diffs, a hand-off with no filler (§4), and no unrequested refactors or drive-by reformatting (`core-rules.md` §2).
-- **Load the rules module your task needs, not all of them:** `core-rules.md`, the one task module your work calls for (`coding-rules.md` for code, `writing-rules.md` for content), the active profile from `client-profiles.md`, and the matching craft companion — `coding-patterns.md` for non-trivial code, `writing-patterns.md` for a non-trivial document — not to fix a typo. Reading everything crowds out what you have to reason over: the requirement and the existing material.
+- **Load the rules module your task needs, not all of them:** `core-rules.md`, the one task module your work calls for (`coding-rules.md` for code, `writing-rules.md` for content, `database-rules.md` for a database project), the active profile from `client-profiles.md`, and the matching craft companion — `coding-patterns.md` for non-trivial code or schema work, `writing-patterns.md` for a non-trivial document — not to fix a typo. Reading everything crowds out what you have to reason over: the requirement and the existing material.
 - **Gather context in one deliberate pass, not by discovery.** Work out what you need and read it together; issue independent searches and reads at once; don't re-read what's already in front of you. Under-reading is the more expensive error — this budgets §1 step 2, it does not waive it.
 - **Scale the whole loop to the blast radius** (as the `core-rules.md` checklist does): a small, reversible change with no design or security surface earns a shorter path through §1 — the floor above still intact.
 - **Narrow check per increment, wide gate once (§3)** — the full gate belongs before hand-off, not after every edit.

@@ -1,8 +1,8 @@
 # AI Coding Rules for Coding Agents
 
-*Rules for writing, editing, or running code, with §§1–4 below the whole scope. **Read [`core-rules.md`](./core-rules.md) first:** it holds the task-agnostic base that binds on every task; this file adds only the code rules on top of it. Reference it from your project's entry file alongside `core-rules.md`. Where a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, it wins. Companions: [`coding-patterns.md`](./coding-patterns.md) (engineering craft) and [`agent-workflow.md`](./agent-workflow.md) (how to work).*
+*Rules for writing, editing, or running code, with §§1–4 below the whole scope. **Read [`core-rules.md`](./core-rules.md) first:** it holds the task-agnostic base that binds on every task; this file adds only the code rules on top of it. Reference it from your project's entry file alongside `core-rules.md`. **A database project** — a repository where the schema itself is the deliverable — is [`database-rules.md`](./database-rules.md); this file governs application code, including the code that queries a database. Where a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, it wins. Companions: [`coding-patterns.md`](./coding-patterns.md) (engineering craft) and [`agent-workflow.md`](./agent-workflow.md) (how to work).*
 
-**Version:** 2.4 · **Last reviewed:** 2026-08-08 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 2.5 · **Last reviewed:** 2026-08-22 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -55,7 +55,7 @@ Generate secure code the first time; don't rely on a later pass to fix it.
 - Use semantic HTML and keyboard-navigable, screen-reader-friendly structures.
 - Don't ship inaccessible defaults and leave it to the reviewer to catch.
 
-*(This file governs code, not the documents around it. Non-UI document accessibility — headings, alt text, plain language, contrast — is [`writing-rules.md`](./writing-rules.md) §5. Documentation a change ships — README, API reference, runbook, release note — is a written deliverable: [`writing-rules.md`](./writing-rules.md) §6 governs its risks (actually run any command or snippet you document), [`writing-patterns.md`](./writing-patterns.md) §4 its craft. This file governs the code they describe.)*
+*(This file governs code, not the documents around it. Non-UI document accessibility — headings, alt text, plain language, contrast — is [`writing-rules.md`](./writing-rules.md) §5. Documentation a change ships — README, API reference, runbook, release note — is a written deliverable: [`writing-rules.md`](./writing-rules.md) §6 governs its risks (actually run any command or snippet you document), [`writing-patterns.md`](./writing-patterns.md) §4 its craft. This file governs the code they describe. Nor does it govern the schema itself: deploying a schema, destructive DDL, and the data that ships with a database project are [`database-rules.md`](./database-rules.md) — §2's parameterized-query rule still binds on any dynamic SQL built inside a procedure or function.)*
 
 ---
 

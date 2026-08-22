@@ -1,6 +1,6 @@
 # Context cost of the governance package
 
-**Last reviewed:** 2026-08-21
+**Last reviewed:** 2026-08-22
 
 Tracks how much of an agent's context window the `ai-docs/` package consumes when it's loaded per `AGENTS.md`'s "load in one pass" instruction. Re-run the measurement below and update this table when `ai-docs/` files change size materially — it's a cost metric, not a governed rule file, so it doesn't need a version bump on every edit.
 
@@ -21,6 +21,7 @@ wc -w -c ai-docs/*.md ai-docs/client-profiles/*.md
 | `core-rules.md` | 1,751 | ~3,000 |
 | `coding-rules.md` | 707 | ~1,250 |
 | `writing-rules.md` | 1,405 | ~2,400 |
+| `database-rules.md` | 1,348 | ~2,300 |
 | `coding-patterns.md` | 1,113 | ~1,950 |
 | `writing-patterns.md` | 1,600 | ~2,700 |
 | `agent-workflow.md` | 2,564 | ~4,150 |
@@ -34,7 +35,7 @@ wc -w -c ai-docs/*.md ai-docs/client-profiles/*.md
 
 **v1.11 took one of those cross-section cuts, and narrows the claim above.** Two of them turned out to be genuine duplication rather than the pointer-vs-reachability trade v1.10 weighed: §3's honest-verification bullet restated `core-rules.md` §4 with neither file citing the other, and the blast-radius rule was stated three times *inside this file* (§1, §6, §7), its "design-bearing, security-touching, multi-file, or fact-asserting" enumeration verbatim in two. Both collapsed to one owner — −27 words, with `core-rules.md` untouched. Reachability survives in two of the three spots: §3 still states its rule and names the owner, and §7's floor still states the gate. But **§6 now delegates the enumeration to §7's floor**, so an agent reading §6 alone learns that a typo is exempt without learning what always qualifies. That is the trade v1.10 declined, taken here because §6 and §7 are adjacent sections of one file an agent loads whole — not two files it may load separately, which is what the reachability argument was written about. If a Layer B run shows the falsification pass skipped on design-bearing work, restore the enumeration first.
 
-**A package-wide deduplication sweep followed, and returned 0.4% — that number is the finding.** v1.11 deduplicated one file against `core-rules.md` and against itself; this pass ran the same search across all six rule and craft files at once, mechanically (repeated 7-word shingles across `ai-docs/`, then read for genuine restatement rather than shared link boilerplate). It found eleven candidates and took three, all **within-file**, for −39 words net — 0.4% of the six files' 8,671, or 0.8% of the three actually edited:
+**A package-wide deduplication sweep followed, and returned 0.4% — that number is the finding.** v1.11 deduplicated one file against `core-rules.md` and against itself; this pass ran the same search across the six rule and craft files that existed at the time (`database-rules.md`, added 2026-08-22, has not been through a deduplication sweep — it was written against the audit in that change instead), mechanically (repeated 7-word shingles across `ai-docs/`, then read for genuine restatement rather than shared link boilerplate). It found eleven candidates and took three, all **within-file**, for −39 words net — 0.4% of the six files' 8,671, or 0.8% of the three actually edited:
 
 - **`writing-patterns.md` v1.2 (−22).** The run-every-example deferral to `writing-rules.md` §6 was stated three times (TL;DR item 5, §4's opening paragraph, the self-check). It now states it twice: §4's boundary, which root `AGENTS.md` protects by name, and the self-check, which was reworded to state the rule rather than merely name it — dropping the TL;DR parenthetical made the self-check load-bearing for a reader who skims TL;DR → self-check without opening §4.
 - **`agent-workflow.md` v1.12 (−20).** §8's first bullet re-derived the anchoring rationale §6 owns and already points at §8 for.
@@ -72,7 +73,7 @@ A fourth within-file cut was drafted and **reverted**, and it is the cautionary 
 
 ## Scenario totals
 
-**There is now a floor.** Since 2026-08-18 the installed `CLAUDE.md` `@`-imports `core-rules.md` and `agent-workflow.md` directly, and since 2026-08-20 the `client-profiles.md` index as well, so on Claude Code those three arrive in every session whether or not the agent decides to open anything — they are no longer a loading *choice*. The graduated rule in `AGENTS.md` ("scale that set to the blast radius") still governs the four conditional files **and the client profile's body**, which is what the second column measures.
+**There is now a floor.** Since 2026-08-18 the installed `CLAUDE.md` `@`-imports `core-rules.md` and `agent-workflow.md` directly, and since 2026-08-20 the `client-profiles.md` index as well, so on Claude Code those three arrive in every session whether or not the agent decides to open anything — they are no longer a loading *choice*. The graduated rule in `AGENTS.md` ("scale that set to the blast radius") still governs the five conditional files **and the client profile's body**, which is what the second column measures.
 
 | Scenario | On top of the floor | Est. tokens |
 |---|---|---:|
@@ -80,7 +81,8 @@ A fourth within-file cut was drafted and **reverted**, and it is the cautionary 
 | Trivial edit | *nothing* | ~9,400 |
 | Non-trivial coding task | + `coding-rules.md` + `coding-patterns.md` + the client profile body | ~13,050 |
 | Non-trivial writing task | + `writing-rules.md` + `writing-patterns.md` + the client profile body | ~14,950 |
-| Everything at once | + all four conditional files + the client profile body | ~18,150 |
+| Non-trivial database-project task | + `database-rules.md` + `coding-patterns.md` + the client profile body | ~14,100 |
+| Everything at once | + all five conditional files + the client profile body | ~20,450 |
 
 The three non-floor rows each fell slightly despite the floor rising. Two effects, both small: the index moved out of the conditional column into the floor (so it is counted once, not twice), and the `CLAUDE.md` row was corrected downward for its stripped comment. The profile body is measured installed (~430 tokens for the ESU sample) rather than at the source figure the per-file table uses.
 

@@ -20,7 +20,7 @@ Scaffolds the governance package into a target project. This procedure **copies*
 
 ### 2. Copy the file set
 
-The two entry files land at the repo root; the other eight items travel together into an **`ai-governance/`** directory you create at the root. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` imports `AGENTS.md` plus `ai-governance/core-rules.md` and `ai-governance/agent-workflow.md`, and the files inside `ai-governance/` link each other with relative `./` paths — separating them breaks the chain.
+The two entry files land at the repo root; the other nine items travel together into an **`ai-governance/`** directory you create at the root. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` imports `AGENTS.md` plus `ai-governance/core-rules.md`, `ai-governance/agent-workflow.md`, and the `ai-governance/client-profiles.md` index, and the files inside `ai-governance/` link each other with relative `./` paths — separating them breaks the chain.
 
 | From `ai-docs/` | To target repo |
 | --- | --- |
@@ -29,6 +29,7 @@ The two entry files land at the repo root; the other eight items travel together
 | `core-rules.md` | `ai-governance/core-rules.md` |
 | `coding-rules.md` | `ai-governance/coding-rules.md` |
 | `writing-rules.md` | `ai-governance/writing-rules.md` |
+| `database-rules.md` | `ai-governance/database-rules.md` |
 | `coding-patterns.md` | `ai-governance/coding-patterns.md` |
 | `writing-patterns.md` | `ai-governance/writing-patterns.md` |
 | `agent-workflow.md` | `ai-governance/agent-workflow.md` |

@@ -37,7 +37,7 @@ Adopt `build.ps1`'s failure posture too — **if an anchor is not found in the f
 
 | Tier | Files | Treatment |
 | --- | --- | --- |
-| **A — verbatim** | `ai-governance/core-rules.md`, `coding-rules.md`, `writing-rules.md`, `coding-patterns.md`, `writing-patterns.md`, `agent-workflow.md` | Replace wholesale from source. |
+| **A — verbatim** | `ai-governance/core-rules.md`, `coding-rules.md`, `writing-rules.md`, `database-rules.md`, `coding-patterns.md`, `writing-patterns.md`, `agent-workflow.md` | Replace wholesale from source. |
 | **B — banner-stripped** | `CLAUDE.md` | Re-derive from the template (slice the banner per step 2), then replace — but diff first, and gate it separately. See below. |
 | **C — merge** | `AGENTS.md` | Replace **only** the mandatory-rules block. See step 5. |
 | **D — merge** | `ai-governance/client-profiles.md` | Preserve the active-client paragraph. See step 6. |
@@ -60,7 +60,7 @@ Adopt `build.ps1`'s failure posture too — **if an anchor is not found in the f
 
 Show the user what will change before changing it: per file, whether it is identical, updated, added, or removed, and for updated files the `Version:` / `Last reviewed:` delta from their headers. Those header fields are the readable narrative of what moved; content comparison is what actually detects it, so **trust the content diff, not the version number** — an upstream edit that forgot to bump its version still needs to land.
 
-Then apply with **one approval per tier, not per file.** Tier A goes as a single batch — five full rule-file diffs are unreadable, and a gate nobody reads is not a safety measure. Tier B gets its own gate (it may hold appended local content), and tiers C and D are merges, so each gets its own gate and its own diff.
+Then apply with **one approval per tier, not per file.** Tier A goes as a single batch — seven full rule-file diffs are unreadable, and a gate nobody reads is not a safety measure. Tier B gets its own gate (it may hold appended local content), and tiers C and D are merges, so each gets its own gate and its own diff.
 
 Note that without an install manifest there is no baseline, so "the target differs from the source" is genuinely ambiguous: it may be an upstream change or a deliberate local edit. Treat every difference as needing confirmation, and say plainly that you cannot tell the two apart.
 

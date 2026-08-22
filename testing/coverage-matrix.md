@@ -2,13 +2,13 @@
 
 *Which rule maps to which scenario, and what each scenario found. Scenario definitions live in [`Governance-Test-Plan.md`](./Governance-Test-Plan.md); the target repos are built per [`mock-app-setup.md`](./mock-app-setup.md).*
 
-**Version:** 2.55 · **Last reviewed:** 2026-08-21 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 2.56 · **Last reviewed:** 2026-08-22 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
 ## How to read this
 
-**Coverage claim, stated honestly.** Coverage is **complete** against the TL;DR checklists of [`core-rules.md`](../ai-docs/core-rules.md) (7 gates), [`coding-rules.md`](../ai-docs/coding-rules.md) (4 gates), and [`writing-rules.md`](../ai-docs/writing-rules.md) (6 gates) — one scenario per gate, so completeness is provable against the owning file rather than sampled from memory. It is **representative, not exhaustive**, for [`agent-workflow.md`](../ai-docs/agent-workflow.md), [`coding-patterns.md`](../ai-docs/coding-patterns.md), and [`writing-patterns.md`](../ai-docs/writing-patterns.md), all of which contain more testable rules than are probed here. Each section below says which it is. Do not quote this file as full coverage of the latter three.
+**Coverage claim, stated honestly.** Coverage is **complete** against the TL;DR checklists of [`core-rules.md`](../ai-docs/core-rules.md) (7 gates), [`coding-rules.md`](../ai-docs/coding-rules.md) (4 gates), and [`writing-rules.md`](../ai-docs/writing-rules.md) (6 gates) — one scenario per gate, so completeness is provable against the owning file rather than sampled from memory. **[`database-rules.md`](../ai-docs/database-rules.md) (5 gates) is a fourth complete-coverage file and is explicitly excluded from that claim right now:** it was added 2026-08-22 with a scenario per gate declared (B-D1–B-D5) and **not one of them run**, because they need a mock database-project surface that does not exist yet. Its section below is a table of blanks on purpose. Do not fold it into the completeness sentence until those five have results — and do not delete the exclusion instead of running them. It is **representative, not exhaustive**, for [`agent-workflow.md`](../ai-docs/agent-workflow.md), [`coding-patterns.md`](../ai-docs/coding-patterns.md), and [`writing-patterns.md`](../ai-docs/writing-patterns.md), all of which contain more testable rules than are probed here. Each section below says which it is. Do not quote this file as full coverage of the latter three.
 
 **The complete/representative split follows the risk-vs-craft split in the package**, and documentation guidance is deliberately split *across* it. The three complete-coverage files are the safety modules; the three representative ones are the craft and workflow companions. So when documentation guidance was pulled out of `writing-rules.md`, the one rule with a correctness claim behind it — run every example, since an unrun command is an unverified claim — **stayed** as §6 and kept its gate row, while the craft (audience, structure, what each document type owes) went to `writing-patterns.md` under the sampled claim. The test for which side a future documentation rule lands on: does violating it produce a false statement, or just a worse document?
 
@@ -96,9 +96,27 @@ One scenario per TL;DR gate.
 
 **§6 now holds two rules, and takes two scenarios.** It held one until 2026-08-15 ("run every example before you ship it"); the second is *"running it once doesn't license the generalization you write about it."* Adding it to a complete-coverage file obliged a new scenario and a new row under the maintenance rule at the end of this file, so **B-W6b was added to `Governance-Test-Plan.md` the same day** — unrun, sharing B-W6's `npm run test:one` fixture and scored separately from it. This is the first gate covered by two scenarios; the completeness claim is per *rule*, not per gate, and it still holds. Both bullets are risk, not craft: an unverified generalization about a command is an unverified claim in exactly §1's sense. The boundary the earlier note guards still holds — a *craft* documentation bullet added here rather than to `writing-patterns.md` §4 would silently widen what these rows claim to cover.
 
+## `database-rules.md` — complete coverage **declared, none run**
+
+One scenario per TL;DR gate. **Added 2026-08-22 with the file; every cell below is deliberately blank.** These five are excluded by name from the completeness claim at the top of this file until they have results.
+
+| TL;DR gate | § | Scenario | Governed | Control | Class | Run |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1. Deploy guards | §1 | B-D1 | | | **unrun — needs mock fixture** | — |
+| 2. Data loss | §2 | B-D2 | | | **unrun — needs mock fixture** | — |
+| 3. Preview | §3 | B-D3 | | | **unrun — needs mock fixture** | — |
+| 4. Source of truth | §4 | B-D4 | | | **unrun — needs mock fixture** | — |
+| 5. Shipped data | §5 | B-D5 | | | **unrun — needs mock fixture** | — |
+
+**Why they are unrun, and what unblocks them.** Every other B group runs against the existing registrar mock. This one cannot: the mock has `db/query.ts` and `seed.sql`, which are an *application's* data-access layer, not a database project, and `database-rules.md` governs repos where the schema is the deliverable. The fixture is specified in [`mock-app-setup.md`](./mock-app-setup.md) under *Database project* and has not been built. Running these rows against the mock as it stands would produce a ceiling effect — an agent asked to fix a deploy in a repo with no deploy has nothing to fail at — which reads as five passes and would be worse than the blanks.
+
+**Not directly probed.** Everything in the file beyond the five gate rules, which is most of each section's bullet detail — the same standing every complete-coverage section here has, where the claim is one scenario per *rule*, not per sentence. Two boundaries also go unprobed and are worth naming, because they are where this file will erode: whether an agent correctly routes database *query* work to `coding-rules.md` §2 rather than here, and whether it routes index and query-shape work to `coding-patterns.md` §3. Those are module-routing questions of the kind B-F10 grades, not rule questions, and neither has a row.
+
+**Watch the delta on B-D1 and B-D2 especially.** Both are plausible control passes on general model caution about destructive operations, which would make them Baseline rather than Carried. That is a real result and must be recorded as one — the by-construction trap noted elsewhere in this file applies directly: a control arm that could not have failed is not evidence the rule works.
+
 ## `writing-patterns.md` — representative, **not** exhaustive
 
-One of roughly twenty-three rules — the same standing as `coding-patterns.md` below, and for the same reason: a craft file states quality patterns rather than the safety floor, so the claim here is that the load-bearing rule is probed, not all of them. **This is the one thing to watch when adding a bullet to this file:** a new rule here owes no scenario, but a new rule added to `core-rules.md`, `coding-rules.md`, or `writing-rules.md` still does.
+One of roughly twenty-three rules — the same standing as `coding-patterns.md` below, and for the same reason: a craft file states quality patterns rather than the safety floor, so the claim here is that the load-bearing rule is probed, not all of them. **This is the one thing to watch when adding a bullet to this file:** a new rule here owes no scenario, but a new rule added to `core-rules.md`, `coding-rules.md`, `writing-rules.md`, or `database-rules.md` still does.
 
 | Rule | § | Scenario | Governed | Control | Class | Run |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -2213,4 +2231,6 @@ Run exactly to the pre-registration above, in order: harness scripts, isolation 
 
 ## Maintaining this file
 
-When a rule changes substantively, the row that maps to it goes stale — clear its results rather than leaving a stale pass in place. When a rule is **added** to one of the three complete-coverage files, this matrix needs a new row and the plan needs a new scenario, or the completeness claim at the top of this file stops being true.
+When a rule changes substantively, the row that maps to it goes stale — clear its results rather than leaving a stale pass in place. When a rule is **added** to one of the complete-coverage files, this matrix needs a new row and the plan needs a new scenario, or the completeness claim at the top of this file stops being true.
+
+**Adding a whole rule *file* is the same obligation at larger scale, and 2026-08-22 is the worked example.** `database-rules.md` arrived with five gates, so it owes five scenarios. They were declared in the plan and given blank rows here rather than being quietly omitted, and the completeness claim was narrowed to exclude the file **by name**. That is the honest shape when the scenarios cannot be run yet: rows that exist and are visibly empty, plus an exclusion that names what is missing. The two failure modes to avoid are the opposite ones — folding the new file into the completeness sentence without running anything, or dropping the exclusion later instead of closing it with results.

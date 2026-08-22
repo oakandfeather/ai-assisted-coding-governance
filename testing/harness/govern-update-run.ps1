@@ -47,7 +47,7 @@ $aFootnote     = "`n---`n*Fill in the italicized placeholders for this repositor
 "  CLAUDE body    : $aClaudeBody"
 ""
 
-$tierA = 'core-rules.md','coding-rules.md','writing-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md'
+$tierA = 'core-rules.md','coding-rules.md','writing-rules.md','database-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md'
 
 function Get-Header($t) {
   # Match the whole line that carries **Version:**, wherever it falls on the
