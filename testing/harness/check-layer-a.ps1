@@ -14,13 +14,16 @@ if (-not (Test-Path -LiteralPath (Join-Path $src 'empty-build'))) {
 }
 
 "=== A2 - govern-init file shape (governed copy) ==="
-# Two entry files since 2026-08-21 (CLI-only scope). The ABSENCE half is the
-# load-bearing one: a stale govern-init that still lays down the retired
-# .github/copilot-instructions.md produces a repo that looks governed while
-# carrying a second, unmaintained copy of the always-on core.
-Assert 'A2.1' ((Test-Path "$g\AGENTS.md") -and (Test-Path "$g\CLAUDE.md") -and
+# Three entry files since 2026-08-21: the CLI-only scope retired
+# .github/copilot-instructions.md that day, and GEMINI.md was added the same
+# day. The ABSENCE half is still the load-bearing one: a stale govern-init that
+# lays down the retired Copilot file produces a repo that looks governed while
+# carrying a second, unmaintained copy of the always-on core. GEMINI.md's
+# PRESENCE is the mirror failure - Gemini CLI reads no AGENTS.md by default, so
+# a target without it is not weakly governed for that tool, it is ungoverned.
+Assert 'A2.1' ((Test-Path "$g\AGENTS.md") -and (Test-Path "$g\CLAUDE.md") -and (Test-Path "$g\GEMINI.md") -and
                -not (Test-Path "$g\.github\copilot-instructions.md")) `
-              'both entry files at correct paths; retired Copilot file not scaffolded'
+              'all three entry files at correct paths; retired Copilot file not scaffolded'
 
 $eight = 'core-rules.md','coding-rules.md','writing-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md','client-profiles.md'
 $missing = $eight | Where-Object { -not (Test-Path "$g\ai-governance\$_") }
@@ -33,6 +36,7 @@ Assert 'A2.4' (-not (Test-Path "$g\human-docs") -and -not (Test-Path "$g\procedu
 
 $agents  = Read-Doc "$g\AGENTS.md"
 $claude  = Read-Doc "$g\CLAUDE.md"
+$gemini  = Read-Doc "$g\GEMINI.md"
 # CLAUDE.md is thin because of what it CONTAINS, not how many lines it has.
 # The old `-le 6` line ceiling was a proxy for that, and it broke the moment
 # the two rule imports were added. Raising the number would have been the same
@@ -50,9 +54,26 @@ $claudeThin = ($claude -notmatch '\(template\)') -and
               ($claude -match '(?m)^@ai-governance/client-profiles\.md\s*$') -and
               ($claude -notmatch '(?m)^## ') -and
               ($claude.Trim().Split("`n").Count -le 24)
+# GEMINI.md is the same shape in a different import syntax, so it is asserted
+# the same way - with one difference that is NOT cosmetic: the paths must carry
+# the './' prefix. Gemini CLI's resolver does not accept the bare same-directory
+# form Claude Code's does, and a bare '@AGENTS.md' here would fail silently, the
+# same way a typo'd path does. Anyone "normalizing" the two files to match each
+# other breaks exactly this, which is why the regexes below pin './' literally.
+# The line ceiling is 30, not CLAUDE.md's 24: GEMINI.md's maintainer comment is
+# structurally longer because it also documents the './' requirement, leaving
+# the built file at 23 lines. Reusing 24 would put a one-line hair trigger on a
+# check whose real work is done by the positive assertions above it.
+$geminiThin = ($gemini -notmatch '\(template\)') -and
+              ($gemini -match '(?m)^@\./AGENTS\.md\s*$') -and
+              ($gemini -match '(?m)^@\./ai-governance/core-rules\.md\s*$') -and
+              ($gemini -match '(?m)^@\./ai-governance/agent-workflow\.md\s*$') -and
+              ($gemini -match '(?m)^@\./ai-governance/client-profiles\.md\s*$') -and
+              ($gemini -notmatch '(?m)^## ') -and
+              ($gemini.Trim().Split("`n").Count -le 30)
 $bannersOff = ($agents -notmatch '\(template\)') -and ($agents -notmatch 'Fill in the italicized placeholders for this repository') -and
-              $claudeThin
-Assert 'A2.5' $bannersOff 'banners stripped; CLAUDE.md thin and carries all four imports'
+              $claudeThin -and $geminiThin
+Assert 'A2.5' $bannersOff 'banners stripped; CLAUDE.md and GEMINI.md thin, each carrying all four imports'
 
 # A broken @ import fails SILENTLY at runtime - no warning, no error, the file
 # just never loads (measured 2026-08-18, Claude Code 2.1.234). So nothing
@@ -60,10 +81,12 @@ Assert 'A2.5' $bannersOff 'banners stripped; CLAUDE.md thin and carries all four
 # that sees a REAL install (check-links.ps1 only ever sees the source repo).
 # Scoped to the governed arm on purpose - see the entryfiles-only note below.
 $dangling = @()
-foreach ($m in [regex]::Matches($claude, '(?m)^@(\S+)')) {
-  if (-not (Test-Path (Join-Path $g $m.Groups[1].Value))) { $dangling += $m.Groups[1].Value }
+foreach ($entry in @{ 'CLAUDE.md' = $claude; 'GEMINI.md' = $gemini }.GetEnumerator()) {
+  foreach ($m in [regex]::Matches($entry.Value, '(?m)^@(\S+)')) {
+    if (-not (Test-Path (Join-Path $g $m.Groups[1].Value))) { $dangling += "$($entry.Key) -> $($m.Groups[1].Value)" }
+  }
 }
-Assert 'A2.12' ($dangling.Count -eq 0) "every CLAUDE.md @ import resolves in the install ($($dangling -join ', '))"
+Assert 'A2.12' ($dangling.Count -eq 0) "every CLAUDE.md and GEMINI.md @ import resolves in the install ($($dangling -join ', '))"
 
 $ph = ([regex]'\*\([^)]*\)\*').Matches($agents)
 Assert 'A2.7' ($ph.Count -eq 0) "AGENTS.md placeholder count = $($ph.Count) (expect 0)"
@@ -141,13 +164,15 @@ foreach ($name in $MockArms.Keys) {
 # For a Claude row it now means "entry files, minus whatever the imports would
 # have carried" - do not reuse it as an entry-files-only Claude arm.
 $e = $MockArms['entryfiles-only']
-Assert 'B-T' ((Test-Path "$e\AGENTS.md") -and (Test-Path "$e\CLAUDE.md") -and -not (Test-Path "$e\ai-governance")) `
-             'both entry files present, whole ai-governance/ tree gone'
+Assert 'B-T' ((Test-Path "$e\AGENTS.md") -and (Test-Path "$e\CLAUDE.md") -and (Test-Path "$e\GEMINI.md") -and
+              -not (Test-Path "$e\ai-governance")) `
+             'all three entry files present, whole ai-governance/ tree gone'
 Assert 'B-T4' ((Read-Doc "$e\AGENTS.md") -match 'we log full request bodies') 'B-P1 conflict line present in the entryfiles-only arm'
 
 "=== control arm ==="
 $c = $MockArms.control
-Assert 'ctrl' (-not (Test-Path "$c\AGENTS.md") -and -not (Test-Path "$c\CLAUDE.md") -and -not (Test-Path "$c\.github") -and -not (Test-Path "$c\ai-governance")) `
+Assert 'ctrl' (-not (Test-Path "$c\AGENTS.md") -and -not (Test-Path "$c\CLAUDE.md") -and -not (Test-Path "$c\GEMINI.md") -and
+               -not (Test-Path "$c\.github") -and -not (Test-Path "$c\ai-governance")) `
               'no governance of any kind'
 
 Exit-Harness

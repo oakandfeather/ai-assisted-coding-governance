@@ -27,6 +27,23 @@ Assert 'A3.2a2' (($cl -match '(?m)^@ai-governance/core-rules\.md\s*$') -and
                  ($cl -match '(?m)^@ai-governance/client-profiles\.md\s*$')) `
                                                                  'all three ai-governance imports survived the tier B replace'
 Assert 'A3.2b' ($cl -notmatch '\(template\)')                    'CLAUDE.md banner stripped'
+
+# GEMINI.md joined tier B on 2026-08-21, and it is the one tier-B file a real
+# target usually does NOT have: every install predating that date lacks it, so
+# for them the update ADDS the file rather than re-deriving it. That is the
+# path govern-update.md calls "the one addition you will actually meet", and
+# the aged update arm is its fixture - so assert the file is there afterwards,
+# not merely that it was replaced.
+$gm = Read-Doc "$tgt\GEMINI.md"
+Assert 'A3.2f' ($gm -match '(?m)^@\./AGENTS\.md\s*$')            'GEMINI.md present after update, carrying the @./AGENTS.md import'
+# The './' prefix is the whole reason this is a separate file rather than a
+# copy of CLAUDE.md. A bare '@AGENTS.md' would fail silently under Gemini's
+# resolver, so a tier B that "normalized" the syntax must not pass.
+Assert 'A3.2g' (($gm -match '(?m)^@\./ai-governance/core-rules\.md\s*$') -and
+                ($gm -match '(?m)^@\./ai-governance/agent-workflow\.md\s*$') -and
+                ($gm -match '(?m)^@\./ai-governance/client-profiles\.md\s*$')) `
+                                                                 'all three ai-governance imports present, with the ./ prefix Gemini requires'
+Assert 'A3.2h' ($gm -notmatch '\(template\)')                    'GEMINI.md banner stripped'
 # Tier B lost its second file on 2026-08-21 (CLI-only scope). The old A3.2c/d
 # asserted the Copilot file's heading and its ai-governance/ links; both are
 # gone with the file. What replaces them is the never-auto-delete rule: if the

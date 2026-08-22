@@ -13,7 +13,7 @@ function Get-Manifest($root) {
     Where-Object { $_.FullName -notmatch '\\\.git\\|\\node_modules\\' } |
     ForEach-Object { $_.FullName.Substring($root.Length + 1) } |
     Where-Object {
-      $_ -notmatch '^(AGENTS\.md|CLAUDE\.md|\.env)$' -and
+      $_ -notmatch '^(AGENTS\.md|CLAUDE\.md|GEMINI\.md|\.env)$' -and
       $_ -notmatch '^ai-governance\\' -and
       # Retired from the package on 2026-08-21 (CLI-only scope), but a repo
       # installed before then may still legitimately carry it - govern-update
@@ -47,6 +47,26 @@ if ($legacyCopilot.Count) {
   $kept  = $legacyCopilot | Where-Object { $_ -in $legacyExpected }
   if ($kept)  { Note 'legacy-cp' "retired .github/copilot-instructions.md present in: $($kept -join ', ') - EXPECTED, this is A3.2c's aged-install fixture" }
   if ($stale) { Note 'legacy-cp' "retired .github/copilot-instructions.md present in: $($stale -join ', ') - STALE, refresh these arms or keep it deliberately" }
+}
+
+# The mirror of the block above, for an ADDITION rather than a retirement.
+# GEMINI.md was added to the package on 2026-08-21, so an arm installed before
+# then legitimately lacks it. Reported, not failed, for the same reason: the
+# update arm is the deliberately-aged fixture, and its MISSING GEMINI.md is what
+# lets A3 exercise the scaffold-a-new-entry-file path govern-update.md describes.
+# Any OTHER arm listed here is stale - refresh it. The control arm is excluded
+# outright: having no governance at all is its whole purpose.
+$missingGemini = @()
+foreach ($name in $MockArms.Keys) {
+  if ($name -in @('base', 'control')) { continue }
+  if (-not (Test-Path (Join-Path $MockArms[$name] 'GEMINI.md'))) { $missingGemini += $name }
+}
+if ($missingGemini.Count) {
+  $geminiExpected = @('update')
+  $staleG = $missingGemini | Where-Object { $_ -notin $geminiExpected }
+  $keptG  = $missingGemini | Where-Object { $_ -in $geminiExpected }
+  if ($keptG)  { Note 'gemini' "GEMINI.md absent in: $($keptG -join ', ') - EXPECTED, this is A3's pre-2026-08-21 aged-install fixture" }
+  if ($staleG) { Note 'gemini' "GEMINI.md absent in: $($staleG -join ', ') - STALE, refresh these arms (govern-update-run.ps1 scaffolds it)" }
 }
 
 foreach ($name in 'governed', 'control', 'unconfigured', 'entryfiles-only', 'update') {
