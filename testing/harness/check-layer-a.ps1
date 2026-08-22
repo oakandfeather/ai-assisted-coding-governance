@@ -19,8 +19,10 @@ if (-not (Test-Path -LiteralPath (Join-Path $src 'empty-build'))) {
 # day. The ABSENCE half is still the load-bearing one: a stale govern-init that
 # lays down the retired Copilot file produces a repo that looks governed while
 # carrying a second, unmaintained copy of the always-on core. GEMINI.md's
-# PRESENCE is the mirror failure - Gemini CLI reads no AGENTS.md by default, so
-# a target without it is not weakly governed for that tool, it is ungoverned.
+# PRESENCE is asserted for a different reason, and a weaker one: Antigravity CLI
+# DOES read root AGENTS.md, so a target without GEMINI.md is governed, not blind.
+# GEMINI.md is the import vehicle that turns two links into loaded files, so this
+# row guards delivery rather than coverage. Do not restate it as a coverage row.
 Assert 'A2.1' ((Test-Path "$g\AGENTS.md") -and (Test-Path "$g\CLAUDE.md") -and (Test-Path "$g\GEMINI.md") -and
                -not (Test-Path "$g\.github\copilot-instructions.md")) `
               'all three entry files at correct paths; retired Copilot file not scaffolded'
@@ -56,8 +58,9 @@ $claudeThin = ($claude -notmatch '\(template\)') -and
               ($claude.Trim().Split("`n").Count -le 24)
 # GEMINI.md is the same shape in a different import syntax, so it is asserted
 # the same way - with one difference that is NOT cosmetic: the paths must carry
-# the './' prefix. Gemini CLI's resolver does not accept the bare same-directory
-# form Claude Code's does, and a bare '@AGENTS.md' here would fail silently, the
+# the './' prefix. Antigravity resolves a relative @ mention against the rules
+# file's own location and its docs demonstrate only the explicit form, unlike
+# Claude Code's bare '@AGENTS.md'; a bare path here could fail silently, the
 # same way a typo'd path does. Anyone "normalizing" the two files to match each
 # other breaks exactly this, which is why the regexes below pin './' literally.
 # The line ceiling is 30, not CLAUDE.md's 24: GEMINI.md's maintainer comment is

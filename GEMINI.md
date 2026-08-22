@@ -1,6 +1,6 @@
 # GEMINI.md
 
-Guidance for Gemini CLI in this repository lives in `AGENTS.md`, the shared entry file all coding agents read. Load it:
+Guidance for Antigravity CLI in this repository lives in `AGENTS.md`, the shared entry file all coding agents read. Load it:
 
 @./AGENTS.md
 
@@ -12,8 +12,12 @@ Guidance for Gemini CLI in this repository lives in `AGENTS.md`, the shared entr
      the task - importing it would charge every trivial edit for a client's full
      ruleset. Stripped from context before injection, so this note costs nothing.
      Paths are ai-docs/, not ai-governance/: this repo is the source package.
-     Paths use the required "./" prefix: Gemini CLI's @import resolver does not
-     accept a bare same-directory filename the way Claude Code's does. -->
+     Paths use the "./" prefix: Antigravity resolves a relative @ mention against
+     the rules file's own location, and the explicit form is the one its docs
+     demonstrate. Do not normalize it to CLAUDE.md's bare form - different resolver.
+     Note this file is NOT load-bearing for coverage: Antigravity CLI reads root
+     AGENTS.md natively, so the repo is governed without it. It ships to upgrade
+     two links into imports - see AGENTS.md, "Multi-tool entry points". -->
 
 `AGENTS.md` links the other rule files rather than importing them, and a linked file you have not opened has not loaded. The two that bind on every task are imported here instead, along with the client-profile index — the pointer to the overrides that outrank everything else:
 

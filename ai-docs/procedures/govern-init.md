@@ -2,7 +2,7 @@
 
 Scaffolds the governance package into a target project. This procedure **copies** the rules; it does not contain them. The rule text lives in the copied files, where it auto-loads every session and stays auditable in the client's repo.
 
-**How this is run.** Follow it directly, start to finish. Either run `/govern-init` in Claude Code, or hand any other coding CLI — Codex CLI, the Copilot CLI, Gemini CLI — the path to this file and tell it to read the file and follow it exactly. Nothing here needs a tool or a tool-specific feature: every step is reading files, writing files, and asking the user questions.
+**How this is run.** Follow it directly, start to finish. Either run `/govern-init` in Claude Code, or hand any other coding CLI — Codex CLI, the Copilot CLI, Antigravity CLI — the path to this file and tell it to read the file and follow it exactly. Nothing here needs a tool or a tool-specific feature: every step is reading files, writing files, and asking the user questions.
 
 ## Source package
 
@@ -26,7 +26,7 @@ The three entry files land at the repo root; the other eight items travel togeth
 | --- | --- |
 | `AGENTS.template.md` | `AGENTS.md` *(repo root, renamed — the canonical entry)* |
 | `CLAUDE.template.md` | `CLAUDE.md` *(repo root, renamed — thin: `@AGENTS.md` plus the two always-on rule imports and the client-profile index)* |
-| `GEMINI.template.md` | `GEMINI.md` *(repo root, renamed — thin: the same imports as `CLAUDE.md`, written `@./AGENTS.md` etc. — Gemini's resolver requires the `./` prefix)* |
+| `GEMINI.template.md` | `GEMINI.md` *(repo root, renamed — thin: the same imports as `CLAUDE.md`, written `@./AGENTS.md` etc. — Antigravity's resolver documents the `./` prefix)* |
 | `core-rules.md` | `ai-governance/core-rules.md` |
 | `coding-rules.md` | `ai-governance/coding-rules.md` |
 | `writing-rules.md` | `ai-governance/writing-rules.md` |
@@ -48,7 +48,7 @@ Both entry files ship with a "how to use" banner that must come off after copyin
 
 - **`AGENTS.md`** — retitle `# AGENTS.md (template)` to `# AGENTS.md` and delete the banner block above the `Version:` line. It describes the template rather than the project, and its `../AGENTS.md` link does not resolve outside the governance repo. **Also delete the closing footnote** — the trailing `---` and the italic *"Fill in the italicized placeholders for this repository…"* paragraph after it. It is install instructions, not project guidance, and it points at "the note at the top" that you just removed. This is the file whose placeholders you fill (step 5).
 - **`CLAUDE.md`** — retitle `# CLAUDE.md (template)` to `# CLAUDE.md`, delete everything from the `(template)` title down through the horizontal rule, and **keep everything beneath it verbatim**: the `@AGENTS.md` import, the `@ai-governance/core-rules.md`, `@ai-governance/agent-workflow.md`, and `@ai-governance/client-profiles.md` imports, their lead-ins, and the HTML comment. No placeholders here. **Do not trim the three imports as "not thin."** `AGENTS.md` *links* those files rather than importing them, so without these the always-on rules — and the pointer to the client profile that outranks them — load only if the agent chooses to open them, and measured behaviour says it often does not. They are routing, not rules: no rule text is duplicated, and a missing import fails silently, so nothing will tell you it was dropped. **The imported `client-profiles.md` is the index only.** The profile itself stays linked from it, so it is still read at a depth scaled to the task rather than charged to every trivial edit.
-- **`GEMINI.md`** — same treatment as `CLAUDE.md`, retitled from `# GEMINI.md (template)`, same four imports kept verbatim for the same reason — but written `@./AGENTS.md`, `@./ai-governance/core-rules.md`, `@./ai-governance/agent-workflow.md`, `@./ai-governance/client-profiles.md`. **Keep the `./` prefix.** Gemini CLI's `@import` resolver is documented only with an explicit relative path, unlike Claude Code's bare `@AGENTS.md` — do not "match" the two files' syntax to each other. No placeholders here either.
+- **`GEMINI.md`** — same treatment as `CLAUDE.md`, retitled from `# GEMINI.md (template)`, same four imports kept verbatim for the same reason — but written `@./AGENTS.md`, `@./ai-governance/core-rules.md`, `@./ai-governance/agent-workflow.md`, `@./ai-governance/client-profiles.md`. **Keep the `./` prefix.** Antigravity resolves a relative `@` mention against the rules file's own location, and the explicit relative form is the one its docs demonstrate, unlike Claude Code's bare `@AGENTS.md` — do not "match" the two files' syntax to each other. No placeholders here either.
 
 ### 4. Strip the sample from the copied index
 

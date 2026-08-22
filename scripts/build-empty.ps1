@@ -104,7 +104,7 @@ Write-Text (Join-Path $buildDir 'CLAUDE.md') $claude
 
 # ---------- GEMINI.md ----------
 $gemini = Read-Text (Join-Path $aiDocs 'GEMINI.template.md')
-$gemini = Slice-From $gemini 'Guidance for Gemini CLI in this repository lives in' 'GEMINI.md body'
+$gemini = Slice-From $gemini 'Guidance for Antigravity CLI in this repository lives in' 'GEMINI.md body'
 $gemini = "# GEMINI.md`n`n" + $gemini.TrimEnd() + "`n"
 Write-Text (Join-Path $buildDir 'GEMINI.md') $gemini
 

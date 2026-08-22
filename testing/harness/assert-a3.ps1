@@ -37,12 +37,13 @@ Assert 'A3.2b' ($cl -notmatch '\(template\)')                    'CLAUDE.md bann
 $gm = Read-Doc "$tgt\GEMINI.md"
 Assert 'A3.2f' ($gm -match '(?m)^@\./AGENTS\.md\s*$')            'GEMINI.md present after update, carrying the @./AGENTS.md import'
 # The './' prefix is the whole reason this is a separate file rather than a
-# copy of CLAUDE.md. A bare '@AGENTS.md' would fail silently under Gemini's
-# resolver, so a tier B that "normalized" the syntax must not pass.
+# copy of CLAUDE.md. A bare '@AGENTS.md' is not the form Antigravity's docs
+# demonstrate and could fail silently, so a tier B that "normalized" the
+# syntax must not pass.
 Assert 'A3.2g' (($gm -match '(?m)^@\./ai-governance/core-rules\.md\s*$') -and
                 ($gm -match '(?m)^@\./ai-governance/agent-workflow\.md\s*$') -and
                 ($gm -match '(?m)^@\./ai-governance/client-profiles\.md\s*$')) `
-                                                                 'all three ai-governance imports present, with the ./ prefix Gemini requires'
+                                                                 'all three ai-governance imports present, with the ./ prefix Antigravity documents'
 Assert 'A3.2h' ($gm -notmatch '\(template\)')                    'GEMINI.md banner stripped'
 # Tier B lost its second file on 2026-08-21 (CLI-only scope). The old A3.2c/d
 # asserted the Copilot file's heading and its ai-governance/ links; both are
