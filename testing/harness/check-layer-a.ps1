@@ -81,7 +81,7 @@ Assert 'A2.5' $bannersOff 'banners stripped; CLAUDE.md and GEMINI.md thin, each 
 # that sees a REAL install (check-links.ps1 only ever sees the source repo).
 # Scoped to the governed arm on purpose - see the entryfiles-only note below.
 $dangling = @()
-foreach ($entry in @{ 'CLAUDE.md' = $claude; 'GEMINI.md' = $gemini }.GetEnumerator()) {
+foreach ($entry in ([ordered]@{ 'CLAUDE.md' = $claude; 'GEMINI.md' = $gemini }).GetEnumerator()) {
   foreach ($m in [regex]::Matches($entry.Value, '(?m)^@(\S+)')) {
     if (-not (Test-Path (Join-Path $g $m.Groups[1].Value))) { $dangling += "$($entry.Key) -> $($m.Groups[1].Value)" }
   }
