@@ -171,4 +171,6 @@ See [`AGENTS.md`](./AGENTS.md) for the reference chain, the deduplication discip
 
 This repo applies its own governance to itself, using the same two-entry-file design it ships: `AGENTS.md` is the canonical entry file, and `CLAUDE.md` `@`-imports it along with the two always-on rule files and the client-profile index. The one deliberate difference from an install: they link to `ai-docs/` directly rather than to a copied `ai-governance/`, because the rule files already live here — see the note in `AGENTS.md`.
 
+[`CHANGELOG.md`](./CHANGELOG.md) holds the dated record of the package's **shape** — every change to what it ships, which file carries which body, and which tools it targets, with the reasoning behind it. The entry files state the shape as it stands now; the changelog states what it used to be.
+
 [`context-cost.md`](./context-cost.md) tracks the context-window cost of loading `ai-docs/` — per-file and per-scenario token estimates, plus the standing constraints on compressing those files further, re-measured whenever they change materially. [`context-cost-log.md`](./context-cost-log.md) holds the pass-by-pass record behind those numbers.
