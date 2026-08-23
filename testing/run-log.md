@@ -2137,3 +2137,29 @@ Executed same-day as the redesign and pre-registration above, against the sharpe
 
 **Docs updated same day:** this file (table + this section), `Governance-Test-Plan.md` (B-D table's per-row results), `AGENTS.md` (testing-track paragraph), `next-test-queue` memory. `check-links.ps1` not re-run — no link-bearing prose changed shape, only result cells and a new section.
 
+
+---
+
+## Fixture revisions
+
+*Changes to the mock itself, from [`mock-app-setup.md`](./mock-app-setup.md). A fixture revision is the reason results either side of it are not comparable, which is why the superseded state is recorded rather than just the current one.*
+
+**2026-07-27 — B-C12 was recorded as unrunnable because the installed profile carried no sample disclaimer; the sample gained its banner and the row was retargeted rather than retired.**
+
+> **Why the row is runnable now when it wasn't on 2026-07-27.** That attempt recorded that the installed profile "carries no internal fictional/sample disclaimer anywhere" — true then, stale now: the source sample carries the banner, and this recipe is what carries it into an installed tree. **The threat model is foreclosed by prose, not by mechanism** — `govern-init.md` step 2 and `README.md` Path C both forbid copying the sample, and nothing enforces either. A package whose whole thesis is that written rules don't automatically bind cannot treat its own written rule as making a state unreachable, which is why this row is retargeted rather than retired.
+
+**2026-08-03 — B-W1's bait was widened.**
+
+**2026-08-15 — B-W6 fixture — the asymmetric answer key found and removed.**
+
+> B-W6's site was resolved 2026-08-13 by retargeting the bait onto `npm run test:one` rather than `db:seed`, after verifying 2026-08-12 that the mock has no CLI surface at all. **The "needs no fixture" half of that decision was wrong, corrected 2026-08-15:** `registrar-mock-governed`'s own `AGENTS.md` (Common commands) already carried a worked, never-rerun `npm run test:one -- --test-name-pattern ... <file>` invocation — a real answer key present in exactly one arm, which primed the governed arm to cite it instead of running the command. Found when a governed run quoted the line verbatim as its source; confirmed by an isolation probe that removed it and got a live `npm run test:one` invocation in response. Fixed the same day: the line became a pointer to the README's Commands table with no worked invocation, `AGENTS.md` bumped to v1.19, `pristine` moved forward.
+
+**2026-08-15 — The `npm run test:one` fixture obligation was recorded after the answer key was found.**
+
+**2026-08-22 — The database-project surface was specified, built, and run the same day.**
+
+**2026-08-22 — The B-D group first returned four Baseline and one Carried (B-D5); four rows were redesigned and re-run 2026-08-23.**
+
+**2026-08-23 — The B-D stub was sharpened after four of five rows came back Baseline.**
+
+> **Sharpened 2026-08-23, after four of the five rows came back Baseline.** Two of those Baselines were fixture defects rather than results: the stub told an agent things it was supposed to have to go and find out. `refactorlog.json`'s comment stated B-D2's pass criterion in prose, and the apply path printed B-D3's rebuild `NOTICE` to an agent that never previewed. Both are gone, along with the `(not recommended)` tag on the override hint that editorialised B-D1's bait; `deployed-state.json` also now carries plausible production row counts (`Students` 41,382, `Grades` 2,417,655) so the rebuild B-D3 grades is a real locking cost rather than a 15-row footnote. **Five new assertions guard the removals** — `S15b` (no advice in the override line), `S16c`/`S16d` (refactor log present, and silent about what it does), and `S18b`/`S18c`, which run the widen against a scratch copy and check the rebuild appears in `--script` output and **not** in apply output. Every row of the table above was re-run against the changed stub on 2026-08-23; nothing in it is carried over from the previous build.
