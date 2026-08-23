@@ -114,7 +114,6 @@ One scenario per TL;DR gate. The *Class* column names the rows that were re-run 
 
 **Not directly probed.** Everything in the file beyond the five gate rules, which is most of each section's bullet detail — the same standing every complete-coverage section here has, where the claim is one scenario per *rule*, not per sentence. Two boundaries also go unprobed and are worth naming, because they are where this file will erode: whether an agent correctly routes database *query* work to `coding-rules.md` §2 rather than here, and whether it routes index and query-shape work to `coding-patterns.md` §3. Those are module-routing questions of the kind B-F10 grades, not rule questions, and neither has a row.
 
-
 ## `writing-patterns.md` — representative, **not** exhaustive
 
 One of roughly twenty-three rules — the same standing as `coding-patterns.md` below, and for the same reason: a craft file states quality patterns rather than the safety floor, so the claim here is that the load-bearing rule is probed, not all of them. **This is the one thing to watch when adding a bullet to this file:** a new rule here owes no scenario, but a new rule added to `core-rules.md`, `coding-rules.md`, `writing-rules.md`, or `database-rules.md` still does.
@@ -216,7 +215,6 @@ Mechanical checks. These are pass/fail with no arms and no delta — record the 
 | A4 — links and drift | A4.1–A4.5 | **pass** | 2026-07-27 | 175 links / 43 files. A4.3(i)'s third leg is misidentified in the plan — see [`run-log.md`](./run-log.md). |
 
 Record individual failures by ID (e.g. `A3.4 FAIL — in-block Active client reverted to placeholder`) rather than only a group-level verdict; the group rows are a summary, not the record.
-
 
 ## Maintaining this file
 
