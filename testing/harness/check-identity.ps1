@@ -13,7 +13,7 @@ function Get-Manifest($root) {
     Where-Object { $_.FullName -notmatch '\\\.git\\|\\node_modules\\' } |
     ForEach-Object { $_.FullName.Substring($root.Length + 1) } |
     Where-Object {
-      $_ -notmatch '^(AGENTS\.md|CLAUDE\.md|\.env)$' -and
+      $_ -notmatch '^(AGENTS\.md|CLAUDE\.md|GEMINI\.md|\.env)$' -and
       $_ -notmatch '^ai-governance\\' -and
       # Retired from the package on 2026-08-21 (CLI-only scope), but a repo
       # installed before then may still legitimately carry it - govern-update

@@ -22,10 +22,10 @@ Assert 'A2.1' ((Test-Path "$g\AGENTS.md") -and (Test-Path "$g\CLAUDE.md") -and
                -not (Test-Path "$g\.github\copilot-instructions.md")) `
               'both entry files at correct paths; retired Copilot file not scaffolded'
 
-$eight = 'core-rules.md','coding-rules.md','writing-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md','client-profiles.md'
-$missing = $eight | Where-Object { -not (Test-Path "$g\ai-governance\$_") }
+$nine = 'core-rules.md','coding-rules.md','writing-rules.md','database-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md','client-profiles.md'
+$missing = $nine | Where-Object { -not (Test-Path "$g\ai-governance\$_") }
 Assert 'A2.2' (($missing.Count -eq 0) -and (Test-Path "$g\ai-governance\client-profiles") -and (Test-Path "$g\ai-governance\client-profiles.md")) `
-              'all eight ai-governance items present (client-profiles.md checked explicitly)'
+              'all nine ai-governance items present (client-profiles.md checked explicitly)'
 
 Assert 'A2.3' (-not (Test-Path "$g\ai-governance\client-profiles\example-university.md")) 'sample profile NOT copied'
 Assert 'A2.4' (-not (Test-Path "$g\human-docs") -and -not (Test-Path "$g\procedures") -and -not (Test-Path "$g\skills") -and -not (Test-Path "$g\testing")) `
@@ -76,13 +76,13 @@ Assert 'A2.6c' ($uc -match 'Add each client as') '"Add each client as..." paragr
 
 "=== A2.8 - rule files match the empty-build oracle (LF-normalized) ==="
 $drift = @()
-foreach ($f in $eight) {
+foreach ($f in $nine) {
   if ((Read-Doc "$u\ai-governance\$f") -ne (Read-Doc "$src\empty-build\ai-governance\$f")) { $drift += $f }
 }
 Assert 'A2.8' ($drift.Count -eq 0) "unconfigured ai-governance/* == empty-build/ai-governance/* ($($drift -join ', '))"
 
 $govDrift = @()
-foreach ($f in 'core-rules.md','coding-rules.md','writing-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md') {
+foreach ($f in 'core-rules.md','coding-rules.md','writing-rules.md','database-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md') {
   if ((Read-Doc "$g\ai-governance\$f") -ne (Read-Doc "$src\ai-docs\$f")) { $govDrift += $f }
 }
 Assert 'A2.8b' ($govDrift.Count -eq 0) "governed rule files == ai-docs/ source ($($govDrift -join ', '))"

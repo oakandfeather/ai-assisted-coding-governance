@@ -1,8 +1,8 @@
 # Coding Patterns for AI-Assisted Development
 
-*Craft guide for code: reliable, efficient, maintainable. Companion to the safety/risk rules — [`core-rules.md`](./core-rules.md) (the task-agnostic base) and [`coding-rules.md`](./coding-rules.md) (the code rules); [`agent-workflow.md`](./agent-workflow.md) governs how to work. Sibling [`writing-patterns.md`](./writing-patterns.md) owns documentation *of* code — READMEs, runbooks, API references; this file owns the comments and docstrings inside a source file. On conflict, **safety and correctness win over efficiency and elegance**, and a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over both.*
+*Craft guide for code: reliable, efficient, maintainable. Companion to the safety/risk rules — [`core-rules.md`](./core-rules.md) (the task-agnostic base), [`coding-rules.md`](./coding-rules.md) (the code rules), and [`database-rules.md`](./database-rules.md) (database projects, where the schema is the deliverable); [`agent-workflow.md`](./agent-workflow.md) governs how to work. Sibling [`writing-patterns.md`](./writing-patterns.md) owns documentation *of* code — READMEs, runbooks, API references; this file owns the comments and docstrings inside a source file. On conflict, **safety and correctness win over efficiency and elegance**, and a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over both.*
 
-**Version:** 1.6 · **Last reviewed:** 2026-08-16 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.7 · **Last reviewed:** 2026-08-22 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 

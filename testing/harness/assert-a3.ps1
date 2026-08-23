@@ -6,14 +6,14 @@ Assert-MockPresent
 
 $src = $RepoRoot
 $tgt = $MockArms.update
-$tierA = 'core-rules.md','coding-rules.md','writing-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md'
+$tierA = 'core-rules.md','coding-rules.md','writing-rules.md','database-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md'
 
 "=== A3.1 - tier A replaced wholesale ==="
 $drift = @()
 foreach ($f in $tierA) {
   if ((Read-Doc "$src\ai-docs\$f") -ne (Read-Doc "$tgt\ai-governance\$f")) { $drift += $f }
 }
-Assert 'A3.1a' ($drift.Count -eq 0) "all 6 rule files match new upstream ($($drift -join ', '))"
+Assert 'A3.1a' ($drift.Count -eq 0) "all 7 rule files match new upstream ($($drift -join ', '))"
 
 "=== A3.2 - tier B re-derived, and the diff stayed reviewable ==="
 $cl = Read-Doc "$tgt\CLAUDE.md"
@@ -46,7 +46,8 @@ Push-Location $tgt
 $churn = @()
 foreach ($f in 'CLAUDE.md', 'AGENTS.md',
                'ai-governance/core-rules.md', 'ai-governance/coding-rules.md',
-               'ai-governance/writing-rules.md', 'ai-governance/coding-patterns.md',
+               'ai-governance/writing-rules.md', 'ai-governance/database-rules.md',
+               'ai-governance/coding-patterns.md',
                'ai-governance/writing-patterns.md',
                'ai-governance/agent-workflow.md', 'ai-governance/client-profiles.md') {
   $rawDiff  = (git diff --numstat pristine -- $f) -split "`t"
