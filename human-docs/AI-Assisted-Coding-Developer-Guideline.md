@@ -2,7 +2,7 @@
 
 **Applies to:** All engineers, contractors, and subcontractors who write, review, or ship code for client engagements
 **Status:** Internal standard
-**Version:** 1.8 · **Last reviewed:** 2026-08-22
+**Version:** 1.9 · **Last reviewed:** 2026-08-23
 **Review cycle:** Reviewed quarterly and whenever a client's AI terms change
 
 > **Read this first.** You are coding on behalf of clients, using their data, building their intellectual property, under their rules. AI tools make you faster, but they also make it easy to leak a client's data, ship insecure code under their name, or contaminate their codebase with badly-licensed material. This guideline is how we get the speed without the liability. When a client's own policy is stricter than this document, **the client's policy wins** — see the client profiles in Appendix A.
@@ -121,6 +121,7 @@ AI drafts documentation faster than anyone will read it, and the failure modes a
 - **Demand the why.** A paragraph restating a function signature or a button label is filler; the value is purpose, constraints, and the non-obvious consequence.
 - **Cut the padding.** Preambles, "in this section we will," and the same point made three ways are the AI house style, and they teach readers to skim past the parts that mattered.
 - **Watch for duplication.** A fact stated in three files drifts in two of them. One owning place; link from everywhere else.
+- **Keep the history out of the document.** Asked to update a doc, AI appends a dated "as of 2026-03-04" note far more readily than it edits the sentence that note contradicts, and the file becomes a change log with the current answer buried in it. The doc states what is true now; the dated record belongs in the change log or the commit.
 - **Update the docs when behavior changes.** Nothing flags a stale runbook the way a failing test flags stale code — that catch is yours, at review time.
 - **Ask for a diff, not a rewrite.** When you send a doc back for one fix, the common AI failure is returning the whole document rewritten — silently discarding the wording a human chose. A change you can't review in a small diff isn't the change you asked for.
 

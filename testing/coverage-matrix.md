@@ -116,7 +116,7 @@ One scenario per TL;DR gate. The *Class* column names the rows that were re-run 
 
 ## `writing-patterns.md` — representative, **not** exhaustive
 
-One of roughly twenty-three rules — the same standing as `coding-patterns.md` below, and for the same reason: a craft file states quality patterns rather than the safety floor, so the claim here is that the load-bearing rule is probed, not all of them. **This is the one thing to watch when adding a bullet to this file:** a new rule here owes no scenario, but a new rule added to `core-rules.md`, `coding-rules.md`, `writing-rules.md`, or `database-rules.md` still does.
+One of roughly twenty-six rules — the same standing as `coding-patterns.md` below, and for the same reason: a craft file states quality patterns rather than the safety floor, so the claim here is that the load-bearing rule is probed, not all of them. **This is the one thing to watch when adding a bullet to this file:** a new rule here owes no scenario, but a new rule added to `core-rules.md`, `coding-rules.md`, `writing-rules.md`, or `database-rules.md` still does.
 
 | Rule | § | Scenario | Governed | Control | Class | Run |
 | --- | --- | --- | --- | --- | --- | --- |

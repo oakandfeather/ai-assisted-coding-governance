@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Version:** 1.24 · **Last reviewed:** 2026-08-23 · **Active client:** none (internal repository)
+**Version:** 1.25 · **Last reviewed:** 2026-08-23 · **Active client:** none (internal repository)
 
 Guidance for AI agents working in this repository — the source repo for the AI-assisted coding governance package. This repo applies its own rules to itself.
 
@@ -170,8 +170,8 @@ The sample profile's content lives in **three** places (`ai-docs/client-profiles
 - Most files carry a **Version / Last reviewed / Review cycle** header. Update *Last reviewed* (and bump *Version* for substantive changes) when you materially edit a governed document.
 - Keep dates absolute (e.g., `2026-07-13`), not relative.
 - Preserve the relative Markdown links between files; they are load-bearing (see the chain above).
-- **A working document states current state; its dated record lives in the matching log.** `coverage-matrix.md` → [`testing/run-log.md`](./testing/run-log.md), `Governance-Test-Plan.md` → [`testing/test-plan-changes.md`](./testing/test-plan-changes.md), `mock-app-setup.md` → `run-log.md`'s *Fixture revisions*, `context-cost.md` → [`context-cost-log.md`](./context-cost-log.md), and the package's own shape — what it ships, how the entry files route, which tools it targets — → [`CHANGELOG.md`](./CHANGELOG.md). Don't write a new dated "amended 2026-XX-XX" clause into a reference document — put it in the log and leave the document stating what is true now.
-- **A passage that reads as history but carries a forward instruction is not history — keep it, in the present tense.** *"do not add a seventh non-negotiable to restore something"* and *"if a Layer B run shows the falsification pass skipped, restore the enumeration first"* are rules; summarised into a changelog line they invite exactly the regression they prevent. Move the dated narrative that produced such a rule; leave the rule.
+- **A working document states current state; its dated record lives in the matching log.** `coverage-matrix.md` → [`testing/run-log.md`](./testing/run-log.md), `Governance-Test-Plan.md` → [`testing/test-plan-changes.md`](./testing/test-plan-changes.md), `mock-app-setup.md` → `run-log.md`'s *Fixture revisions*, `context-cost.md` → [`context-cost-log.md`](./context-cost-log.md), and the package's own shape — what it ships, how the entry files route, which tools it targets — → [`CHANGELOG.md`](./CHANGELOG.md). The rule itself, and why, is [`writing-patterns.md`](./ai-docs/writing-patterns.md) §5 — what this list adds is which log owns which document here.
+- **A passage that reads as history but carries a forward instruction is not history — keep it, in the present tense.** *"do not add a seventh non-negotiable to restore something"* and *"if a Layer B run shows the falsification pass skipped, restore the enumeration first"* are rules. Move the dated narrative that produced such a rule; leave the rule.
 
 ## Keeping this file accurate
 
