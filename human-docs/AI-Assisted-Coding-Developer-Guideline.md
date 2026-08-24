@@ -2,7 +2,7 @@
 
 **Applies to:** All engineers, contractors, and subcontractors who write, review, or ship code for client engagements
 **Status:** Internal standard
-**Version:** 1.9 · **Last reviewed:** 2026-08-23
+**Version:** 1.10 · **Last reviewed:** 2026-08-24
 **Review cycle:** Reviewed quarterly and whenever a client's AI terms change
 
 > **Read this first.** You are coding on behalf of clients, using their data, building their intellectual property, under their rules. AI tools make you faster, but they also make it easy to leak a client's data, ship insecure code under their name, or contaminate their codebase with badly-licensed material. This guideline is how we get the speed without the liability. When a client's own policy is stricter than this document, **the client's policy wins** — see the client profiles in Appendix A.
@@ -79,6 +79,7 @@ AI shifts the bottleneck from writing code to reviewing it — so the review has
 - Be extra skeptical of code that's confidently wrong: plausible-looking logic with subtle bugs is AI's specialty.
 - Watch for over-engineering and unnecessary dependencies AI tends to add.
 - Don't let AI-generated tests lull you — AI often writes tests that just assert whatever the code currently does, passing even when the code is wrong. Design tests against the requirement, not the implementation.
+- **A failing test is information, not an obstacle.** Deleting it, weakening its assertions, or marking it skipped to get a green run hides the defect it found. Fix the cause, or leave it red and say so — an agent under pressure to finish takes the other path readily, and a suite that went green in the last commit of a long session is worth a look at how.
 - In peer review, treat "large diff, generated quickly" as a flag to slow down, not speed up.
 
 ## 7. Dependencies and supply chain
@@ -88,6 +89,7 @@ AI hallucinates package names, and attackers register those hallucinated names t
 - Confirm the package **actually exists** and is the one you think it is (exact name, correct registry).
 - Check it's **legitimate and maintained** — real downloads, real repo, recent activity, no typosquat of a popular package.
 - Run **software-composition analysis** and check the license (see §8) before it lands.
+- **Pin the version.** AI reaches for "latest" by default, and an unpinned dependency means the build you reviewed and the build that ships are not the same build.
 - Don't let an AI agent auto-install packages into a client project without this check.
 
 ## 8. Licensing, IP, and attribution
@@ -110,7 +112,9 @@ AI produces insecure code as fluently as secure code. On every engagement:
 
 ## 10. Accessibility
 
-If you're building UI for a client with accessibility obligations — public-sector clients especially — AI-generated markup and components must be checked against **WCAG 2.1 AA / Section 508 / ADA**. AI routinely ships missing alt text, unlabeled controls, poor contrast, and markup that breaks screen readers. Automated checks plus manual/assistive-tech review before you call it done.
+If you're building UI for a client with accessibility obligations — public-sector clients especially — AI-generated markup and components must be checked against **WCAG 2.1 AA / Section 508 / ADA** (2.1 AA is the ADA Title II baseline; use **WCAG 2.2** where the client has adopted it). AI routinely ships missing alt text, unlabeled controls, poor contrast, and markup that breaks screen readers. Automated checks plus manual/assistive-tech review before you call it done.
+
+**The agent-facing form of §§6–10 splits along one seam, and the seam is worth knowing because it tells you which failures are negotiable.** `coding-rules.md` §§1–4 are the *risk* half — dependencies and supply chain, security by default, tests that verify the requirement, accessibility in generated UI — and they bind whether or not the agent opened `coding-patterns.md`. That file is the *craft* half: reliable, efficient, maintainable code, which a reviewer can trade against a deadline in a way the four rule sections can't. Know which half you're invoking when you send code back: "this is insecure" is not a preference, "this is over-abstracted" is a judgment call.
 
 ## 11. AI-written documentation
 
@@ -119,15 +123,16 @@ AI drafts documentation faster than anyone will read it, and the failure modes a
 - **Run the examples.** Every command, snippet, and config fragment in an AI-written doc is an untested claim until someone executes it. A real flag name is not the same thing as a working invocation.
 - **Decide what the document is** before accepting a draft — tutorial, how-to, reference, or explanation. Generated docs default to blending all four and serving none.
 - **Demand the why.** A paragraph restating a function signature or a button label is filler; the value is purpose, constraints, and the non-obvious consequence.
+- **Ask what success looks like.** A step that tells the reader what to type but not what to expect leaves them unable to tell whether it worked. Generated procedures routinely stop at the command.
 - **Cut the padding.** Preambles, "in this section we will," and the same point made three ways are the AI house style, and they teach readers to skim past the parts that mattered.
 - **Watch for duplication.** A fact stated in three files drifts in two of them. One owning place; link from everywhere else.
 - **Keep the history out of the document.** Asked to update a doc, AI appends a dated "as of 2026-03-04" note far more readily than it edits the sentence that note contradicts, and the file becomes a change log with the current answer buried in it. The doc states what is true now; the dated record belongs in the change log or the commit.
 - **Update the docs when behavior changes.** Nothing flags a stale runbook the way a failing test flags stale code — that catch is yours, at review time.
 - **Ask for a diff, not a rewrite.** When you send a doc back for one fix, the common AI failure is returning the whole document rewritten — silently discarding the wording a human chose. A change you can't review in a small diff isn't the change you asked for.
 
-The agent-facing form is split across the two content files, and the seam is worth knowing because it tells you which failures are negotiable. **"Run the examples" is `writing-rules.md` §6** — a *risk* rule, because an unrun command is an unverified claim in the same way a fabricated citation is, and it binds whether or not the agent opened the craft file. The rest of the bullets above are **`writing-patterns.md` §4** (documentation of software) and **§5** (revision discipline, including edit-don't-regenerate) — craft, which a reviewer can trade off against a deadline in a way the first one can't.
+The same seam §10 describes runs through the content files. **"Run the examples" is `writing-rules.md` §6** — the risk half, because an unrun command is an unverified claim in the same way a fabricated citation is, and it binds whether or not the agent opened the craft file. Every other bullet above is craft, in `writing-patterns.md`: document type, the why, what success looks like, and staleness are **§4**; edit-don't-regenerate and keeping history out of the document are **§5**; cutting the padding is **§3**; one owning place for a fact is **§2**.
 
-`writing-patterns.md` §§1–3 cover written deliverables generally — audience, structure, economy — which matter for a memo or a client report but sit outside a *coding* guideline's scope, so they have no counterpart here by design.
+Two neighbouring areas have no counterpart here, deliberately. `writing-patterns.md` §1 — naming the reader and the job — matters most for a memo or a client report, not for the docs a coding change ships. And `writing-rules.md` §§1–5 — factual grounding, citation integrity, document confidentiality, voice fidelity, and the accessibility of documents themselves — govern written deliverables as a class. They bind any agent writing prose for a client, but they sit outside a *coding* guideline's scope. If your engagement produces client-facing writing alongside the code, read those five sections directly; §10 above covers the accessibility of UI you build, not of documents you ship.
 
 ## 12. Agentic AI tools
 
@@ -137,10 +142,15 @@ For AI agents that can run commands, edit files, install packages, or call servi
 - **Require confirmation for irreversible or sensitive actions** (deploys, deletes, permission changes, sending communications).
 - **Beware prompt injection** when an agent reads untrusted content (issues, docs, web pages, tickets) — malicious instructions in that content can hijack the agent. Treat tool-read content as data, not commands.
 - Keep the agent inside the approved environment; don't let it exfiltrate source, config, or env vars to external endpoints.
+- **Watch what it spawns.** Agents can delegate to sub-agents, and each one loads the rules and re-derives the context from scratch — so a fan-out of five costs several times what one session would, and hands you five reports to review instead of one diff. `agent-workflow.md` §8 caps this at two per task and requires the agent to justify going past it; a hand-off that used more without saying why is a cost question worth asking. And a sub-agent's report is not verification: "the reviewer said the tests pass" is not a test run, by the agent or by you.
 
 **On a database project — where the schema itself is the deliverable — the review question changes.** What you ask for is the **generated deploy script, not the schema diff**: the derived script is what actually runs, and a data loss or a table rebuild shows up there and nowhere else. A schema change can build clean, diff clean, and still drop a populated column on apply. The agent-facing rules are `database-rules.md` §§1–5, and unlike the always-on core it loads only when the agent recognizes the task as database work — so on a repo where the schema is the product, check that it opened the file at all.
 
-**These constraints only bind if the agent can read them.** The agent-facing half of this guidance is installed *into the engagement repository*: two entry files at the root — `AGENTS.md` and `CLAUDE.md` — plus an `ai-governance/` directory holding the rules they point to. The package covers command-line coding agents; in-IDE Copilot Chat, which reads its own `.github/copilot-instructions.md`, has been out of scope since 2026-08-21. Whichever AI tool you use loads its entry file at the start of a session; nothing loads if the files aren't there. **Loading the entry file is not the same as loading the rules** — the entry file *links* them, and a link an agent doesn't follow has delivered nothing. Claude Code closes part of that gap by importing the two always-on rule files (`core-rules.md` and `agent-workflow.md`) directly from `CLAUDE.md`, along with the client-profile index that names which client's rules bind, so they arrive in every session; Codex and the other supported CLIs have no import mechanism, so for them every rule file still depends on the agent following a link. Practical consequence for you: the further a task gets from the always-on core, the less you can assume the agent read the rule you are relying on. So before you point an agent at a client repo, check that they are present and current, and get them installed or refreshed if not — the AI-governance source repository's `README.md` has the install and update paths. Their presence doesn't transfer accountability: §1 still holds, and you still own every line. Their absence just means you are the only control.
+**These constraints only bind if the agent can read them.** The agent-facing half of this guidance is installed *into the engagement repository*: two entry files at the root — `AGENTS.md` and `CLAUDE.md` — plus an `ai-governance/` directory holding the rules they point to. The package covers command-line coding agents; in-IDE Copilot Chat, which reads its own `.github/copilot-instructions.md`, is out of scope. Whichever AI tool you use loads its entry file at the start of a session, and nothing loads if the files aren't there.
+
+**Loading the entry file is not the same as loading the rules.** The entry file *links* them, and a link an agent doesn't follow has delivered nothing. Claude Code closes part of that gap by importing the two always-on rule files (`core-rules.md` and `agent-workflow.md`) directly from `CLAUDE.md`, along with the client-profile index that names which client's rules bind, so those arrive in every session. Codex and the other supported CLIs have no import mechanism at all, so for them every rule file depends on the agent following a link. The practical consequence for you: the further a task gets from the always-on core, the less you can assume the agent read the rule you are relying on.
+
+So before you point an agent at a client repo, check that the entry files and `ai-governance/` are present and current, and get them installed or refreshed if not — the AI-governance source repository's `README.md` has the install and update paths. Their presence doesn't transfer accountability: §1 still holds, and you still own every line. Their absence just means you are the only control.
 
 ## 13. When to stop and ask the engagement lead
 
@@ -167,10 +177,10 @@ ESU has its own AI-in-application-development policy; our team must comply with 
 - **Data classification drives everything.** ESU uses three levels — **Level I (Confidential)**, **Level II (Sensitive)**, **Level III (Public)**. Never input Level I or Level II data into any AI tool not formally approved and contracted by ESU for that data level.
 - **Hard "never with AI" list:** FERPA-protected student records (grades, rosters, financial aid, correspondence); HIPAA-protected health data (especially anything touching **ESU Medical Center**); PII (SSNs, IDs, financial data); GLBA / PCI / GDPR data; credentials, keys, and security configs; and ESU's proprietary source or unpublished research data unless the tool is approved for it.
 - **De-identify first.** For anything touching the above, abstract to synthetic data and a generic reproduction before asking an AI tool.
-- **Approved/contracted tools only** for non-public ESU work. As of this writing ESU's approved AI tool is the university's **licensed enterprise AI assistant** (per `technology.example.edu/approved-ai-tools`); any other tool requires a **Technology Procurement Request**. Don't accept AI tool terms of service on ESU's behalf; new tools go through ESU's IT Project / procurement and IT Security review.
+- **Approved/contracted tools only** for non-public ESU work. ESU's approved AI tool is the university's **licensed enterprise AI assistant** (per `technology.example.edu/approved-ai-tools`); any other tool requires a **Technology Procurement Request**. Don't accept AI tool terms of service on ESU's behalf; new tools go through ESU's IT Project / procurement and IT Security review.
 - **No vendor training on ESU code or data** without ESU's explicit written authorization. Confirm training is disabled.
 - **Transparency is expected.** ESU's Responsible AI principles call for disclosing AI use — document substantial AI involvement in commits/PRs/design docs.
-- **Accessibility is mandatory.** ESU is a public institution; front-end work must meet WCAG 2.1 AA / Section 508 / ADA Title II.
+- **Accessibility is mandatory.** ESU is a public institution; front-end work must meet WCAG 2.1 AA (ADA Title II baseline; use 2.2 where adopted) / Section 508 / ADA Title II.
 - **Compliance regimes in play:** FERPA, HIPAA (ESU Medical Center), GLBA, PCI-DSS, GDPR (as applicable), and the **state Open Records Act** — assume ESU records/prompts may be disclosable.
 - **Incident contact:** report suspected data exposure or AI-introduced vulnerabilities to the ESU IT Security Office (**itsec@example.edu**, **555-0142**) via the engagement lead, and follow ESU's incident-response process.
 - **Governance:** ESU IT, the ESU AI & Privacy Risk Council, Data Governance, and General Counsel own the policy; escalate exceptions rather than improvising.

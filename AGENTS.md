@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Version:** 1.25 · **Last reviewed:** 2026-08-23 · **Active client:** none (internal repository)
+**Version:** 1.26 · **Last reviewed:** 2026-08-24 · **Active client:** none (internal repository)
 
 Guidance for AI agents working in this repository — the source repo for the AI-assisted coding governance package. This repo applies its own rules to itself.
 
@@ -168,6 +168,7 @@ The sample profile's content lives in **three** places (`ai-docs/client-profiles
 ## Editing conventions in this repo
 
 - Most files carry a **Version / Last reviewed / Review cycle** header. Update *Last reviewed* (and bump *Version* for substantive changes) when you materially edit a governed document.
+- **The one-pager's version tracks the guideline's.** `human-docs/AI-Coding-Onboarding-One-Pager.md` is a condensation of `human-docs/AI-Assisted-Coding-Developer-Guideline.md`; bump both to the same number together, so the one-pager's version says which edition of the guideline it summarizes. Nothing detects a skew here — no script checks it, and the one-pager reads as current at any version.
 - Keep dates absolute (e.g., `2026-07-13`), not relative.
 - Preserve the relative Markdown links between files; they are load-bearing (see the chain above).
 - **A working document states current state; its dated record lives in the matching log.** `coverage-matrix.md` → [`testing/run-log.md`](./testing/run-log.md), `Governance-Test-Plan.md` → [`testing/test-plan-changes.md`](./testing/test-plan-changes.md), `mock-app-setup.md` → `run-log.md`'s *Fixture revisions*, `context-cost.md` → [`context-cost-log.md`](./context-cost-log.md), and the package's own shape — what it ships, how the entry files route, which tools it targets — → [`CHANGELOG.md`](./CHANGELOG.md). The rule itself, and why, is [`writing-patterns.md`](./ai-docs/writing-patterns.md) §5 — what this list adds is which log owns which document here.
