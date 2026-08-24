@@ -2,7 +2,7 @@
 
 *Craft guide for written deliverables: clear, useful, maintainable content. Companion to the safety/risk rules — [`core-rules.md`](./core-rules.md) (the task-agnostic base) and [`writing-rules.md`](./writing-rules.md) (the content rules); this file governs writing quality, [`agent-workflow.md`](./agent-workflow.md) governs how to work. Content-track sibling of [`coding-patterns.md`](./coding-patterns.md). On overlap or conflict, **accuracy and fidelity win over elegance and concision**, and a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over both.*
 
-**Version:** 1.2 · **Last reviewed:** 2026-08-08 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.3 · **Last reviewed:** 2026-08-23 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -81,6 +81,14 @@ Applies when the deliverable documents software — a README, API reference, run
 - **Match the document's existing conventions.** Terminology, heading style, list punctuation, code-fence language tags, citation form, date format — follow what the document and its siblings already do rather than importing your own. (The client's *voice* and register are `writing-rules.md` §4's; this is the mechanical layer beneath it.)
 - **Never ship an unfilled placeholder as finished text.** An unfilled `*(TBD)*` signals that something is unconfigured — but only when it's visible and called out. Fill it, delete it, or name it in your hand-off; buried mid-document it reads as content.
 - **Leave the document navigable after you edit it.** Update the table of contents, section numbers, and cross-references your edit invalidated. An internal link that no longer resolves, or a "see §4" now pointing at renumbered content, is a defect you introduced.
+- **Put the current state in the document and the dated record in its log.** A reference document's job is to say what is true *now*; a reader reconstructing that from a stack of "amended 2026-03-04" clauses is reading a change log with the current version scattered through it. When history accumulates — superseded steps, revised decisions, prior wording — move the narrative to the log that owns it (a `CHANGELOG.md`, a decision record, a run log) and leave the document in the present tense with a pointer. The time dimension of §2's one-owning-place rule.
+
+  ```text
+  BAD:  "Deploy with `ship --release`. (2026-03-04: replaced `ship --prod`,
+         which still works. 2026-06-12: `--prod` now errors.)"
+  GOOD: "Deploy with `ship --release`." + a dated entry in the change log
+  ```
+- **A passage that reads as history but carries a forward instruction is not history.** *"We dropped the retry wrapper in March — don't add it back, it masked the timeout"* is two things: a dated event, which belongs in the log, and a rule, which belongs in the document in the present tense. Summarise the whole passage into a change-log line and the instruction leaves with it, inviting exactly the regression it recorded. Move the narrative; keep the rule.
 
 ---
 

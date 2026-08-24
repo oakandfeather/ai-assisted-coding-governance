@@ -11,7 +11,7 @@ The same governance is maintained for two different readers - AI agents and peop
 - **[`ai-docs/`](./ai-docs/)** — for AI agents (coding and content work). Terse, imperative, rule-shaped. These are the files you copy into a client project.
 - **[`human-docs/`](./human-docs/)** — for people. Onboarding, the full developer guideline, and the authoritative client policy.
 
-Alongside them, **[`testing/`](./testing/)** holds the plan for verifying that this package actually works — that it installs correctly, and that its rules change how an agent behaves. It is a third directory rather than a third track: it ships to nobody and is not onboarding material. See [`testing/Governance-Test-Plan.md`](./testing/Governance-Test-Plan.md).
+Alongside them, **[`testing/`](./testing/)** holds the plan for verifying that this package actually works — that it installs correctly, and that its rules change how an agent behaves. It is a third directory rather than a third track: it ships to nobody and is not onboarding material. See [`testing/Governance-Test-Plan.md`](./testing/Governance-Test-Plan.md) for the plan and [`testing/coverage-matrix.md`](./testing/coverage-matrix.md) for what each scenario currently scores; the dated record behind both — every run, and every revision to the plan — is in [`testing/run-log.md`](./testing/run-log.md) and [`testing/test-plan-changes.md`](./testing/test-plan-changes.md).
 
 ## Adopting this in a client project
 
@@ -171,4 +171,6 @@ See [`AGENTS.md`](./AGENTS.md) for the reference chain, the deduplication discip
 
 This repo applies its own governance to itself, using the same two-entry-file design it ships: `AGENTS.md` is the canonical entry file, and `CLAUDE.md` `@`-imports it along with the two always-on rule files and the client-profile index. The one deliberate difference from an install: they link to `ai-docs/` directly rather than to a copied `ai-governance/`, because the rule files already live here — see the note in `AGENTS.md`.
 
-[`context-cost.md`](./context-cost.md) tracks the context-window cost of loading `ai-docs/` — per-file and per-scenario token estimates, re-measured whenever those files change materially.
+[`CHANGELOG.md`](./CHANGELOG.md) holds the dated record of the package's **shape** — every change to what it ships, which file carries which body, and which tools it targets, with the reasoning behind it. The entry files state the shape as it stands now; the changelog states what it used to be.
+
+[`context-cost.md`](./context-cost.md) tracks the context-window cost of loading `ai-docs/` — per-file and per-scenario token estimates, plus the standing constraints on compressing those files further, re-measured whenever they change materially. [`context-cost-log.md`](./context-cost-log.md) holds the pass-by-pass record behind those numbers.
