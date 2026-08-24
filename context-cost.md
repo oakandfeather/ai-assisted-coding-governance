@@ -25,7 +25,7 @@ wc -w -c ai-docs/*.md ai-docs/client-profiles/*.md
 | `writing-rules.md` | 1,405 | ~2,400 |
 | `database-rules.md` | 1,259 | ~2,100 |
 | `coding-patterns.md` | 1,122 | ~1,980 |
-| `writing-patterns.md` | 1,600 | ~2,700 |
+| `writing-patterns.md` | 1,803 | ~3,000 |
 | `agent-workflow.md` | 2,574 | ~4,200 |
 | `client-profiles.md` + one profile | 414 | ~750 |
 | entry file (`AGENTS.md`, placeholders filled) | 1,006 | ~1,850 |
@@ -54,14 +54,14 @@ These bind the next pass over `ai-docs/`. Each was arrived at by a pass that too
 | **Floor — every session** | entry files (`AGENTS.md` + `CLAUDE.md`) + `core-rules.md` + `agent-workflow.md` + `client-profiles.md` index, imported | **~9,450** |
 | Trivial edit | *nothing* | ~9,450 |
 | Non-trivial coding task | + `coding-rules.md` + `coding-patterns.md` + the client profile body | ~13,250 |
-| Non-trivial writing task | + `writing-rules.md` + `writing-patterns.md` + the client profile body | ~15,000 |
+| Non-trivial writing task | + `writing-rules.md` + `writing-patterns.md` + the client profile body | ~15,300 |
 | Non-trivial database-project task | + `database-rules.md` + `coding-patterns.md` + the client profile body | ~14,000 |
-| Everything at once | + all five conditional files + the client profile body | ~20,450 |
+| Everything at once | + all five conditional files + the client profile body | ~20,700 |
 
 On every supported CLI other than Claude Code there is no floor, because none of them has an import mechanism: every rule file including `core-rules.md` still depends on the agent following a link. The first column is a Claude Code guarantee and an aspiration everywhere else.
 
 ## Caveats
 
-- This is a one-time context-window cost **per session**. **The floor is paid unconditionally on Claude Code** — `CLAUDE.md` imports those files, so they load whether the agent wants them or not, and they survive `/compact`. Everything above the floor is still paid only when a file is actually `Read`, and **a linked file that is never opened costs nothing and binds nothing** — which is the failure the floor exists to prevent, not a saving. The graduated-loading rule exists to avoid paying the ~20.4k full cost on every task.
+- This is a one-time context-window cost **per session**. **The floor is paid unconditionally on Claude Code** — `CLAUDE.md` imports those files, so they load whether the agent wants them or not, and they survive `/compact`. Everything above the floor is still paid only when a file is actually `Read`, and **a linked file that is never opened costs nothing and binds nothing** — which is the failure the floor exists to prevent, not a saving. The graduated-loading rule exists to avoid paying the ~20.7k full cost on every task.
 - Prompt caching (where the harness supports it) makes repeat reference *cheap in billing* within a session once a file is cached, but it does not reduce how much of the context window that file occupies.
 - These numbers reflect `ai-docs/` as of 2026-08-23, re-measured file by file rather than carried forward. Carrying figures forward is how rows go stale — re-measure after any material edit to a file listed above, and record the pass in [`context-cost-log.md`](./context-cost-log.md).
