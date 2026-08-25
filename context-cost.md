@@ -1,6 +1,6 @@
 # Context cost of the governance package
 
-**Last reviewed:** 2026-08-23
+**Last reviewed:** 2026-08-24
 
 Tracks how much of an agent's context window the `ai-docs/` package consumes when it's loaded per `AGENTS.md`'s "load in one pass" instruction. Re-run the measurement below and update this table when `ai-docs/` files change size materially — it's a cost metric, not a governed rule file, so it doesn't need a version bump on every edit.
 
@@ -11,8 +11,11 @@ Tracks how much of an agent's context window the `ai-docs/` package consumes whe
 Word/char counts are exact (`wc -w -c` over each file). Token counts are an **approximation** at ~4 characters/token for English markdown — not a real tokenizer run, so treat these as ballpark, not precise.
 
 ```
-wc -w -c ai-docs/*.md ai-docs/client-profiles/*.md
+wc -w -c ai-docs/*.md ai-docs/client-profiles/*.md          # the installed package
+wc -w -c ai-docs/procedures/*.md ai-docs/skills/*/SKILL.md  # source-repo only
 ```
+
+**Two commands, because one glob cannot see everything.** `ai-docs/*.md` does not reach `ai-docs/procedures/` or `ai-docs/skills/` — and those four files went unmeasured here until 2026-08-24 for exactly that reason. They are a separate cost paid by a separate reader; the *Source-repo cost* table below holds them, and they are not part of any scenario total.
 
 **The entry-file row is a separate measurement, not part of the command above.** `ai-docs/*.md` also matches `AGENTS.template.md`, but that file still carries its "how to use it" banner and unfilled `*(placeholders)*` — content an installed repo never actually loads. Run `scripts/build.ps1` first and measure `build/AGENTS.md` instead: banner stripped, placeholders filled, which is what an agent's context actually pays for.
 
@@ -31,6 +34,26 @@ wc -w -c ai-docs/*.md ai-docs/client-profiles/*.md
 | entry file (`AGENTS.md`, placeholders filled) | 1,006 | ~1,850 |
 | entry file (`CLAUDE.md`, the thin pointer itself) | 181 | ~150 |
 
+## Source-repo cost — the install and update procedures
+
+**These four files never reach a target repo.** Root `AGENTS.md` puts it flatly: *"Neither the procedures nor the launchers are part of the installed package."* The build scripts don't copy them and `govern-init` step 2 excludes them explicitly — so they add **nothing** to the floor and **nothing** to any row of the scenario totals below. They are measured here because they are still read by an agent, just a different one: whoever runs an install or an update, in this repo.
+
+| File | Words | Est. tokens |
+|---|---:|---:|
+| `procedures/govern-init.md` | 2,069 | ~3,550 |
+| `procedures/govern-update.md` | 2,749 | ~4,450 |
+| `skills/govern-init/SKILL.md` | 407 | ~650 |
+| `skills/govern-update/SKILL.md` | 428 | ~700 |
+
+**Per operation is the figure that matters**, because a launcher always reads its procedure — that is the whole design, and it reads it *fresh from the source repo on every run* so `git pull` keeps it current:
+
+| Operation | Files loaded | Est. tokens |
+|---|---|---:|
+| `/govern-init` | launcher + procedure | **~4,200** |
+| `/govern-update` | launcher + procedure | **~5,150** |
+
+A one-shot cost — but paid in a session that is *also* holding the target repo's context while doing a multi-file copy, a placeholder interview, and profile authoring, which is why it earns a row rather than a shrug.
+
 ## Standing constraints on compression
 
 These bind the next pass over `ai-docs/`. Each was arrived at by a pass that took a cut and reverted it, or declined one and said why; [`context-cost-log.md`](./context-cost-log.md) has the working.
@@ -42,6 +65,8 @@ These bind the next pass over `ai-docs/`. Each was arrived at by a pass that too
 - **Do not trim `database-rules.md` §5's "a script that only works once is a defect, not a convention to match."** The trailing words read as a restatement of the bullet's own lead-in and are not: they override `core-rules.md` §2's match-the-existing-conventions rule for the one case where the local convention *is* the defect. That is the B-D5 control-arm fail signature exactly — bare `INSERT`s written "in the local style" — which makes it the sentence in that file with the most measured behavioral value.
 - **A nested `@` path resolves against the importing file's directory, not the repo root.** From `ai-governance/client-profiles.md`, `@client-profiles/acme.md` loads and `@ai-governance/client-profiles/acme.md` silently does not — and the second is the shape a maintainer would copy from `CLAUDE.md`'s own root-relative imports. `check-links.ps1` resolves non-template `@` targets against the file's own directory, which matches.
 - **The strongest remaining cross-file candidate, for a pass that revisits that line:** `writing-rules.md` §2's *"prefer primary and current sources… note the date where currency matters"* restates `core-rules.md` §9's third bullet nearly verbatim, in a section whose own last bullet already delegates staleness to §9 — so unlike the other declined candidates, the file has declared the topic delegated and then restated it anyway.
+
+- **The two procedures are deliberately not compressed, and that is a decision rather than an omission.** They are read once per install or update, and their failure mode is not a wasted token but a mis-scaffold — which this repo has actually suffered, when a stale skill copy silently scaffolded the wrong shape out of perfectly current rules. Procedural unambiguity outranks ~1k tokens on a one-shot operation. Two things constrain any future pass that revisits this: **`govern-init.md`'s step numbering is load-bearing** (`scripts/build-empty.ps1` cites "step 4" by number), and **`govern-update.md` reads its anchors out of `scripts/build.ps1`** rather than restating them — inlining those to save words would create the third copy this package exists to prevent.
 
 **The remaining reduction is a governance decision, not a density one.** Every file has had a density pass and each is at its recorded floor; what is left is duplication that reachability protects. Cutting further means removing a rule or relaxing the constraint above.
 
@@ -58,10 +83,13 @@ These bind the next pass over `ai-docs/`. Each was arrived at by a pass that too
 | Non-trivial database-project task | + `database-rules.md` + `coding-patterns.md` + the client profile body | ~14,000 |
 | Everything at once | + all five conditional files + the client profile body | ~20,700 |
 
+**No row above includes the install and update procedures, by design** — they never reach a target repo, so they cost an agent working in one nothing at all. Their cost is the *Source-repo cost* table above.
+
 On every supported CLI other than Claude Code there is no floor, because none of them has an import mechanism: every rule file including `core-rules.md` still depends on the agent following a link. The first column is a Claude Code guarantee and an aspiration everywhere else.
 
 ## Caveats
 
 - This is a one-time context-window cost **per session**. **The floor is paid unconditionally on Claude Code** — `CLAUDE.md` imports those files, so they load whether the agent wants them or not, and they survive `/compact`. Everything above the floor is still paid only when a file is actually `Read`, and **a linked file that is never opened costs nothing and binds nothing** — which is the failure the floor exists to prevent, not a saving. The graduated-loading rule exists to avoid paying the ~20.7k full cost on every task.
 - Prompt caching (where the harness supports it) makes repeat reference *cheap in billing* within a session once a file is cached, but it does not reduce how much of the context window that file occupies.
-- These numbers reflect `ai-docs/` as of 2026-08-23, re-measured file by file rather than carried forward. Carrying figures forward is how rows go stale — re-measure after any material edit to a file listed above, and record the pass in [`context-cost-log.md`](./context-cost-log.md).
+- **The *Source-repo cost* table is a different kind of number** — paid once by whoever runs `/govern-init` or `/govern-update` in this repo, not per session by an agent working in a target repo. Don't add it to anything above.
+- These numbers reflect `ai-docs/` as of 2026-08-24, re-measured file by file rather than carried forward. Carrying figures forward is how rows go stale — re-measure after any material edit to a file listed above, and record the pass in [`context-cost-log.md`](./context-cost-log.md).
