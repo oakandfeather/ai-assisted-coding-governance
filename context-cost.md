@@ -29,7 +29,7 @@ wc -w -c ai-docs/procedures/*.md ai-docs/skills/*/SKILL.md  # source-repo only
 | `database-rules.md` | 1,259 | ~2,100 |
 | `coding-patterns.md` | 1,122 | ~1,980 |
 | `writing-patterns.md` | 1,803 | ~3,000 |
-| `agent-workflow.md` | 2,574 | ~4,200 |
+| `agent-workflow.md` | 2,615 | ~4,200 |
 | `client-profiles.md` + one profile | 414 | ~750 |
 | entry file (`AGENTS.md`, placeholders filled) | 1,006 | ~1,850 |
 | entry file (`CLAUDE.md`, the thin pointer itself) | 181 | ~150 |

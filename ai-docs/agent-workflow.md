@@ -2,7 +2,7 @@
 
 *How to work — the sections below are the whole scope. Companion to [`core-rules.md`](./core-rules.md) (the task-agnostic base) and its task modules [`coding-rules.md`](./coding-rules.md) / [`writing-rules.md`](./writing-rules.md) / [`database-rules.md`](./database-rules.md) (safety/risk), plus the craft companions [`coding-patterns.md`](./coding-patterns.md) / [`writing-patterns.md`](./writing-patterns.md). Precedence: a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) > `core-rules.md` > the task module > this file and the craft companions > project entry file (`AGENTS.md` / `CLAUDE.md`). Safety wins over speed, correctness over throughput; the stricter rule always wins.*
 
-**Version:** 1.18 · **Last reviewed:** 2026-08-22 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.19 · **Last reviewed:** 2026-08-24 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -12,7 +12,7 @@ Run every non-trivial task through this loop; skipping steps is how plausible-bu
 
 1. **Understand the requirement.** Restate it in one sentence; if you can't, it's ambiguous (§2). Name any second plausible reading: if it would produce materially different work, that is a §2 stop-and-ask, not an assumption you record in the hand-off.
 2. **Read before you write.** Search the existing material — code, documents, prior deliverables — for helpers, patterns, sources, and wording that already solve part of the problem. Reuse beats new; extending an established pattern beats inventing one.
-3. **Plan the change.** Name the files to touch and the smallest correct change. For multi-file or design-bearing work, state the plan before implementing — redirection before code is cheap, after code is expensive. Give a separable plan as an ordered list of small steps, so the human can drop or reorder items rather than accept or reject the whole.
+3. **Plan the change.** Name the files to touch and the smallest correct change. For multi-file or design-bearing work, state the plan before implementing — redirection before code is cheap, after code is expensive. Give a separable plan as an ordered list of small steps, so the human can drop or reorder items rather than accept or reject the whole. Where those steps split at a seam — pieces that could land separately — recommend the split in that same plan, naming the piece to do first; delivering one piece as though it were the whole request is a defect, not a shortcut.
 4. **Implement in small, verifiable increments.** Several small verified steps beat one large unverified leap. Keep each diff reviewable.
 5. **Verify (§3).** Actually run things; reasoning that it should work is not verification. On failure, §6 governs when to stop looping.
 6. **Hand off (§4).** What changed, what you assumed, what you verified.
