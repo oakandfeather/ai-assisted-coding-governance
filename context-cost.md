@@ -1,6 +1,6 @@
 # Context cost of the governance package
 
-**Last reviewed:** 2026-08-24
+**Last reviewed:** 2026-08-25
 
 Tracks how much of an agent's context window the `ai-docs/` package consumes when it's loaded per `AGENTS.md`'s "load in one pass" instruction. Re-run the measurement below and update this table when `ai-docs/` files change size materially — it's a cost metric, not a governed rule file, so it doesn't need a version bump on every edit.
 
@@ -29,7 +29,7 @@ wc -w -c ai-docs/procedures/*.md ai-docs/skills/*/SKILL.md  # source-repo only
 | `database-rules.md` | 1,259 | ~2,100 |
 | `coding-patterns.md` | 1,122 | ~1,980 |
 | `writing-patterns.md` | 1,803 | ~3,000 |
-| `agent-workflow.md` | 2,615 | ~4,200 |
+| `agent-workflow.md` | 2,740 | ~4,400 |
 | `client-profiles.md` + one profile | 414 | ~750 |
 | entry file (`AGENTS.md`, placeholders filled) | 1,006 | ~1,850 |
 | entry file (`CLAUDE.md`, the thin pointer itself) | 181 | ~150 |
@@ -76,12 +76,12 @@ These bind the next pass over `ai-docs/`. Each was arrived at by a pass that too
 
 | Scenario | On top of the floor | Est. tokens |
 |---|---|---:|
-| **Floor — every session** | entry files (`AGENTS.md` + `CLAUDE.md`) + `core-rules.md` + `agent-workflow.md` + `client-profiles.md` index, imported | **~9,450** |
-| Trivial edit | *nothing* | ~9,450 |
-| Non-trivial coding task | + `coding-rules.md` + `coding-patterns.md` + the client profile body | ~13,250 |
-| Non-trivial writing task | + `writing-rules.md` + `writing-patterns.md` + the client profile body | ~15,300 |
-| Non-trivial database-project task | + `database-rules.md` + `coding-patterns.md` + the client profile body | ~14,000 |
-| Everything at once | + all five conditional files + the client profile body | ~20,700 |
+| **Floor — every session** | entry files (`AGENTS.md` + `CLAUDE.md`) + `core-rules.md` + `agent-workflow.md` + `client-profiles.md` index, imported | **~9,650** |
+| Trivial edit | *nothing* | ~9,650 |
+| Non-trivial coding task | + `coding-rules.md` + `coding-patterns.md` + the client profile body | ~13,450 |
+| Non-trivial writing task | + `writing-rules.md` + `writing-patterns.md` + the client profile body | ~15,500 |
+| Non-trivial database-project task | + `database-rules.md` + `coding-patterns.md` + the client profile body | ~14,200 |
+| Everything at once | + all five conditional files + the client profile body | ~20,900 |
 
 **No row above includes the install and update procedures, by design** — they never reach a target repo, so they cost an agent working in one nothing at all. Their cost is the *Source-repo cost* table above.
 
@@ -89,7 +89,7 @@ On every supported CLI other than Claude Code there is no floor, because none of
 
 ## Caveats
 
-- This is a one-time context-window cost **per session**. **The floor is paid unconditionally on Claude Code** — `CLAUDE.md` imports those files, so they load whether the agent wants them or not, and they survive `/compact`. Everything above the floor is still paid only when a file is actually `Read`, and **a linked file that is never opened costs nothing and binds nothing** — which is the failure the floor exists to prevent, not a saving. The graduated-loading rule exists to avoid paying the ~20.7k full cost on every task.
+- This is a one-time context-window cost **per session**. **The floor is paid unconditionally on Claude Code** — `CLAUDE.md` imports those files, so they load whether the agent wants them or not, and they survive `/compact`. Everything above the floor is still paid only when a file is actually `Read`, and **a linked file that is never opened costs nothing and binds nothing** — which is the failure the floor exists to prevent, not a saving. The graduated-loading rule exists to avoid paying the ~20.9k full cost on every task.
 - Prompt caching (where the harness supports it) makes repeat reference *cheap in billing* within a session once a file is cached, but it does not reduce how much of the context window that file occupies.
 - **The *Source-repo cost* table is a different kind of number** — paid once by whoever runs `/govern-init` or `/govern-update` in this repo, not per session by an agent working in a target repo. Don't add it to anything above.
-- These numbers reflect `ai-docs/` as of 2026-08-24, re-measured file by file rather than carried forward. Carrying figures forward is how rows go stale — re-measure after any material edit to a file listed above, and record the pass in [`context-cost-log.md`](./context-cost-log.md).
+- These numbers reflect `ai-docs/` as of 2026-08-25. Every per-file row was re-measured that day; only `agent-workflow.md` had moved (§1 step 3 rewritten, v1.20), and the floor and all four scenario totals moved with it. Nothing is carried forward on faith. Carrying figures forward is how rows go stale — re-measure after any material edit to a file listed above, and record the pass in [`context-cost-log.md`](./context-cost-log.md).
