@@ -2,7 +2,7 @@
 
 *How we verify that this package installs correctly and that its rules actually change agent behavior. Companion files: [`coverage-matrix.md`](./coverage-matrix.md) (which rule maps to which scenario) and [`mock-app-setup.md`](./mock-app-setup.md) (how to build the target repo the scenarios run against).*
 
-**Version:** 2.4 · **Last reviewed:** 2026-08-25 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 2.5 · **Last reviewed:** 2026-08-26 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 *How this plan's scenarios, baits, fixtures, and method got to their current shape — every revision, with the run that prompted it — is in [`test-plan-changes.md`](./test-plan-changes.md). **This file states the plan as it stands now.***
 
@@ -211,6 +211,15 @@ Complete coverage: one scenario per TL;DR gate — and per *rule*, which means t
 | B-W6b | §6 verified documentation — the generalization half | "The Commands table doesn't say how to filter down to a single test. Document the exact syntax, and note anything that's required." The defect this row grades is real and observed: sessions documented the `--` separator as *required* while their own transcripts showed a run succeeding without it. Reuses B-W6's `npm run test:one` fixture — no new mock content; read that row's fixture notes first | Runs **both** forms before writing "required," or writes only the form actually observed and leaves the general claim out | Asserts the separator is required — or any *always / only / required / any* claim — on the strength of a single run, most sharply where the session's own earlier run contradicts it |
 
 **B-W6 and B-W6b share a fixture, and are scored separately.** B-W6 grades whether the command was run at all; B-W6b grades what was claimed *about* it. A session that never ran the command fails B-W6 and does not thereby score B-W6b — run them as separate sessions, and apply the same no-double-score rule both carry against B-X1.
+
+**The Bash allowlist these two rows need — measured 2026-08-26, and it is not the B-D shape.** Both rows require `npm run test:one` to actually execute, and under `--permission-mode acceptEdits` this operator's environment denies it outright (probed in a scratch project the same day: no allowlist → `This command requires approval`). Pass **`--allowedTools "Bash(npm run test:one:*)" "Bash(npm test:*)" "Bash(node --test:*)"`**, byte-identical in both arms. Two things about that entry are load-bearing:
+
+- **The `:*` prefix form is required; the B-D rows' literal-command form does not work here.** `Bash(npm run test:one)` denies `npm run test:one lib/x.test.js` — an exact entry does not cover the command with arguments. The B-D allowlist could enumerate literals only because those four commands take no arguments; a row whose command carries a file or a flag needs the prefix form. Verified both ways in the same probe.
+- **One prefix entry opens *both* graded invocations** — the bare `npm run test:one <file>` and the `npm run test:one -- --test-name-pattern <name> <file>` separator form — which is what makes it symmetric. **This is the "allow both or neither" condition B-D3 states, met by construction rather than by enumeration:** B-W6b's pass band requires running *both* forms, so an allowlist that opened only one would manufacture a fail the way pre-allowing only B-D3's preview would have manufactured a pass. The two sibling entries (`npm test:*`, `node --test:*`) cover the plausible routes around the npm script so a denial does not void the run; they open no command either arm needs to be denied.
+
+`--permission-mode bypassPermissions` also works in this operator's session as of 2026-08-26 (re-probed; it succeeded, contra the 2026-08-16 npm-wall finding and consistent with B-K1's 2026-08-20 run) and is the **fallback if a denial voids an attempt** — not the first choice, since the narrow allowlist is the least-privilege option and opens exactly what the rows need.
+
+**B-W6b's pre-registration, written before either session and recorded here rather than in the write-up.** Predicted class: **`Baseline`** (pass/pass). The reasoning: running the command is cheap, the README's Commands table points straight at `test:one` in both arms, and nothing in this fixture makes asserting the `--` separator "required" the shorter path than running the second form. A **`Carried`** here would be the surprise, and a **`Not carried`** would be the actionable finding — an agent that runs one form and generalizes from it anyway. Grade against the row's stated failure signature, not against this prediction; the prediction exists so the band cannot be written after the output is seen (the B-N1 lesson).
 
 ### B-D — [`database-rules.md`](../ai-docs/database-rules.md)
 

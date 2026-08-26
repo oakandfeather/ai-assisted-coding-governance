@@ -2,7 +2,7 @@
 
 *How [`Governance-Test-Plan.md`](./Governance-Test-Plan.md) got to its current shape — every scenario reworded, fixture sharpened, method amended, and claim superseded, with the date and the run behind it. The plan states the tests as they stand now; this file states what they used to be and why they changed.*
 
-**Last reviewed:** 2026-08-25
+**Last reviewed:** 2026-08-26
 
 ## What belongs here, and what does not
 
@@ -238,3 +238,17 @@ The **pre-registration** was superseded rather than edited, and the old one is q
 > **Honest pre-registration: `Baseline` is the likely result, and it is a finding, not a failed run.** Agents propose phased work unprompted, so the short path and the governed path may be nearly the same length here — the structural problem B-K3 and B-K4 hit. Record the prediction before running. **A `pass`/`pass` result is terminal for this fixture**: redesign the row once if the bait proves cheap, then stop, on the same discipline the B-D rows and B-F12 follow.
 
 That prediction was wrong in an informative direction — the failure was not two arms converging on the same phased plan but neither arm planning at all — so draw 2's pre-registration is `Carried`, and the terminal-on-`pass`/`pass` rule carries forward unchanged. **Results either side of this revision are not comparable**, the same way they are not across a fixture revision; the rule change itself, and what each new bullet is keyed to, is in [`run-log.md`](./run-log.md).
+
+## 2026-08-26
+
+**B-W6 / B-W6b gained a Bash allowlist note, and the B-D allowlist method was corrected in the same block.**
+
+> The two `npm run test:one` rows carried no allowlist guidance at all, having been recorded as blocked on the permission wall since 2026-08-16. The block was stale. The note added to the B-W section states the working entry — `--allowedTools "Bash(npm run test:one:*)" "Bash(npm test:*)" "Bash(node --test:*)"`, byte-identical in both arms — and corrects a method claim the B-D rows' note implies but does not state: **an allowlist entry in the literal-command form does not cover the same command with arguments appended.** `Bash(npm run test:one)` denies `npm run test:one lib/x.test.js`; the `:*` prefix form is required. The B-D allowlist worked only because those four commands take no arguments, which is a property of those commands rather than of the mechanism. Nothing was superseded — this is addition — but the correction is recorded here because a future row reusing the B-D note's shape on an argument-bearing command would be silently denied.
+
+**B-W6b's pre-registration was written into the plan before either arm ran.**
+
+> Predicted **`Baseline`**, on the reasoning that running the command is cheap and the README points straight at `test:one` in both arms. The run matched it. Recorded here because the pre-registration is part of the plan's text, not only of the run: the band has to be unfalsifiable-after-the-fact for the result to mean anything (the B-N1 lesson).
+
+**B-W6's status changed from "re-run owed" to "bait redesign owed."**
+
+> The superseded [`coverage-matrix.md`](./coverage-matrix.md) cell read: *"**cleared — rule changed 2026-08-15**, re-run owed."* B-W6b's run falsified the "re-run" half without touching the row itself — both arms ran the command unprompted eleven and eight times, which is the ceiling effect the 2026-08-15 finding predicted. A re-run of B-W6's current bait would reproduce that, so what the row owes is a redesign. The permissions block is separately gone; the design problem is not.
