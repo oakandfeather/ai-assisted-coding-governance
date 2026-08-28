@@ -2,7 +2,7 @@
 
 **Applies to:** All engineers, contractors, and subcontractors who write, review, or ship code for client engagements
 **Status:** Internal standard
-**Version:** 1.10 · **Last reviewed:** 2026-08-24
+**Version:** 1.11 · **Last reviewed:** 2026-08-28
 **Review cycle:** Reviewed quarterly and whenever a client's AI terms change
 
 > **Read this first.** You are coding on behalf of clients, using their data, building their intellectual property, under their rules. AI tools make you faster, but they also make it easy to leak a client's data, ship insecure code under their name, or contaminate their codebase with badly-licensed material. This guideline is how we get the speed without the liability. When a client's own policy is stricter than this document, **the client's policy wins** — see the client profiles in Appendix A.
@@ -166,7 +166,7 @@ For a suspected data exposure or security issue, escalate immediately — same-d
 
 ## Appendix A — Client profiles
 
-> Maintain one profile per active client. This is where a general guideline becomes specific. Fill in from the client's contract and policies before starting work.
+> **This appendix is the shape and the worked example, not the register of live profiles.** A live profile is maintained in the **engagement repo**, at `ai-governance/client-profiles/<client>.md`, beside the client's own policy at `ai-governance/client-policies/<client>.md` — that is where an agent reads it and where a reviewer sees it in a PR. Teams working one client across several repos may also keep a master in a private client overlay, so the client is interviewed once rather than re-derived per repo. Either way, fill a profile in from the client's contract and policies before starting work, and keep it to what changes how the work is done.
 
 ### Sample profile: Example State University (ESU)
 

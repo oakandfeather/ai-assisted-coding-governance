@@ -2361,6 +2361,8 @@ Pre-flight turned up an asymmetry that has to be on the record **before** the re
 
 **A2.2's count is deliberately unchanged at nine.** `client-policies/` is created by `govern-init` step 6 out of the client's own document; it is not copied from source, so it does not belong in the copied-from-source set. A2.2 says so explicitly now, because the natural "fix" on reading A2.13 is to add it there.
 
+**Layer A was re-run and is green.** `build.ps1` (11 files), `build-empty.ps1` (10 files), and `check-links.ps1` (458 links, exit 0) all pass; all four harness scripts pass. `check-layer-a.ps1` went red on A2.8 (`client-profiles.md`) first, which is the documented staleness after an `ai-docs/` edit rather than a defect — cleared the usual way: `govern-update-run.ps1 -Arm governed -Apply`, the same for `unconfigured`, `entryfiles-only` re-synced by hand from `governed`, each arm committed and its `pristine` tag moved. **Note for whoever runs A3.14:** the fixture already exists and needs no setup. `registrar-mock-update` holds two profiles (`example-state-university.md`, `northfield-community-college.md`) and **no** `ai-governance/client-policies/`, and `registrar-mock-governed` holds one profile and no policies directory either — verified by listing both after the refresh. That is precisely the already-installed state A3.14 grades, and the refresh correctly did not create the directory in either.
+
 **Not verified in this session:** the derivation dry run and the end-to-end `govern-init` dry runs the proposal specifies, and A3.14 itself. They are agent sessions against a throwaway target, closer to Layer B in cost than to the scripted contract. They are owed, and open.
 
 ---

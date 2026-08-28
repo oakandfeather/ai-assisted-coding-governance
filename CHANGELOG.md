@@ -66,6 +66,8 @@ The five B-D scenarios shipped blank and were run the same week, so `coverage-ma
 
 **The invariant behind all of it:** anything the engagement repo references must resolve for someone holding only that repo plus their normal client access. That is why the policy is copied rather than linked — a cross-repo path resolves only on the machines that happen to have it, and fails *silently* while the authority note still reads authoritative.
 
+**An optional private client overlay was added as a second source.** A separate private repo of `clients/<client>/profile.md` and `clients/<client>/policy.md` — and never a rule file — so a client appearing in several engagement repos is interviewed once rather than re-derived and drifting. `govern-init` resolves it via `$AI_GOVERNANCE_CLIENTS_PATH`, treats a missing one as *not* a stop (unlike a missing source package), and **offers** rather than assumes the write-back of a newly authored profile. `govern-update` needs none: it never touches client files.
+
 **`human-docs/Example-Client-AI-Policy.md` is now a shape template, not a slot.** No client policy is ever reproduced into this repository: it is public and gets copied into other clients' repos. `README.md`, root `AGENTS.md`, and the developer guideline's Appendix A were re-pointed at the engagement repo to match.
 
 The proposal this came from, with the argument and the alternatives, is [`docs/proposals/client-material-topology.md`](./docs/proposals/client-material-topology.md) — now marked superseded rather than edited to match. Why no new Layer B scenario is owed, and the three Layer A rows added instead (A2.13, A3.13, A3.14), are in [`testing/run-log.md`](./testing/run-log.md), *Package change of 2026-08-28*.

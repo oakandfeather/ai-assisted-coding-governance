@@ -1,8 +1,14 @@
 # Proposal — client-material topology for `govern-init`
 
-**Version:** 1.0 · **Last reviewed:** 2026-08-28 · **Status:** Proposed, not implemented · **Review cycle:** Supersede when implemented.
+**Version:** 1.0 · **Last reviewed:** 2026-08-28 · **Status:** **Superseded — implemented 2026-08-28** · **Review cycle:** None; kept as the record of the argument.
 
-> **This is a proposal, not current state.** Nothing below is built. When it lands, [`CHANGELOG.md`](../../CHANGELOG.md) records the shape change and this file is marked superseded rather than quietly edited to match — the same discipline `AGENTS.md` applies to `coverage-matrix.md` and `run-log.md`.
+> **Superseded, and deliberately not edited to match what shipped.** This was enacted on 2026-08-28. [`CHANGELOG.md`](../../CHANGELOG.md) now owns the record of the shape as it stands, and [`testing/run-log.md`](../../testing/run-log.md)'s *Package change of 2026-08-28* holds why no Layer B scenario is owed. The body below is the proposal as written **before** implementation — rewriting it to agree with the outcome would destroy the reason the change was made. Where it and the shipped package differ, the shipped package and `CHANGELOG.md` are current. **Three deliberate deviations, named so nobody has to diff for them:**
+>
+> 1. **A and B landed as two commits on one branch**, not as A shipped and reviewed before B was started. The seam in the *Recommended split* below is preserved in the commit boundary; the review gate between them was not taken.
+> 2. **`human-docs/Example-Client-AI-Policy.md` was recast whole in A**, not one paragraph in A6 and the rest in B4. A half-recast file would have left four documents pointing away from a stub whose title and section headings still claimed to be the destination — a contradiction between shipped files, which is what A6 exists to prevent. B4 added only the overlay-master bullet.
+> 3. **`govern-init.md` step 4 also went plural**, which this proposal did not name. It said *"leave the paragraph beginning 'Add each client as'"*, singular; after A1 there are two package-owned paragraphs there, and an installer following it literally could drop the second. Same defect class A3 catches on the update side.
+>
+> Line numbers cited below had drifted by a line or two before implementation, and are left as written.
 
 ---
 

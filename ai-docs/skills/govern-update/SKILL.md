@@ -16,6 +16,8 @@ Find the upstream package in this order:
 3. Clone it: `git clone --depth 1 https://github.com/oakandfeather/ai-assisted-coding-governance` into a temp directory. Use a temp directory, **not** a remote added to the target repo — the target's git state is the client's, and this must not touch it.
 4. Ask. **Do not reconstruct the rule files from memory** — a paraphrased safety rule is not the safety rule. If you cannot find the source package, stop and say so.
 
+**No client overlay is needed here.** `govern-init` has one — an optional private source of client profiles and policies — because it authors client material. This procedure never touches it: `ai-governance/client-profiles/` and `ai-governance/client-policies/` are tier E, left alone entirely. There is nothing for an overlay to supply.
+
 ## 2. Read the procedure and follow it
 
 Read `ai-docs/procedures/govern-update.md` from the resolved source, and **follow it exactly**. It is the whole procedure — the staleness check on the source itself, the layouts to refuse, the anchors, the A–E tiers, the two merges, and the hand-off. Nothing in this launcher supersedes it.
