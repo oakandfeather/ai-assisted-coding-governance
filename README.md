@@ -13,6 +13,8 @@ The same governance is maintained for two different readers - AI agents and peop
 
 Alongside them, **[`testing/`](./testing/)** holds the plan for verifying that this package actually works — that it installs correctly, and that its rules change how an agent behaves. It is a third directory rather than a third track: it ships to nobody and is not onboarding material. See [`testing/Governance-Test-Plan.md`](./testing/Governance-Test-Plan.md) for the plan and [`testing/coverage-matrix.md`](./testing/coverage-matrix.md) for what each scenario currently scores; the dated record behind both — every run, and every revision to the plan — is in [`testing/run-log.md`](./testing/run-log.md) and [`testing/test-plan-changes.md`](./testing/test-plan-changes.md).
 
+**[`docs/proposals/`](./docs/proposals/)** is a fourth, on the same footing: design proposals for changes to the package that **have not been made yet**. Nothing there describes how the package works today — read it to see what is under discussion and why, and read the owning file for current state. [`CHANGELOG.md`](./CHANGELOG.md) records what actually shipped.
+
 ## Adopting this in a client project
 
 **The same package installs the same way for everyone.** Every install lands two entry files — `AGENTS.md` and `CLAUDE.md` — plus an `ai-governance/` rules directory, covering Claude Code, OpenAI Codex, the GitHub Copilot CLI and coding agent, and any other tool that reads a root `AGENTS.md`, in one pass. **Which AI tool you use doesn't change *what* gets installed — only *how* you install it, and which entry file that tool then reads.**

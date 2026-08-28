@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Version:** 1.26 · **Last reviewed:** 2026-08-24 · **Active client:** none (internal repository)
+**Version:** 1.27 · **Last reviewed:** 2026-08-28 · **Active client:** none (internal repository)
 
 Guidance for AI agents working in this repository — the source repo for the AI-assisted coding governance package. This repo applies its own rules to itself.
 
@@ -86,6 +86,19 @@ When you change a rule in one track, check whether its counterpart in the other 
 Two design points worth preserving. **Every behavioral scenario runs against an ungoverned control copy as well** — an agent with no governance installed already declines to hardcode secrets, so a scenario without a baseline measures the model rather than the package, and the finding is the delta. And **scenarios are baited, not interviewed**: the violation has to be the path of least resistance, or the test proves nothing.
 
 The mock application itself lives **outside this repository** and is not tracked here.
+
+## The proposals directory
+
+[`docs/proposals/`](./docs/proposals/) is a **fourth** top-level directory, and like `testing/` it is neither track: not copied into client repos, not onboarding material. It holds **design proposals for changes to the package that have not been made yet** — the argument, the decisions taken, the propagation surface, and the verification the change would owe.
+
+It exists because the repo's other logs all record what *did* happen — `CHANGELOG.md` the package's shape as changed, `run-log.md` the runs as performed, `test-plan-changes.md` the plan as revised — and none of them has a slot for a change still under discussion. A proposal parked in a session transcript or a local plan file is not reviewable in a PR.
+
+Two rules keep it from rotting:
+
+- **A proposal states its status in its header** (`Status: Proposed, not implemented`) and is written in the conditional. Nothing here describes current state; the owning file always does.
+- **When a proposal lands, `CHANGELOG.md` takes over the record and the proposal is marked superseded — not edited to match what shipped.** Same discipline as `coverage-matrix.md` ↔ `run-log.md`: rewriting the proposal to agree with the outcome destroys the reason the change was made. A proposal that is declined is marked declined and kept, for the same reason.
+
+Nothing reads this directory — no script, no build, no install path — so a stale proposal is inert rather than dangerous. That is also why it is cheap: `check-links.ps1` is the only gate it has to pass.
 
 ## How the ai-docs files chain together
 
