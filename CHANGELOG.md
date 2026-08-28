@@ -2,7 +2,7 @@
 
 *How the package got its current **shape** — every change to what it ships, which files carry which body, and which tools it targets, with the date and the reasoning behind it. [`AGENTS.md`](./AGENTS.md) and [`README.md`](./README.md) state the shape as it stands now; this file states what it used to be and why it changed.*
 
-**Last reviewed:** 2026-08-23
+**Last reviewed:** 2026-08-28
 
 ## What belongs here, and what does not
 
@@ -51,3 +51,21 @@ Two task modules read on top of `core-rules.md` — `coding-rules.md` for applic
 - **Making the module reachable cost roughly twice what compressing it saved.** Routing it into the other files added +131 words across `core-rules.md`, `coding-rules.md`, `coding-patterns.md`, `agent-workflow.md`, and the entry file; the module's own compression pass returned −69. That ledger line, and the five stale word-count rows the same re-measurement caught, are in [`context-cost-log.md`](./context-cost-log.md).
 
 The five B-D scenarios shipped blank and were run the same week, so `coverage-matrix.md`'s complete-coverage claim briefly excluded `database-rules.md` by name; it no longer does. The runs, the fixture, and the 2026-08-23 redesign of four of those rows are in [`testing/run-log.md`](./testing/run-log.md).
+
+## 2026-08-28 — client material has a home, and it is the engagement repo
+
+`govern-init` step 6 told the agent the client's own AI policy was the upstream authority and to *"work from the document"* — without ever saying where that document came from. The only location the package named for a client policy was `human-docs/Example-Client-AI-Policy.md`, a single file inside this repo, which is public. So a fresh clone described a repo that talked as though it held your client's documents, had one slot for N clients, and could never legitimately hold any of them.
+
+**The shape now:**
+
+- **The policy is reproduced into the engagement repo**, at `ai-governance/client-policies/<client>.md`, beside the profile that summarizes it — created by `govern-init` step 6 out of the client's own document, **not** copied from source. The copied-from-source set is unchanged at nine `ai-governance/` items; a count that moved would be a bug.
+- **`govern-init` asks where the document is** — a path, a URL, or a paste — and derives the profile from it before interviewing for what it doesn't cover, citing the section each field came from and pinning the policy's version. A field the policy is silent on is marked *not addressed*, never filled from general knowledge; a URL that won't fetch is treated as no document at all.
+- **A cite-only fallback**, for a client who permits citation but not copying: no policy file, and the profile's authority note carries title, version, and canonical URL. The ESU sample models this shape.
+- **`client-profiles.md` says where a policy lives and how two profiles compose** — the stricter governs rule by rule, and two rules that are *not comparable* (different disclosure formats, different escalation contacts, different data vocabularies) are a `core-rules.md` §7 stop-and-ask rather than a coin flip. Multi-client is supported by construction; `AGENTS.md`'s **Active client** may name more than one.
+- **`govern-update` extends tier E over `client-policies/`** — never touched, never read — and must **report** a target that has profiles but no such directory. Every repo installed before this change is in that state, and nothing will create the directory for it; a silent update would leave `client-profiles.md` pointing at nothing, which is the original defect on fresh ground.
+
+**The invariant behind all of it:** anything the engagement repo references must resolve for someone holding only that repo plus their normal client access. That is why the policy is copied rather than linked — a cross-repo path resolves only on the machines that happen to have it, and fails *silently* while the authority note still reads authoritative.
+
+**`human-docs/Example-Client-AI-Policy.md` is now a shape template, not a slot.** No client policy is ever reproduced into this repository: it is public and gets copied into other clients' repos. `README.md`, root `AGENTS.md`, and the developer guideline's Appendix A were re-pointed at the engagement repo to match.
+
+The proposal this came from, with the argument and the alternatives, is [`docs/proposals/client-material-topology.md`](./docs/proposals/client-material-topology.md) — now marked superseded rather than edited to match. Why no new Layer B scenario is owed, and the three Layer A rows added instead (A2.13, A3.13, A3.14), are in [`testing/run-log.md`](./testing/run-log.md), *Package change of 2026-08-28*.

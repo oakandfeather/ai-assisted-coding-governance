@@ -61,7 +61,7 @@ Delete the `## Sample profile` section outright. Rewrite the `## Active client p
 *(none yet)* — **this repo has no client profile.** Do not infer the client's rules from anything here; ask the engagement lead. Per `core-rules.md` §8, treat the client's data as sensitive by default until a profile exists.
 ```
 
-Leave the paragraph beginning "Add each client as `client-profiles/<client>.md`" — it is generic guidance and still applies.
+Leave **every paragraph from "Add each client as `client-profiles/<client>.md`" onward** — the field list and scope test, and the paragraph on where the client's own policy lives and how two profiles compose. Both are generic guidance and still apply. There is more than one; keep them all.
 
 ### 5. Fill the placeholders
 
@@ -82,19 +82,32 @@ Interview the user for each italicized `*(placeholder)*` in the new `AGENTS.md` 
 
 ### 6. Onboard the client profile
 
-Fill the **Active client** line in the new `AGENTS.md`, then author that client's profile. This is the step that makes the package specific to the engagement; without it the repo is scaffolded but unconfigured.
+Fill the **Active client** line in the new `AGENTS.md` — one client, or a list of them — then author each client's profile. This is the step that makes the package specific to the engagement; without it the repo is scaffolded but unconfigured. **Everything below repeats per client**, derivation included: one policy per profile. Where two active profiles then disagree, the composition rule in `ai-governance/client-profiles.md` governs.
 
-**First ask whether the client has its own AI policy.** If they do, it is the **upstream authority** — the profile summarizes it, and where the two differ the policy governs. Work from the document rather than from recollection of it, and reconcile the profile against the policy, never the reverse. If they don't, interview for the rules directly.
+**First ask whether the client has its own AI policy — and where the document is.** If they do, it is the **upstream authority**: the profile summarizes it, and where the two differ the policy governs. Nothing in this package tells you where a client's policy lives, so ask for it explicitly — a path in the target repo, a path elsewhere on disk, a URL, or a paste into the conversation. Work from the document rather than from recollection of it, and reconcile the profile against the policy, never the reverse. If no policy is available, say so and interview for the rules directly, recording in the hand-off that the profile is interview-sourced.
+
+**Reproduce the policy at `ai-governance/client-policies/<client>.md`.** Create that directory here; it is deliberately **not** in the step 2 copy table, because it holds the client's own material rather than the package's. Copy the text verbatim, under its own title and version. The copy is what makes the profile's authority note resolve for anyone holding only this repo — a path to a document on somebody else's machine fails *silently*, while the note still reads authoritative.
+
+**Cite-only fallback.** When the client permits citation but not copying, write no policy file. The profile's authority note then carries the title, the version or date, and the client's canonical URL, and says plainly that the full text sits with the engagement lead. That is a smaller claim, honestly labelled — the same discipline as "never invent a client rule" below, without discarding what you legitimately know.
+
+**Derive the profile from the policy, then interview for the rest.** With a policy in hand, extract the fields below **from it first**, and interview only for what it does not cover. Summarizing a governing document is precisely where an unsupported rule gets written down and thereafter reads as authoritative, so:
+
+- **Cite what each field came from** — the policy section it was derived from — and **pin the version** in the authority note (title plus version or date). When the client revises the policy, the profile's staleness becomes visible instead of theoretical. This is also what makes the cite-only path safe.
+- **Silence is not permission.** A field the policy does not address is marked *not addressed by the policy* and asked about — never filled in from general knowledge, and never from the sample profile. If the user cannot supply it either, leave it unfilled and say that `core-rules.md` §8 governs that field.
+- **A URL you cannot fetch is not a policy you have read.** Most client policies sit behind SSO. If retrieval fails, that is the same outcome as no document at all: interview, and record the URL as an unverified upstream. Never summarize a document you did not open — `ai-governance/writing-rules.md` §§1–2 bind here, and a derived profile that outruns its source suppresses §8's fail-safe exactly as an invented one does.
+- **The human confirms the derivation before you write it.** A profile derived from a document nobody reviewed is governance nobody approved. This step is already an interview; the confirmation costs one exchange.
 
 **Interview for these** (the field list `ai-governance/client-profiles.md` already names):
 
-- **Permitted AI tools** — and whether a specific approved/enterprise instance is required.
+- **Tool rules — the behavioral residue only.** What the client's tool rules require of an agent *already running*: whether an approved or enterprise instance is required for their data, whether vendor training on client code or data is prohibited, and that you may not accept an AI tool's terms on the client's behalf. The approved-tool roster and the procurement path stay in the human guideline — an agent already running cannot act on which tool was approved.
 - **Data rules** — the client's data classification, and what may never reach an AI tool.
-- **Disclosure** — whether AI involvement must be noted in commits/PRs/design docs.
+- **Disclosure** — whether AI involvement must be noted in commits/PRs/design docs, and in what format.
 - **Compliance regimes** — e.g. FERPA, HIPAA, GLBA, PCI-DSS, GDPR; plus any public-records exposure.
 - **Escalation** — the engagement lead and the client's security contact for suspected exposure.
 
-**Author `ai-governance/client-profiles/<client>.md`** following the shape of `example-university.md` in the governance repo: title, a short authority note naming the upstream policy, tight imperative bullets, a closing reference line. Read that file for its **shape** — do not copy its content, which belongs to a fictional client. Keep the profile to what changes an agent's behavior; procurement and org detail belong in the human guideline, not here. Then link the profile from the copied `ai-governance/client-profiles.md` under `## Active client profiles`.
+**Author `ai-governance/client-profiles/<client>.md`** following the shape of `example-university.md` in the governance repo: title, a short authority note naming the upstream policy, tight imperative bullets, a closing reference line. Read that file for its **shape** — do not copy its content, which belongs to a fictional client. Then link the profile from the copied `ai-governance/client-profiles.md` under `## Active client profiles`.
+
+**Derive, don't transcribe — apply the scope test to every candidate line: does this change what an agent does on a task?** A policy document is long and sectioned, and deriving five fields from it invites wholesale copying. **Cut:** approved-tool rosters and procurement paths, governance bodies and policy owners, review cadences, contract terms and signing authority, org and committee structure, the policy's rationale and background prose, and anything that merely restates `core-rules.md` — a profile repeating "don't hardcode secrets" because the client's policy says so breaks the one-rule-one-owning-file discipline. **Keep:** the data classification and what may never reach a tool, the hard never-with-AI list, the disclosure format, the compliance regimes, the accessibility standard, the escalation contact — an agent that stops needs a name — and the behavioral residue of the tool rules. **Length is the cheap signal:** a derived profile materially longer than `example-university.md` means transcription, not derivation.
 
 **Never invent a client rule.** This fallback is the opposite of step 5's. There, an unfilled placeholder is the safe outcome — it signals "unconfigured, ask." Here the safe outcome is **no profile file at all**, because `core-rules.md` §8 only fails safe when the profile is *absent*: it then treats the client's data as sensitive by default. A guessed or half-authored profile looks authoritative, suppresses that fail-safe, and is worse than nothing. So if the client's rules cannot be established and the user cannot supply them: write no profile, leave the empty state from step 4 in place, and tell the user plainly that `core-rules.md` §8's sensitive-by-default governs until someone raises it with the engagement lead.
 
@@ -120,7 +133,8 @@ Report:
 
 - Files copied, placeholders filled, and placeholders **left unfilled** — call these out explicitly, they are open work.
 - **Whether a human-facing README/CONTRIBUTING pointer was added** (step 7), or declined.
-- **Whether a client profile was authored, and from what source** — the client's own policy document, an interview, or not at all. If not, say that `core-rules.md` §8's sensitive-by-default applies until one exists.
-- **The two-track follow-up.** This package is the agent-facing half. A new client profile also needs its human-facing counterpart in the governance repo's `human-docs/AI-Assisted-Coding-Developer-Guideline.md` (Appendix A), and the client's own policy reproduced in `human-docs/Example-Client-AI-Policy.md`. Report this as open work — don't write into the governance repo from here; that's a different repo and a different review.
+- **Whether a client profile was authored, and from what source** — the client's own policy document, an interview, or not at all. Name the policy by title and version if there was one, and say which fields it did not address. If no profile was authored, say that `core-rules.md` §8's sensitive-by-default applies until one exists.
+- **Whether the policy itself landed in the repo** — reproduced at `ai-governance/client-policies/<client>.md`, cited only (title, version, canonical URL in the profile's authority note), or absent because there is no policy. A cite-only install is a smaller claim than a reproduced one; say which the reviewer is looking at.
+- **The two-track follow-up.** This package is the agent-facing half. A new client profile also needs its human-facing counterpart in the governance repo's `human-docs/AI-Assisted-Coding-Developer-Guideline.md` (Appendix A). Report this as open work — don't write into the governance repo from here; that's a different repo and a different review. **The client's policy does not go there:** its home is this engagement repo's `ai-governance/client-policies/`, and the governance repo is a package, not a place client material accumulates.
 
 Tell the user to review and commit the result: this is governance the client's reviewers should see in a PR.

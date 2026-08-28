@@ -9,7 +9,7 @@ This repository provides policy and guidance for AI-assisted software developmen
 The same governance is maintained for two different readers - AI agents and people:
 
 - **[`ai-docs/`](./ai-docs/)** — for AI agents (coding and content work). Terse, imperative, rule-shaped. These are the files you copy into a client project.
-- **[`human-docs/`](./human-docs/)** — for people. Onboarding, the full developer guideline, and the authoritative client policy.
+- **[`human-docs/`](./human-docs/)** — for people. Onboarding, the full developer guideline, and the shape a client's own AI policy takes.
 
 Alongside them, **[`testing/`](./testing/)** holds the plan for verifying that this package actually works — that it installs correctly, and that its rules change how an agent behaves. It is a third directory rather than a third track: it ships to nobody and is not onboarding material. See [`testing/Governance-Test-Plan.md`](./testing/Governance-Test-Plan.md) for the plan and [`testing/coverage-matrix.md`](./testing/coverage-matrix.md) for what each scenario currently scores; the dated record behind both — every run, and every revision to the plan — is in [`testing/run-log.md`](./testing/run-log.md) and [`testing/test-plan-changes.md`](./testing/test-plan-changes.md).
 
@@ -157,7 +157,7 @@ One thing no path can do: a repo scaffolded before the `ai-governance/` restruct
 
 > **client profile > `core-rules.md` > `coding-rules.md` / `writing-rules.md` / `database-rules.md` > `coding-patterns.md` / `writing-patterns.md` / `agent-workflow.md` > project entry file** *(`AGENTS.md` / `CLAUDE.md`)*
 
-The stricter rule always wins. Above all of it sits the client's own AI policy, where they have one: it is the upstream authority and controls where anything here conflicts with it. Reproduce it in [`human-docs/Example-Client-AI-Policy.md`](./human-docs/Example-Client-AI-Policy.md), which explains the slot and what such a policy covers.
+The stricter rule always wins. Above all of it sits the client's own AI policy, where they have one: it is the upstream authority and controls where anything here conflicts with it. It is reproduced into **the engagement repo**, at `ai-governance/client-policies/<client>.md` beside the profile that summarizes it — or cited by title, version, and canonical URL in that profile when the client will not permit its text in their repo. **Client material never lands in this repository**, which is public and gets copied into other clients' repos; [`human-docs/Example-Client-AI-Policy.md`](./human-docs/Example-Client-AI-Policy.md) holds the shape such a policy takes, not a copy of one.
 
 The client profiles ship with one **sample** profile — Example State University, a fictional public university — to show the expected shape. It is not a live client; replace it with the real thing.
 

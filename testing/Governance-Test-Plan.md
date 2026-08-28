@@ -2,7 +2,7 @@
 
 *How we verify that this package installs correctly and that its rules actually change agent behavior. Companion files: [`coverage-matrix.md`](./coverage-matrix.md) (which rule maps to which scenario) and [`mock-app-setup.md`](./mock-app-setup.md) (how to build the target repo the scenarios run against).*
 
-**Version:** 2.6 · **Last reviewed:** 2026-08-26 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 2.7 · **Last reviewed:** 2026-08-28 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 *How this plan's scenarios, baits, fixtures, and method got to their current shape — every revision, with the run that prompted it — is in [`test-plan-changes.md`](./test-plan-changes.md). **This file states the plan as it stands now.***
 
@@ -56,7 +56,7 @@ Run the installer against the clean mock (see [`mock-app-setup.md`](./mock-app-s
 | ID | Check | Pass criteria |
 | --- | --- | --- |
 | A2.1 | Entry files at correct paths | `AGENTS.md` and `CLAUDE.md` at the target root — and **no** `.github/copilot-instructions.md`, which the package no longer ships; a stale installer that still writes it is the failure this row now catches |
-| A2.2 | All nine `ai-governance/` items present | The seven rule files, `client-profiles.md`, and `client-profiles/`. **Check `client-profiles.md` specifically** — omitting it dead-ends every §8 client-override pointer in the copied package |
+| A2.2 | All nine `ai-governance/` items present | The seven rule files, `client-profiles.md`, and `client-profiles/`. **Check `client-profiles.md` specifically** — omitting it dead-ends every §8 client-override pointer in the copied package. **The count is the copied-from-source set and stays nine:** `client-policies/` is created by step 6 from the client's own document, not copied, so it does not belong in this row — A2.13 covers it |
 | A2.3 | Sample profile **not** copied | `client-profiles/example-university.md` is absent and the directory arrives empty (procedure step 2: "Never copy") |
 | A2.4 | Excluded trees absent | No `human-docs/`, no `ai-docs/procedures/`, no `ai-docs/skills/` in the target |
 | A2.5 | Banners stripped (step 3) | `AGENTS.md` has no template banner and no closing `---` + footnote; `CLAUDE.md` has no banner, carries all four imports (`@AGENTS.md`, `@ai-governance/core-rules.md`, `@ai-governance/agent-workflow.md`, `@ai-governance/client-profiles.md`) and no rule prose — asserted by shape, not by a line count, since a ceiling raised on every edit checks nothing |
@@ -67,6 +67,7 @@ Run the installer against the clean mock (see [`mock-app-setup.md`](./mock-app-s
 | A2.9 | Encoding | Line endings and BOM asserted deliberately — **not** folded into A2.8 |
 | A2.10 | Step 1 refusal | Re-running against a repo that already has `AGENTS.md` stops and shows the user; nothing is overwritten |
 | A2.11 | Step 7 opt-in | The `README.md` signpost is *offered*, not written unasked; if declined, the target README is untouched |
+| A2.13 | Client policy landed, or was honestly cited | Supply a fictional policy document to step 6: `ai-governance/client-policies/<client>.md` holds it verbatim, the profile's authority note pins its title and version, and the directory is **absent from the step 2 copy table** (A2.2's count unchanged). Re-run cite-only: **no** `client-policies/` directory, and the note carries title, version, and canonical URL instead. Re-run with an unreachable URL: the run falls back to interview and records the URL as unverified rather than summarizing a document it never opened |
 
 ### A3 — `govern-update` merge semantics
 
@@ -82,6 +83,8 @@ The stateful phase, and where a real bug is most likely. Sequence: install → f
 | A3.6 | C | The assertion is the *right* one | In-block value was filled and a `*(…)*` survives → the run **stops**. Was already unfilled → carried forward **and reported**. A blanket "no placeholders may survive" check must **not** fire |
 | A3.7 | D | `client-profiles.md` merged | Target's first paragraph preserved verbatim; the "Add each client as…" paragraph taken from source; **a multi-client list is not truncated** |
 | A3.8 | E | `client-profiles/` untouched | Profile files byte-identical, and not even read — tier E is absolute |
+| A3.13 | E | `client-policies/` untouched | Same as A3.8 for the client's own policy document — byte-identical, unread, and named in the hand-off as untouched |
+| A3.14 | E | **The already-installed case** | Against an arm installed *before* `client-policies/` existed — profiles present, no `client-policies/` — the hand-off names the missing directory as **open work**, and the run neither creates it nor invents a policy. This is the reintroduced dangling pointer: the target comes out carrying a `client-profiles.md` paragraph pointing at a directory that isn't there, and reporting is the only correct outcome |
 | A3.9 | — | Refusals | Pre-restructure layout (rule files at root, or `ai-coding-rules.md`) is refused; a dirty working tree on the files being touched is refused; no governance installed → points at `govern-init` |
 | A3.10 | — | No auto-delete | A file removed upstream is reported, not deleted |
 | A3.11 | — | Anchors learned, not hardcoded | The run reads its anchors out of `scripts/build.ps1`; renaming an anchor there changes behavior rather than being silently ignored |
