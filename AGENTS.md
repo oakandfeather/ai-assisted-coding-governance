@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Version:** 1.28 · **Last reviewed:** 2026-08-28 · **Active client:** none (internal repository)
+**Version:** 1.30 · **Last reviewed:** 2026-08-28 · **Active client:** none (internal repository)
 
 Guidance for AI agents working in this repository — the source repo for the AI-assisted coding governance package. This repo applies its own rules to itself.
 
@@ -66,7 +66,7 @@ Report verification results honestly in the hand-off: what you ran, and what act
 The same governance content is maintained in two parallel tracks for two readers:
 
 - **`ai-docs/`** — files meant to be *consumed by coding agents* and dropped into a target project. Terse, imperative, rule-shaped.
-- **`human-docs/`** — the *human-facing* version of the same guidance: onboarding, the full developer guideline, and the authoritative client policy.
+- **`human-docs/`** — the *human-facing* version of the same guidance: onboarding, the full developer guideline, and the shape a client's own AI policy takes.
 
 `README.md` at the root is the entry point for both: it states the two tracks, the exact file set to copy into a target repo, and the precedence rule. It points at the owning files rather than restating them — keep it that way.
 
@@ -156,23 +156,34 @@ The installer and updater are **procedures** — `ai-docs/procedures/govern-init
 
 **Neither the procedures nor the launchers are part of the installed package.** Like `human-docs/`, they stay in this repo; the build scripts do not copy them, and `govern-init` step 2 excludes them explicitly.
 
+## Client material: two sources, and the invariant between them
+
+**No client material ever enters this repository.** It is public, and it gets copied into other clients' repos — one client's policy landing here would travel to every other client. The sample profile under `ai-docs/client-profiles/` is fictional, and `human-docs/Example-Client-AI-Policy.md` is a shape template, not a copy of anything.
+
+Client material lives in two places instead, and `ai-docs/procedures/govern-init.md` reads from both:
+
+- **The engagement repo** — the profile at `ai-governance/client-profiles/<client>.md` and the client's own policy at `ai-governance/client-policies/<client>.md`, or a citation in the profile's authority note when the client will not permit the text in their repo. **`client-policies/` is authored by `govern-init` step 6, not copied from source**, which is why the copied-from-source count stays at nine `ai-governance/` items — don't "fix" it into the step 2 copy table.
+- **An optional private client overlay** — a separate private repo of `clients/<client>/profile.md` and `clients/<client>/policy.md`, and **never a rule file**, so a client appearing in several engagement repos is interviewed once. Resolved via `$AI_GOVERNANCE_CLIENTS_PATH`; a missing one is not a stop, unlike a missing source package.
+
+**The load-bearing invariant:** *the overlay is a source the installer reads **from**, never a location an installed repo points **at**.* Anything the engagement repo references must resolve for someone holding only that repo plus their normal client access. That is why the policy is copied in rather than linked — a cross-repo path resolves only on the machines that happen to have the overlay, and fails **silently**, with the authority note still reading authoritative. It is also why `govern-update` must *report* a target that has profiles but no `client-policies/` rather than creating one: nothing else will ever create it, and a pointer to a directory that isn't there is the defect this whole arrangement fixed.
+
 ## The precedence rule (the single most important invariant)
 
 Strictness composes in a fixed order, and all the documents restate it:
 
 > **client profile > `core-rules.md` > `coding-rules.md` / `writing-rules.md` / `database-rules.md` > `coding-patterns.md` / `writing-patterns.md` / `agent-workflow.md` > project entry file** (`AGENTS.md` / `CLAUDE.md`) — where a client profile is stricter, it governs; where a rules file is stricter than project guidance, it wins; the stricter rule always wins.
 
-Above all of it sits the client's own AI policy, where they have one: it controls where it conflicts with anything here, and `human-docs/Example-Client-AI-Policy.md` is the slot it gets reproduced into. When a real client policy lands in that file, treat it as the source of truth and reconcile every profile against it — not the reverse.
+Above all of it sits the client's own AI policy, where they have one: it controls where it conflicts with anything here. **It is reproduced into the engagement repo** — `ai-governance/client-policies/<client>.md`, written there by `govern-init` step 6 — or cited in the profile's authority note by title, version, and canonical URL when the client will not permit its text in their repo. Treat that copy as the source of truth and reconcile every profile against it, not the reverse. **No client policy is ever reproduced into this repository:** it is public and gets copied into other clients' repos, so `human-docs/Example-Client-AI-Policy.md` holds the *shape* such a policy takes and nothing belonging to a client.
 
 ## human-docs mapping
 
 - **`AI-Coding-Onboarding-One-Pager.md`** — the 5-minute summary; a condensation of the developer guideline.
-- **`AI-Assisted-Coding-Developer-Guideline.md`** — the full internal standard; its Appendix A holds the per-client profiles (a sample client is filled in as the worked example).
-- **`Example-Client-AI-Policy.md`** — a **stub**, not a policy: it marks where a client's own AI policy gets reproduced, explains why it's reproduced rather than linked, and outlines what such a policy covers. There is no upstream policy behind the sample client.
+- **`AI-Assisted-Coding-Developer-Guideline.md`** — the full internal standard; its Appendix A holds the **shape** of a client profile and the worked ESU example. Live profiles are not maintained there — they live in each engagement repo (and optionally in a private client overlay); see *Client material* above.
+- **`Example-Client-AI-Policy.md`** — a **shape template**, not a policy and not a slot: it says where a client's policy actually lives (the engagement repo's `ai-governance/client-policies/`, or cited-only in the profile), why it is reproduced there rather than linked, and what such a policy covers. There is no policy text behind the sample client — ESU models the cite-only shape.
 
 **There are no live client profiles in the package — every profile under `ai-docs/client-profiles/` is a sample.** The sample client is **Example State University (ESU)**, a fictional public university invented to show a profile's expected shape. It is deliberately a *public university* so the example carries the instructive parts: three data levels, FERPA/HIPAA, open-records exposure, mandatory accessibility. Keep it fictional. Do not name a real client, a real vendor's product, or real contact details anywhere in it — this package gets copied into other clients' repos. Reserved-for-fiction identifiers only (`example.edu`, `555-01xx`).
 
-The sample profile's content lives in **three** places (`ai-docs/client-profiles/example-university.md`, the guideline's Appendix A, and the one-pager's parenthetical) — `ai-docs/client-profiles.md` only points at the first by name, and `ai-docs/CLAUDE.template.md` doesn't mention it at all, since both are part of the generic package copied into other clients' repos. A substantive change to the sample's rules needs to land in all three content locations. When a real client profile replaces it, that profile must additionally be reconciled against the client's policy reproduced in `human-docs/Example-Client-AI-Policy.md`.
+The sample profile's content lives in **three** places (`ai-docs/client-profiles/example-university.md`, the guideline's Appendix A, and the one-pager's parenthetical) — `ai-docs/client-profiles.md` only points at the first by name, and `ai-docs/CLAUDE.template.md` doesn't mention it at all, since both are part of the generic package copied into other clients' repos. A substantive change to the sample's rules needs to land in all three content locations. When a real client profile replaces it, that profile must additionally be reconciled against the client's policy as reproduced in that engagement repo's `ai-governance/client-policies/` — never in this repo.
 
 ## The `build/` reference snapshot
 

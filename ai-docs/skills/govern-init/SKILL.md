@@ -15,7 +15,17 @@ The package lives in the governance repo (`ai-docs/`). Find it in this order:
 2. `$AI_GOVERNANCE_PATH` if set.
 3. Ask. **Do not reconstruct the rule files from memory** — a paraphrased safety rule is not the safety rule. If you cannot find the source package, stop and say so.
 
-## 2. Read the procedure and follow it
+## 2. Locate the client overlay, if there is one
+
+Some teams keep client masters in a **private overlay repo** — `clients/<client>/profile.md` and `clients/<client>/policy.md`, and no rule files. Find it in this order:
+
+1. A path the user gives you.
+2. `$AI_GOVERNANCE_CLIENTS_PATH` if set.
+3. Prompt for it, and offer to persist it — `[Environment]::SetEnvironmentVariable('AI_GOVERNANCE_CLIENTS_PATH', <path>, 'User')` on Windows, a line in the shell profile on macOS/Linux, the same two forms `README.md` documents for `$AI_GOVERNANCE_PATH`.
+
+**A missing overlay is not a stop.** It is optional, and most engagements have none. Say there is no overlay and carry on — the procedure interviews for the client's rules instead. Do not carry step 1's "stop and say so" posture over to this one; that posture exists because the *rule files* cannot be reconstructed, and nothing here is a rule file.
+
+## 3. Read the procedure and follow it
 
 Read `ai-docs/procedures/govern-init.md` from the resolved source, and **follow it exactly**. It is the whole procedure — the file set, the banner stripping, the placeholder interview, the client-profile authoring, and the hand-off. Nothing in this launcher supersedes it.
 

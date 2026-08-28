@@ -4,7 +4,7 @@ Refreshes an installed governance package in place. This procedure **copies and 
 
 **How this is run.** Follow it directly, start to finish. Either run `/govern-update` in Claude Code, or hand any other coding CLI — Codex CLI, the Copilot CLI — the path to this file and tell it to read the file and follow it exactly. Nothing here needs a tool or a tool-specific feature: every step is reading files, writing files, comparing them, and asking the user before each tier lands.
 
-**The whole difficulty of this procedure is that `govern-init` forks part of the package at install time.** The portable rule files are upstream's and can be replaced. But the target's `AGENTS.md` carries ~27 filled placeholders describing *that* project, `ai-governance/client-profiles.md` carries *that* engagement's active-client pointer, and `ai-governance/client-profiles/` carries client-authored profiles. An update that overwrites those is a regression, not an update — it turns a configured repo into one that reads as unconfigured. Know which tier every file is in before you write anything.
+**The whole difficulty of this procedure is that `govern-init` forks part of the package at install time.** The portable rule files are upstream's and can be replaced. But the target's `AGENTS.md` carries ~27 filled placeholders describing *that* project, `ai-governance/client-profiles.md` carries *that* engagement's active-client pointer, and `ai-governance/client-profiles/` and `ai-governance/client-policies/` carry client-authored profiles and the clients' own policy documents. An update that overwrites those is a regression, not an update — it turns a configured repo into one that reads as unconfigured. Know which tier every file is in before you write anything.
 
 ## Source package
 
@@ -41,9 +41,11 @@ Adopt `build.ps1`'s failure posture too — **if an anchor is not found in the f
 | **B — banner-stripped** | `CLAUDE.md` | Re-derive from the template (slice the banner per step 2), then replace — but diff first, and gate it separately. See below. |
 | **C — merge** | `AGENTS.md` | Replace **only** the mandatory-rules block. See step 5. |
 | **D — merge** | `ai-governance/client-profiles.md` | Preserve the active-client paragraph. See step 6. |
-| **E — never touch** | `ai-governance/client-profiles/*.md` | Leave alone entirely. Report as untouched. |
+| **E — never touch** | `ai-governance/client-profiles/*.md`, `ai-governance/client-policies/*.md` | Leave alone entirely. Report as untouched. |
 
-**Tier E is absolute.** These files are client-authored and often summarize a client's own AI policy. You do not need their contents to do this job, so do not read them — list them to report them and nothing more.
+**Tier E is absolute.** These files are client-authored: the profiles summarize a client's own AI policy, and `client-policies/` holds that policy itself, reproduced verbatim. You do not need their contents to do this job, so do not read them — list them to report them and nothing more.
+
+**A target with profiles but no `client-policies/` is open work you must report.** `client-policies/` is created by `govern-init` step 6, not copied from source, so the "added upstream" handling below will never produce it — and every repo installed before it existed has none. Such a repo now carries a `client-profiles.md` paragraph pointing at `client-policies/<client>.md` with no such directory: a pointer that resolves to nothing, in the file whose job is resolving the override chain. So check for it, and if `ai-governance/client-profiles/*.md` exists while `ai-governance/client-policies/` does not, say so in the tier-D hand-off as open work — supply the policy, or convert the profile's authority note to the cite-only shape (title, version, canonical URL). **Do not create the directory and do not write a policy into it.** Reporting is the whole job here; silence is the one unacceptable outcome.
 
 **Write every file with the line endings it already has.** Read the target file, keep its convention (CRLF or LF), and write the replacement back the same way. This sounds cosmetic and is not: normalizing line endings rewrites *every line of every file you touch*, so a change of a few lines lands as a diff of several hundred. Step 7 tells the user to review that diff because it is the audit trail for when the rules changed — a whole-file diff destroys the thing this procedure asks them to read. For the same reason, when you compare a target file against the incoming one to decide whether it changed, **compare after normalizing line endings**, or a file that is byte-for-byte current will look modified and every run will ask you to approve a diff with nothing in it.
 
@@ -96,10 +98,10 @@ A blanket "no placeholders may survive" check is wrong here, and gets this backw
 
 ### 6. Tier D — merge `ai-governance/client-profiles.md`
 
-Under `## Active client profiles` there are two paragraphs, and they have different owners:
+Under `## Active client profiles` the paragraphs have different owners:
 
 - **The first paragraph is the target's** — the engagement's client list, or the honest "no profile yet" empty state. **Preserve it verbatim.** This is the pointer that makes `core-rules.md` §8's client-override chain resolve; overwrite it and either the client's rules stop being findable, or a repo with no profile starts claiming one.
-- **The paragraph beginning "Add each client as…" is the package's** generic guidance. Take it from the source.
+- **Every paragraph from "Add each client as…" onward is the package's** generic guidance — the field list and scope test, and the paragraph on where the client's own policy lives and how two profiles compose. There is more than one; take them all from the source, or an update silently drops the newer ones.
 
 **Locate the target's region by its two bounding anchors — not by `build.ps1`'s.** `build.ps1` finds this paragraph in the *source* by the literal `*(none yet)*`, and that string is correctly **absent** from any configured target, where the region instead begins `- **<Client>**:`. Search a configured repo for `*(none yet)*` and you will halt a perfectly valid update. Instead take everything **between the `## Active client profiles` heading and the paragraph beginning "Add each client as"**. Both anchors are stable, and the span survives a multi-client list with blank lines between entries — which "the first paragraph, up to the next blank line" would silently truncate, dropping clients out of the override chain.
 
@@ -111,7 +113,7 @@ Report, per tier:
 
 - **Updated** — which files, with their `Version:` deltas.
 - **Merged** — for `AGENTS.md` and `client-profiles.md`: what was replaced, and explicitly **what was preserved** (the active-client value, the project sections, the client list, and any legacy header field the current template no longer defines). State that the placeholder check passed.
-- **Untouched** — name `ai-governance/client-profiles/` and its files explicitly. Reviewers need to see that client content was not in scope.
+- **Untouched** — name `ai-governance/client-profiles/` and `ai-governance/client-policies/` and their files explicitly. Reviewers need to see that client content was not in scope. If the target has profiles but no `client-policies/`, report that as open work here too (see tier E).
 - **Still unconfigured** — if the target's `Active client` or its active-profiles paragraph was unfilled, say so plainly. The rules are now current, but the repo has no client profile, so `core-rules.md` §8's sensitive-by-default governs until someone authors one. This is open work, not a clean result.
 - **Added / removed upstream** — including anything you refused to delete and why.
 - **Anything that stopped the run** — a missing anchor, a legacy layout, a dirty working tree, a stale source clone, or a stale launcher that halted before this file was reached. Say what you did not do.

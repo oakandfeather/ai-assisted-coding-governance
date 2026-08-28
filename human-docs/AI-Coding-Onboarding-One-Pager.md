@@ -2,7 +2,7 @@
 
 *The 5-minute version. Read the full **Developer Guideline: Using AI for Client Coding Work** before your first client task, and check the client profile for whichever account you're on.*
 
-**Version:** 1.10 · **Last reviewed:** 2026-08-24 · **Review cycle:** Versioned and reviewed in step with the developer guideline it condenses — the version number tracks that guideline's, so a reader can tell at a glance which edition this summarizes.
+**Version:** 1.11 · **Last reviewed:** 2026-08-28 · **Review cycle:** Versioned and reviewed in step with the developer guideline it condenses — the version number tracks that guideline's, so a reader can tell at a glance which edition this summarizes.
 
 ---
 
@@ -19,7 +19,7 @@
 ## Know the client's rules first
 Every client has different constraints. Before you write a line, check the **client profile** for: which tools are allowed, what data you can share, disclosure/IP/training terms, and compliance regime. When the client's policy is stricter than ours, **the client's policy wins.** (The sample profile in the guideline shows a strict one — three data levels, hard "never with AI" list for FERPA/HIPAA/PII, disclosure expected, accessibility mandatory.)
 
-**And check the repo is governed.** The rules your AI tools follow are installed *in the engagement repo* — **two** entry files at the root, `AGENTS.md` and `CLAUDE.md`, plus an `ai-governance/` directory beside them holding the rules and the client profile in the form the agent reads. Both entry files matter: Claude Code reads `CLAUDE.md` and every other supported CLI reads `AGENTS.md`, so a repo with only one of them is ungoverned for half your tools. Missing or stale? Get them installed before you start. Nothing binds an agent that never loaded them.
+**And check the repo is governed.** The rules your AI tools follow are installed *in the engagement repo* — **two** entry files at the root, `AGENTS.md` and `CLAUDE.md`, plus an `ai-governance/` directory beside them holding the rules, the client profile in the form the agent reads, and the client's own AI policy it summarizes (`client-policies/`, or a citation in the profile when the client won't have the text in their repo). Both entry files matter: Claude Code reads `CLAUDE.md` and every other supported CLI reads `AGENTS.md`, so a repo with only one of them is ungoverned for half your tools. Missing or stale? Get them installed before you start. Nothing binds an agent that never loaded them.
 
 ## The daily loop
 1. **Scope it yourself** — know the design before you prompt.
