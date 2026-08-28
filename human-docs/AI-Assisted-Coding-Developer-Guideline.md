@@ -185,7 +185,7 @@ ESU has its own AI-in-application-development policy; our team must comply with 
 - **Incident contact:** report suspected data exposure or AI-introduced vulnerabilities to the ESU IT Security Office (**itsec@example.edu**, **555-0142**) via the engagement lead, and follow ESU's incident-response process.
 - **Governance:** ESU IT, the ESU AI & Privacy Risk Council, Data Governance, and General Counsel own the policy; escalate exceptions rather than improvising.
 
-*Reference: the client's own AI policy — reproduced in the engagement repo at `ai-governance/client-policies/<client>.md`, or cited there by title, version, and canonical URL. [`Example-Client-AI-Policy.md`](./Example-Client-AI-Policy.md) holds the shape such a policy takes and why it lives in the engagement repo rather than here.*
+*Reference: ESU's own AI policy — "ESU Policy on AI in Application Development," v2.1 (2026-01-15), `policy.example.edu/ai-in-development`, pinned the same way in the agent-facing profile. It is reproduced in the engagement repo at `ai-governance/client-policies/<client>.md`, or — as here, ESU being cite-only — cited by title, version, and canonical URL. [`Example-Client-AI-Policy.md`](./Example-Client-AI-Policy.md) holds the shape such a policy takes and why it lives in the engagement repo rather than here.*
 
 ### Client profile: *(next client)*
 
