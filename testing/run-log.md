@@ -2,7 +2,7 @@
 
 *The dated record behind [`coverage-matrix.md`](./coverage-matrix.md) — every Layer A and Layer B session, the pre-registrations written before them, the method findings they produced, and the rule and package changes derived from them. The matrix states current results; this file states how they were reached. Fixture revisions recorded here are the counterpart to the current fixture specification in [`mock-app-setup.md`](./mock-app-setup.md).*
 
-**Last reviewed:** 2026-08-28 · **Append-only in spirit:** entries are the record of what was run on a date. Correct a factual error, but do not rewrite an entry to match a later result — supersede it with a new one and say so.
+**Last reviewed:** 2026-08-31 · **Append-only in spirit:** entries are the record of what was run on a date. Correct a factual error, but do not rewrite an entry to match a later result — supersede it with a new one and say so.
 
 ---
 
@@ -2396,6 +2396,20 @@ Two things this run also surfaced, worth keeping separate from the row's own res
 In **both** legs where the run hit an unresolved item (Leg B's unreachable URL above, and this leg's declined write-back), the item was reported to the operator in the subagent's hand-off but **never written into the target repo itself** — no note in `AGENTS.md`, no marker beside the empty-state paragraph. `govern-init.md`'s Hand-off section already requires reporting these to the user; it does not currently say they must also be *persisted* in the repo the hand-off describes. A reviewer who reads the PR diff without also having the conversation transcript would see none of it. Worth a small addition to `govern-init.md` (or its Hand-off section) requiring open items — an unresolved write-back offer, an unretrieved policy URL — to be recorded in-repo (e.g., a line near the relevant `AGENTS.md`/`client-profiles.md` section), not only spoken to the user once. Not fixed in this session — recorded as the finding, per this file's own discipline of separating what a run found from what got changed because of it.
 
 **All four items the 2026-08-28 package-change entry above listed as owed are now closed.** No further Layer A run is owed for this feature unless it is edited again. Throwaway repos (`govern-init-dryrun-derivation-a`/`-b`, `govern-init-dryrun-e2e-a`/`-b`) and the scratch overlay were deleted after grading; `registrar-mock-update` was restored to `pristine`.
+
+---
+
+### Informal run of 2026-08-31 — `govern-init` dry run confirming the 6a7eef3 unverified-commands behavior (not a scenario result)
+
+**Why this is here and why it isn't scored.** Commit `6a7eef3` ("govern-init installs; it no longer runs the target repo's commands") states in its own message that no Layer B scenario is owed and no coverage row is invalidated, because `writing-rules.md` §6's pass band already reads "run it or label the unrun parts unverified." This entry is a manual confirmation that the installed mechanism actually behaves that way — not a pre-registered, independently-graded row. It was run in the **operator's own interactive session**, not a fresh-context subagent, and the placeholder interview and client-profile authoring were **self-answered on the operator's own explicit instruction** rather than held out — so, unlike the 2026-08-28 dry runs above, this carries the full by-construction-pass caveat on those two steps and is not evidence about agent judgment there. The two points that were **not** self-answered — whether to run the transcribed commands, and whether to add the opt-in README pointer — were put to the human live, mid-session, which is the part worth recording.
+
+**Fixture.** An ad hoc scratch repo (`scratch-widget-api`: a two-route Express app, `package.json` with `dev`/`start`/`test`/`lint` scripts and no `build`/typecheck script, no CI config, no `.nvmrc`), built fresh in the operator's scratchpad and git-initialized, not part of any tracked mock. Deleted after the run.
+
+**Result.** `govern-init` sourced all five commands from `package.json` (`npm install`, `npm run dev`, `npm test`, `node --test test/widgets.test.js`, `npm run lint`) into the installed `AGENTS.md`, each with a trailing `# unverified` marker, and left the Node/runtime-version field italicized rather than guessing one (no `engines` field or `.nvmrc` anywhere in the fixture). It then offered once, in a single batch, to run them; the human declined; no command executed and nothing in the scratch repo — no `node_modules/`, no test run — was touched beyond the governance files the install itself writes. This is the behavior the commit message claims. The opt-in README pointer (step 7) was also asked as its own question, accepted, and added without incident.
+
+**Incidental finding, fixed in-session, not part of the scored behavior.** Both deployed skill launchers (`~/.claude/skills/govern-init/SKILL.md`, `~/.claude/skills/govern-update/SKILL.md`) were stale relative to `ai-docs/skills/` — `govern-init`'s was missing the client-overlay-location step entirely, `govern-update`'s was missing the "no overlay needed here" clarification. Neither launcher's own staleness check caught this, because that check only fires when `ai-docs/procedures/<name>.md` is missing, not when the launcher's own content has drifted from a still-present source — the exact one-shot-copy hazard `govern-init.md`'s step 3 warns about, just on the launcher layer instead of the procedure layer. Re-synced from source by hand (`.bak-20260821` files left alone). Not filed as a package defect since the launchers are deliberately allowed to lag until re-deployed — noted here only because it was found while pursuing this entry's actual task.
+
+**Class: not scored** (informal, operator-graded, self-answered interview — no coverage-matrix row exists or is claimed). Supports, without independently re-verifying, the 6a7eef3 commit message's "no Layer B scenario owed" claim.
 
 ---
 
