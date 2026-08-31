@@ -2,7 +2,7 @@
 
 *Every compression and deduplication pass over `ai-docs/`, and every re-measurement of it: what the pass took, what it declined, what it reverted, and what the numbers moved. [`context-cost.md`](./context-cost.md) states the current cost and the standing constraints; this file states how they were arrived at.*
 
-**Last reviewed:** 2026-08-25
+**Last reviewed:** 2026-08-31
 
 **Where the other half of the edit history lives.** This file holds package changes made for **context-window cost**. Package changes derived from **Layer B runs** — the rule edits answering a scored scenario — are in [`testing/run-log.md`](./testing/run-log.md), beside the runs that motivated them. A change can appear in both when it was made for one reason and measured for the other; say so rather than moving it.
 
@@ -84,3 +84,22 @@ The three non-floor rows each fell slightly despite the floor rising. Two effect
 **The floor arrived in two steps.** The installed `CLAUDE.md` began `@`-importing `core-rules.md` and `agent-workflow.md` on 2026-08-18, and the `client-profiles.md` index on 2026-08-20. Before that there was no floor on any CLI.
 
 **Two stale rows were found by re-measuring file by file rather than carrying figures forward** — the method note in `context-cost.md` exists because of it. See the pass write-ups above for which rows and by how much.
+
+### Re-measurement of 2026-08-31 — prompted by the `govern-init` install change, and it found four moved rows, two of them older than the edit
+
+The installer stopped requiring the target repo's commands to be executed (see [`CHANGELOG.md`](./CHANGELOG.md), 2026-08-31), which rewrote a paragraph in `ai-docs/procedures/govern-init.md` and the *Common commands* note in `ai-docs/AGENTS.template.md`. Both are measured rows, so the whole table was re-measured rather than the two rows patched — the method note's own instruction, and the reason it exists.
+
+**Moved by this edit:**
+
+- **entry file (`AGENTS.md`, placeholders filled)** — 1,006 → **1,091 words** (~1,850 → ~1,990 tokens). Paid in every session of every installed repo, which is why an ~85-word note earns a ledger line at all. It buys the marker convention that replaced the install-time test run.
+- **`procedures/govern-init.md`** — the edit added ~90 words. Not separable from the older movement below, because that row had not been re-measured since.
+
+**Already stale before this edit, and surfaced only by re-measuring:**
+
+- **`procedures/govern-init.md`** 2,069 → **3,505 words**, **`procedures/govern-update.md`** 2,749 → **2,955**, and both launchers (407 → 542, 428 → 473). Nearly all of that is the 2026-08-28 client-material change, which added the overlay, the policy reproduction, and the cite-only fallback to both procedures and both launchers. `/govern-init` as an operation went ~4,200 → **~6,700** tokens. It is a one-shot source-repo cost that reaches no target repo, so nothing in the scenario totals moves with it — but the figure was understated by more than half.
+- **`client-profiles.md` + one profile** 414 → **636 words** (~750 → ~1,120), same cause: the index gained the policy-location and profile-composition paragraphs. The index half of that *is* in the floor, so the floor moved with it.
+- **`CLAUDE.md`'s token estimate was an arithmetic slip**, not a drift: 181 words / 1,189 characters is ~300 tokens at 4 chars/token, not the ~150 the row carried. The word count was right throughout.
+
+**Floor ~9,650 → ~10,350**, and all four scenario totals moved with it (~13,450 → ~14,200 coding, ~15,500 → ~16,300 writing, ~14,200 → ~14,950 database, ~20,900 → ~21,750 everything).
+
+**The standing lesson holds a third time:** a table maintained by carrying figures forward goes stale silently, and the file that says *"nothing is carried forward on faith"* was, on 2026-08-31, carrying six rows on faith. No compression pass was run here and none is proposed — this is measurement only.

@@ -8,7 +8,7 @@
 >
 > **Last step.** Retitle the copy to `# AGENTS.md`, delete this banner — everything from the `(template)` title down to the `Version:` line — and delete the closing footnote at the bottom. Both describe the template rather than the project, and this banner's `../AGENTS.md` link does not resolve outside this repo.
 
-**Version:** 1.16 · **Last reviewed:** *(date)* · **Active client:** *(client name)*
+**Version:** 1.17 · **Last reviewed:** *(date)* · **Active client:** *(client name)*
 
 Guidance for AI agents working in this repository.
 
@@ -45,7 +45,7 @@ Guidance for AI agents working in this repository.
 
 ## Common commands
 
-*Fill these with commands actually run in this repo. A filled-in command is a claim about behavior — governed by [`writing-rules.md`](./ai-governance/writing-rules.md) §6 — and it is what every later agent here trusts instead of checking. Leave anything you could not run italicized rather than writing an unverified command.*
+*Fill these from this repo's own configuration — `package.json` scripts, the CI workflow, the `Makefile`, the contributor docs. A filled-in command is a claim about behavior — governed by [`writing-rules.md`](./ai-governance/writing-rules.md) §6 — and it is what every later agent here trusts instead of checking, so **mark any command nobody has actually run in this repo with a trailing `# unverified`** and drop the marker once someone runs it. Leave anything this repo doesn't source at all italicized rather than inventing a command.*
 
 ```bash
 # Install dependencies
@@ -69,7 +69,7 @@ Guidance for AI agents working in this repository.
 
 ## Verification contract — definition of done
 
-A change is **done** only when all of these hold (discipline: `ai-governance/agent-workflow.md` §3):
+A change is **done** only when all of these hold (discipline: `ai-governance/agent-workflow.md` §3). Same marker as the commands above: a gate nobody has actually run here ends `— unverified`, and loses that marker once someone runs it.
 
 - *(the full gate: e.g., `pnpm test && pnpm lint && pnpm build` exits 0 with no new warnings)*
 - *(what a clean run looks like: e.g., "N tests passed, 0 skipped" — note any known-flaky tests or pre-existing failures the agent should not chase)*

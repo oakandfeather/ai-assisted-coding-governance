@@ -2,7 +2,7 @@
 
 *How the package got its current **shape** — every change to what it ships, which files carry which body, and which tools it targets, with the date and the reasoning behind it. [`AGENTS.md`](./AGENTS.md) and [`README.md`](./README.md) state the shape as it stands now; this file states what it used to be and why it changed.*
 
-**Last reviewed:** 2026-08-28
+**Last reviewed:** 2026-08-31
 
 ## What belongs here, and what does not
 
@@ -71,3 +71,13 @@ The five B-D scenarios shipped blank and were run the same week, so `coverage-ma
 **`human-docs/Example-Client-AI-Policy.md` is now a shape template, not a slot.** No client policy is ever reproduced into this repository: it is public and gets copied into other clients' repos. `README.md`, root `AGENTS.md`, and the developer guideline's Appendix A were re-pointed at the engagement repo to match.
 
 The proposal this came from, with the argument and the alternatives, is [`docs/proposals/client-material-topology.md`](./docs/proposals/client-material-topology.md) — now marked superseded rather than edited to match. Why no new Layer B scenario is owed, and the three Layer A rows added instead (A2.13, A3.13, A3.14), are in [`testing/run-log.md`](./testing/run-log.md), *Package change of 2026-08-28*.
+
+## 2026-08-31 — `govern-init` installs; it no longer runs the target repo's commands
+
+Step 5 of the installer required the agent to **execute** every command it wrote into the new `AGENTS.md` — install, run, test-all, single-test, lint, build, and the verification gate — before writing it in. So copying eleven Markdown files into a repo also ran that repo's dependency install, test suite, and build, on a toolchain the installer has no reason to assume is there, and fired seed- and migrate-class side effects nobody had asked for. That is the confirm-before-acting gate in `core-rules.md` §5 being spent by a procedure step rather than by the human.
+
+**What the installer does now:** it sources each command from the repo's own configuration — `package.json` scripts, the CI workflow, the `Makefile` — writes it in **marked `unverified`**, and then offers **once**, opt-in and defaulting to no, to run them. A declined or unanswered offer is a normal install. `ai-docs/AGENTS.template.md` (v1.17) carries the same convention from the other side, for whoever fills the file later.
+
+**The finding that put the run requirement there is still carried — by the marker, not by the run.** A 2026-08-15 Layer B attempt found the governed mock's own scaffolded `AGENTS.md` carrying an unverified worked invocation, and an agent trusting it over re-verifying; the measurement is in [`testing/run-log.md`](./testing/run-log.md) (*Attempt of 2026-08-15 — B-W6*) and is not restated here. The harm there is an unverified command **presented as verified**, which the marker fixes at lower cost — and the marker goes in the installed file rather than in the install hand-off, because the next agent reads `AGENTS.md` and never sees the transcript.
+
+**`writing-rules.md` §6 is unchanged.** Its pass band already reads *run it **or** label the unrun parts unverified*, so this uses the second branch rather than weakening the first. No rule file moved, so no Layer B scenario is owed and no row is invalidated.
