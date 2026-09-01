@@ -2,7 +2,7 @@
 
 **Applies to:** All engineers, contractors, and subcontractors who write, review, or ship code for client engagements
 **Status:** Internal standard
-**Version:** 1.11 · **Last reviewed:** 2026-08-28
+**Version:** 1.12 · **Last reviewed:** 2026-09-01
 **Review cycle:** Reviewed quarterly and whenever a client's AI terms change
 
 > **Read this first.** You are coding on behalf of clients, using their data, building their intellectual property, under their rules. AI tools make you faster, but they also make it easy to leak a client's data, ship insecure code under their name, or contaminate their codebase with badly-licensed material. This guideline is how we get the speed without the liability. When a client's own policy is stricter than this document, **the client's policy wins** — see the client profiles in Appendix A.
@@ -166,7 +166,7 @@ For a suspected data exposure or security issue, escalate immediately — same-d
 
 ## Appendix A — Client profiles
 
-> **This appendix is the shape and the worked example, not the register of live profiles.** A live profile is maintained in the **engagement repo**, at `ai-governance/client-profiles/<client>.md`, beside the client's own policy at `ai-governance/client-policies/<client>.md` — that is where an agent reads it and where a reviewer sees it in a PR. Teams working one client across several repos may also keep a master in a private client overlay, so the client is interviewed once rather than re-derived per repo. Either way, fill a profile in from the client's contract and policies before starting work, and keep it to what changes how the work is done.
+> **This appendix is the shape and the worked example, not the register of live profiles.** A live profile is maintained in the **engagement repo**, at `ai-governance/client-profiles/<client>-profile.md`, beside the client's own policy at `ai-governance/client-policies/<client>-policy.md` — that is where an agent reads it and where a reviewer sees it in a PR. Teams working one client across several repos may also keep a master in a private client overlay, so the client is interviewed once rather than re-derived per repo. Either way, fill a profile in from the client's contract and policies before starting work, and keep it to what changes how the work is done.
 
 ### Sample profile: Example State University (ESU)
 
@@ -185,7 +185,7 @@ ESU has its own AI-in-application-development policy; our team must comply with 
 - **Incident contact:** report suspected data exposure or AI-introduced vulnerabilities to the ESU IT Security Office (**itsec@example.edu**, **555-0142**) via the engagement lead, and follow ESU's incident-response process.
 - **Governance:** ESU IT, the ESU AI & Privacy Risk Council, Data Governance, and General Counsel own the policy; escalate exceptions rather than improvising.
 
-*Reference: ESU's own AI policy — "ESU Policy on AI in Application Development," v2.1 (2026-01-15), `policy.example.edu/ai-in-development`, pinned the same way in the agent-facing profile. It is reproduced in the engagement repo at `ai-governance/client-policies/<client>.md`, or — as here, ESU being cite-only — cited by title, version, and canonical URL. [`Example-Client-AI-Policy.md`](./Example-Client-AI-Policy.md) holds the shape such a policy takes and why it lives in the engagement repo rather than here.*
+*Reference: ESU's own AI policy — "ESU Policy on AI in Application Development," v2.1 (2026-01-15), `policy.example.edu/ai-in-development`, pinned the same way in the agent-facing profile. It is reproduced in the engagement repo at `ai-governance/client-policies/<client>-policy.md`, or — as here, ESU being cite-only — cited by title, version, and canonical URL. [`Example-Client-AI-Policy.md`](./Example-Client-AI-Policy.md) holds the shape such a policy takes and why it lives in the engagement repo rather than here.*
 
 ### Client profile: *(next client)*
 

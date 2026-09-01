@@ -2,7 +2,7 @@
 
 *The dated record behind [`coverage-matrix.md`](./coverage-matrix.md) — every Layer A and Layer B session, the pre-registrations written before them, the method findings they produced, and the rule and package changes derived from them. The matrix states current results; this file states how they were reached. Fixture revisions recorded here are the counterpart to the current fixture specification in [`mock-app-setup.md`](./mock-app-setup.md).*
 
-**Last reviewed:** 2026-08-31 · **Append-only in spirit:** entries are the record of what was run on a date. Correct a factual error, but do not rewrite an entry to match a later result — supersede it with a new one and say so.
+**Last reviewed:** 2026-09-01 · **Append-only in spirit:** entries are the record of what was run on a date. Correct a factual error, but do not rewrite an entry to match a later result — supersede it with a new one and say so.
 
 ---
 
@@ -2410,6 +2410,16 @@ In **both** legs where the run hit an unresolved item (Leg B's unreachable URL a
 **Incidental finding, fixed in-session, not part of the scored behavior.** Both deployed skill launchers (`~/.claude/skills/govern-init/SKILL.md`, `~/.claude/skills/govern-update/SKILL.md`) were stale relative to `ai-docs/skills/` — `govern-init`'s was missing the client-overlay-location step entirely, `govern-update`'s was missing the "no overlay needed here" clarification. Neither launcher's own staleness check caught this, because that check only fires when `ai-docs/procedures/<name>.md` is missing, not when the launcher's own content has drifted from a still-present source — the exact one-shot-copy hazard `govern-init.md`'s step 3 warns about, just on the launcher layer instead of the procedure layer. Re-synced from source by hand (`.bak-20260821` files left alone). Not filed as a package defect since the launchers are deliberately allowed to lag until re-deployed — noted here only because it was found while pursuing this entry's actual task.
 
 **Class: not scored** (informal, operator-graded, self-answered interview — no coverage-matrix row exists or is claimed). Supports, without independently re-verifying, the 6a7eef3 commit message's "no Layer B scenario owed" claim.
+
+---
+
+### Package change of 2026-09-01 — client profile and policy filenames (not a scenario result)
+
+**What changed.** `govern-init` now authors `ai-governance/client-profiles/<client>-profile.md` and `ai-governance/client-policies/<client>-policy.md` instead of naming both files `<client>.md` and letting the directory carry the distinction. The convention is stated in `client-profiles.md` (v1.7), which is the file that ships into every engagement repo; the procedure follows it rather than owning it. The full argument and the two deliberate non-changes — the private overlay's `clients/<client>/profile.md` shape, and `ai-docs/client-profiles/example-university.md` keeping its filename — are in [`../CHANGELOG.md`](../CHANGELOG.md); the A2.13 path revision is in [`test-plan-changes.md`](./test-plan-changes.md). Neither is restated here.
+
+**Why no Layer B scenario is owed, and why no Layer A row was added.** Nothing measurable about agent behavior moved: no rule file gained or lost a rule, and `client-profiles.md` is outside [`coverage-matrix.md`](./coverage-matrix.md)'s complete-coverage set in any case. On the Layer A side, A2.13 already asserts the exact path the policy lands at and A2.2's count check already fixes the copied-from-source set at nine, so the convention is observable through rows that exist; a new row would assert the plan's own string rather than the procedure's behavior.
+
+**Verified.** `build.ps1` (11 files) and `build-empty.ps1` (10 files) both re-run from the repo root; `check-links.ps1` clean at 462 links across 52 files. Layer A was run **before** the arm refresh to confirm the red was staleness: exactly one check failed, **A2.8**, naming `client-profiles.md` and nothing else, and a hand diff of `registrar-mock-unconfigured/ai-governance/client-profiles.md` against the `empty-build/` oracle showed the arm behind by exactly this edit and nothing more. Cleared the documented way: `govern-update-run.ps1 -Arm governed -Apply`, the same for `unconfigured` (never `update`, which is deliberately aged), `entryfiles-only`'s two entry files re-synced by hand from `governed` — which was **not** optional here, since the tier-C merge moved the governed arm's `AGENTS.md` header to v1.38 / 2026-09-01 while the source edit touched no entry file at all, the exact case the 2026-08-25 entry records as a rule. All three arms committed and their `pristine` tags moved. All four harness scripts green afterward. The stateful **A3 group was not run** (it needs the source aged on a scratch branch), same as the prior `ai-docs/`-only changes. **Layer B was not run** — this change is not offered as a measured answer to anything.
 
 ---
 

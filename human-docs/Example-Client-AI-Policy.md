@@ -1,14 +1,14 @@
 # Client AI Policy — shape and where the real one lives
 
-**Version:** 2.0 · **Last reviewed:** 2026-08-28 · **Review cycle:** Whenever the client issues or revises its AI policy.
+**Version:** 2.1 · **Last reviewed:** 2026-09-01 · **Review cycle:** Whenever the client issues or revises its AI policy.
 
-> **This file is a shape template, not a slot.** No client's policy is reproduced here. A client's own AI policy is **their material**, and this repository is the public governance package — client material never enters it. The real thing lives in the engagement repo, at `ai-governance/client-policies/<client>.md`, put there by [`govern-init`](../ai-docs/procedures/govern-init.md) step 6. What this file gives you is the shape such a policy takes, so you can tell what a profile should have been checked against.
+> **This file is a shape template, not a slot.** No client's policy is reproduced here. A client's own AI policy is **their material**, and this repository is the public governance package — client material never enters it. The real thing lives in the engagement repo, at `ai-governance/client-policies/<client>-policy.md`, put there by [`govern-init`](../ai-docs/procedures/govern-init.md) step 6. What this file gives you is the shape such a policy takes, so you can tell what a profile should have been checked against.
 
 ---
 
 ## Where the client's policy actually lives
 
-- **In the engagement repo**, reproduced verbatim at `ai-governance/client-policies/<client>.md`, beside the profile that summarizes it. That copy is the **upstream authority**: where it conflicts with anything in the governance package, it controls, and the profile is reconciled against it rather than the other way round.
+- **In the engagement repo**, reproduced verbatim at `ai-governance/client-policies/<client>-policy.md`, beside the profile that summarizes it. That copy is the **upstream authority**: where it conflicts with anything in the governance package, it controls, and the profile is reconciled against it rather than the other way round.
 - **Cited only, when the client will not permit its text in their repo.** Then there is no policy file, and the profile's authority note carries the title, the version or date, and the client's canonical URL, and says plainly that the full text sits with the engagement lead. A smaller claim, honestly labelled.
 - **Never here.** This repo is copied into clients' repositories and is public; one client's policy landing in it would travel to every other client.
 - **Optionally, as a master in a private client overlay** — a separate private repo holding `clients/<client>/profile.md` and `clients/<client>/policy.md` and nothing else, so a client appearing in several engagement repos is interviewed once rather than re-derived and drifting. `govern-init` reads *from* it and copies into the engagement repo; the engagement repo never points *at* it, because a cross-repo path resolves only on the machines that happen to have it. The overlay is optional, and a team with one repo per client needs none.

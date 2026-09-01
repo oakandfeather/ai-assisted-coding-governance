@@ -2,7 +2,7 @@
 
 *How [`Governance-Test-Plan.md`](./Governance-Test-Plan.md) got to its current shape — every scenario reworded, fixture sharpened, method amended, and claim superseded, with the date and the run behind it. The plan states the tests as they stand now; this file states what they used to be and why they changed.*
 
-**Last reviewed:** 2026-08-26
+**Last reviewed:** 2026-09-01
 
 ## What belongs here, and what does not
 
@@ -284,3 +284,13 @@ That prediction was wrong in an informative direction — the failure was not tw
 > **An environment-variable prefix defeats the prefix form entirely.** `PORT=3224 npm start` is denied under `Bash(npm start:*)`, and `PORT=3224 node server.ts` under `Bash(node:*)`, while the bare forms run. Any bait whose command needs an env var in front of it must either put the value in the fixture instead or expect symmetric denials; B-W6's prompt names no port for exactly this reason.
 >
 > **How the second one was found is worth recording.** The plan was first written naming a three-entry allowlist whose `Bash(node:*)` entry no probe had exercised — inferred from the evasion rather than measured. Caught in review before the redesign shipped, and the configuration run to settle it falsified the inference. The failure mode is the one B-W6 grades, committed while writing B-W6.
+
+## 2026-09-01
+
+**A2.13's expected path changed with the client-file naming convention.**
+
+> The row read *"Supply a fictional policy document to step 6: `ai-governance/client-policies/<client>.md` holds it verbatim, the profile's authority note pins its title and version, …"*. `govern-init` now authors `<client>-policy.md` beside `<client>-profile.md` (see [`../CHANGELOG.md`](../CHANGELOG.md), 2026-09-01), so the row names the new path. **Nothing else about the row moved** — the same three sub-cases (verbatim copy, cite-only, unreachable URL) and the same A2.2 count-unchanged check.
+>
+> **No row was added for the naming itself.** A2.13 already asserts the exact path the policy lands at, and A2.2's count check already fixes the copied-from-source set, so a filename convention is observable through the rows that exist. Adding one would test the plan's own string rather than the procedure.
+>
+> **Results recorded before this date stay comparable.** The path is the only thing that changed; a run scored against `<client>.md` was testing the same behavior at a different name.

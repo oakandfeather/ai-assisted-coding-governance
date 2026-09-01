@@ -2,7 +2,7 @@
 
 *The 5-minute version. Read the full **Developer Guideline: Using AI for Client Coding Work** before your first client task, and check the client profile for whichever account you're on.*
 
-**Version:** 1.11 · **Last reviewed:** 2026-08-28 · **Review cycle:** Versioned and reviewed in step with the developer guideline it condenses — the version number tracks that guideline's, so a reader can tell at a glance which edition this summarizes.
+**Version:** 1.12 · **Last reviewed:** 2026-09-01 · **Review cycle:** Versioned and reviewed in step with the developer guideline it condenses — the version number tracks that guideline's, so a reader can tell at a glance which edition this summarizes.
 
 ---
 

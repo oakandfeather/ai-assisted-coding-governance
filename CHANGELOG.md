@@ -2,7 +2,7 @@
 
 *How the package got its current **shape** — every change to what it ships, which files carry which body, and which tools it targets, with the date and the reasoning behind it. [`AGENTS.md`](./AGENTS.md) and [`README.md`](./README.md) state the shape as it stands now; this file states what it used to be and why it changed.*
 
-**Last reviewed:** 2026-08-31
+**Last reviewed:** 2026-09-01
 
 ## What belongs here, and what does not
 
@@ -81,3 +81,16 @@ Step 5 of the installer required the agent to **execute** every command it wrote
 **The finding that put the run requirement there is still carried — by the marker, not by the run.** A 2026-08-15 Layer B attempt found the governed mock's own scaffolded `AGENTS.md` carrying an unverified worked invocation, and an agent trusting it over re-verifying; the measurement is in [`testing/run-log.md`](./testing/run-log.md) (*Attempt of 2026-08-15 — B-W6*) and is not restated here. The harm there is an unverified command **presented as verified**, which the marker fixes at lower cost — and the marker goes in the installed file rather than in the install hand-off, because the next agent reads `AGENTS.md` and never sees the transcript.
 
 **`writing-rules.md` §6 is unchanged.** Its pass band already reads *run it **or** label the unrun parts unverified*, so this uses the second branch rather than weakening the first. No rule file moved, so no Layer B scenario is owed and no row is invalidated.
+
+## 2026-09-01 — client profiles and policies get self-describing, paired filenames
+
+`govern-init` authored the profile at `ai-governance/client-profiles/<client>.md` and the client's own policy at `ai-governance/client-policies/<client>.md`. Two files, the same name, distinguished only by which directory they sat in — so an editor tab, a search hit, a PR file list, or a hand-off line naming `esu.md` did not say which of the two it meant, and the pair that is supposed to read as profile-and-its-upstream-authority read as a duplicate.
+
+**The convention now is `<client>-profile.md` beside `<client>-policy.md`**, with `<client>` a single lowercase kebab-case slug reused identically in both. The naming is stated in `ai-governance/client-profiles.md` (v1.7) — the file that ships into every engagement repo, so the copied index and the procedure agree — and `govern-init` follows it rather than owning it.
+
+Two deliberate non-changes:
+
+- **The private overlay keeps `clients/<client>/profile.md` and `clients/<client>/policy.md`.** The directory already carries the client name there, so the bare names are unambiguous; only `govern-init`'s copy *destinations* changed.
+- **`ai-docs/client-profiles/example-university.md` was not renamed.** Its filename models nothing a derived profile copies — `govern-init` step 6 reads it for *shape*, step 2 never copies it, and step 4 deletes the sample link from the copied index — while `testing/mock-app-setup.md` pins that exact name in a Layer B fixture built outside this repo. Its body changed: the cite-only note now names `client-policies/example-university-policy.md`.
+
+**Existing installs are grandfathered, and `govern-update` says so rather than fixing it.** Tier E matches `client-profiles/*.md` by glob, not by name pattern, so nothing breaks — but after an update an older install's refreshed index describes a shape its `esu.md` does not match. The procedure now states that this is cosmetic, that the convention governs newly authored profiles only, and that tier E still forbids renaming them.

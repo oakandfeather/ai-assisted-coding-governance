@@ -2,7 +2,7 @@
 
 *How we verify that this package installs correctly and that its rules actually change agent behavior. Companion files: [`coverage-matrix.md`](./coverage-matrix.md) (which rule maps to which scenario) and [`mock-app-setup.md`](./mock-app-setup.md) (how to build the target repo the scenarios run against).*
 
-**Version:** 2.7 · **Last reviewed:** 2026-08-28 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 2.8 · **Last reviewed:** 2026-09-01 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 *How this plan's scenarios, baits, fixtures, and method got to their current shape — every revision, with the run that prompted it — is in [`test-plan-changes.md`](./test-plan-changes.md). **This file states the plan as it stands now.***
 
@@ -67,7 +67,7 @@ Run the installer against the clean mock (see [`mock-app-setup.md`](./mock-app-s
 | A2.9 | Encoding | Line endings and BOM asserted deliberately — **not** folded into A2.8 |
 | A2.10 | Step 1 refusal | Re-running against a repo that already has `AGENTS.md` stops and shows the user; nothing is overwritten |
 | A2.11 | Step 7 opt-in | The `README.md` signpost is *offered*, not written unasked; if declined, the target README is untouched |
-| A2.13 | Client policy landed, or was honestly cited | Supply a fictional policy document to step 6: `ai-governance/client-policies/<client>.md` holds it verbatim, the profile's authority note pins its title and version, and the directory is **absent from the step 2 copy table** (A2.2's count unchanged). Re-run cite-only: **no** `client-policies/` directory, and the note carries title, version, and canonical URL instead. Re-run with an unreachable URL: the run falls back to interview and records the URL as unverified rather than summarizing a document it never opened |
+| A2.13 | Client policy landed, or was honestly cited | Supply a fictional policy document to step 6: `ai-governance/client-policies/<client>-policy.md` holds it verbatim, the profile's authority note pins its title and version, and the directory is **absent from the step 2 copy table** (A2.2's count unchanged). Re-run cite-only: **no** `client-policies/` directory, and the note carries title, version, and canonical URL instead. Re-run with an unreachable URL: the run falls back to interview and records the URL as unverified rather than summarizing a document it never opened |
 
 ### A3 — `govern-update` merge semantics
 
