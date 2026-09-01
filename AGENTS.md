@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Version:** 1.31 · **Last reviewed:** 2026-09-01 · **Active client:** none (internal repository)
+**Version:** 1.32 · **Last reviewed:** 2026-09-01 · **Active client:** none (internal repository)
 
 Guidance for AI agents working in this repository — the source repo for the AI-assisted coding governance package. This repo applies its own rules to itself.
 
@@ -121,7 +121,7 @@ There is a deliberate reference chain, and edits must preserve it:
 - **`client-profiles.md`** — per-client overrides, referenced by `core-rules.md` and the task modules.
 - **`ai-docs/procedures/govern-init.md`** — the installer procedure. It **scaffolds** the package into a target repo (copy → strip banner → fill placeholders); it deliberately does **not** contain any rule text. Keep it that way: rules paraphrased into a procedure are rules that load only when someone runs the procedure, and they leave no auditable trace in the client's repo. If you change the file set or the placeholder list, update this procedure and the template's install note together. Its step 7 also *offers* (opt-in) to add a human-facing pointer to the target repo's `README.md`/`CONTRIBUTING.md`; the same snippet is documented in `README.md`'s by-hand path (Path C) — keep those two in sync. Its **step numbering is load-bearing**: `scripts/build-empty.ps1` cites "step 4" by number.
 - **`ai-docs/procedures/govern-update.md`** — the updater procedure, sibling to the installer and likewise **containing no rule text**. It refreshes an *already-installed* package: it replaces the seven portable rule files and the thin `CLAUDE.md` outright, but **merges** `AGENTS.md` (only the mandatory-rules block, preserving the filled `Active client` value inside it) and `ai-governance/client-profiles.md` (preserving the active-client paragraph), and never touches `ai-governance/client-profiles/`. One thing to preserve when editing it: it **reads its anchors out of `scripts/build.ps1`** rather than restating them — a third copy of those anchors alongside the two build scripts is exactly the drift this package exists to prevent.
-- **`ai-docs/skills/govern-init/SKILL.md`** and **`ai-docs/skills/govern-update/SKILL.md`** — the two **thin launchers** over those procedures, and the only Claude-Code-specific pieces in this repo. Each is ~20 lines: locate the source package, then read its procedure from `ai-docs/procedures/` and follow it. See *Procedures vs. launchers* below for why the split exists and what has to stay in the launcher.
+- **`ai-docs/skills/govern-init/SKILL.md`** and **`ai-docs/skills/govern-update/SKILL.md`** — the two **thin launchers** over those procedures, and the only Claude-Code-specific pieces in this repo. Each is a few dozen lines: locate the source package — and, for `govern-init`, the optional client overlay — then read its procedure from `ai-docs/procedures/` and follow it. See *Procedures vs. launchers* below for why the split exists and what has to stay in the launcher.
 - **Deduplication is deliberate:** each rule is stated once in its owning file; the template and other files carry only pointers plus a short always-on core. When editing, don't reintroduce restatements — link instead.
 
 ## The root entry files (this repo governs itself)
