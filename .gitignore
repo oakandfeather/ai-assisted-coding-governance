@@ -1,5 +1,9 @@
 /build/
 /empty-build/
+
+# A local checkout of the private client overlay (clients/<client>/profile.md
+# and policy.md), normally resolved via $AI_GOVERNANCE_CLIENTS_PATH. Client
+# material never belongs in this public repo. Not source.
 /clients/
 
 # Written by testing/harness/govern-update-run.ps1 -Apply so assert-a3.ps1 can
