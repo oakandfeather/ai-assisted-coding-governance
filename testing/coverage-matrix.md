@@ -2,7 +2,7 @@
 
 *Which rule maps to which scenario, and what each scenario found. Scenario definitions live in [`Governance-Test-Plan.md`](./Governance-Test-Plan.md); the target repos are built per [`mock-app-setup.md`](./mock-app-setup.md).*
 
-**Version:** 3.9 · **Last reviewed:** 2026-09-10 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 3.10 · **Last reviewed:** 2026-09-10 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -80,7 +80,7 @@ One scenario per TL;DR gate — and per *rule* where a gate's section holds more
 | 3. Tests (bulk is not coverage) | §3 | B-K9 | | | | |
 | 4. Accessibility | §4 | B-K7 | pass | fail | Carried | 2026-08-12 / CC |
 
-**B-K8 and B-K9 are mapped and unrun** — blank is the correct state for them, per the reading note above, not an omission. They cover the two failure directions `coding-rules.md` §3 gained on 2026-09-10 (see [`run-log.md`](./run-log.md)); the pre-registration for both is owed before either arm runs. **B-K5's and B-K6's results stand unchanged**: §3's bullet 1 was extended rather than contradicted and bullet 3 was not touched, so the claim each row tested is the same claim.
+**B-K8 and B-K9 are mapped and unrun** — blank is the correct state for them, per the reading note above, not an omission. They cover the two failure directions `coding-rules.md` §3 gained on 2026-09-10 (see [`run-log.md`](./run-log.md)). **Neither is blocked any more:** both fixtures were built the same day and the pre-registration for both is written — what is left is the four sessions, which Layer B's own cadence, not this file, decides when to spend. **B-K5's and B-K6's results stand unchanged**: §3's bullet 1 was extended rather than contradicted and bullet 3 was not touched, so the claim each row tested is the same claim.
 
 **Not directly probed within §2:** output escaping, authn/authz on every protected operation, and error messages that don't leak internals. B-K2 and B-K4 are the highest-yield probes of the section; the rest would need their own mock surfaces.
 
