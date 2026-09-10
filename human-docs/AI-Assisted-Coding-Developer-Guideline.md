@@ -2,7 +2,7 @@
 
 **Applies to:** All engineers, contractors, and subcontractors who write, review, or ship code for client engagements
 **Status:** Internal standard
-**Version:** 1.12 · **Last reviewed:** 2026-09-01
+**Version:** 1.13 · **Last reviewed:** 2026-09-10
 **Review cycle:** Reviewed quarterly and whenever a client's AI terms change
 
 > **Read this first.** You are coding on behalf of clients, using their data, building their intellectual property, under their rules. AI tools make you faster, but they also make it easy to leak a client's data, ship insecure code under their name, or contaminate their codebase with badly-licensed material. This guideline is how we get the speed without the liability. When a client's own policy is stricter than this document, **the client's policy wins** — see the client profiles in Appendix A.
@@ -79,6 +79,7 @@ AI shifts the bottleneck from writing code to reviewing it — so the review has
 - Be extra skeptical of code that's confidently wrong: plausible-looking logic with subtle bugs is AI's specialty.
 - Watch for over-engineering and unnecessary dependencies AI tends to add.
 - Don't let AI-generated tests lull you — AI often writes tests that just assert whatever the code currently does, passing even when the code is wrong. Design tests against the requirement, not the implementation.
+- **Two more test smells, and both of them read as thoroughness.** A test pinned to *how* the code works — call order, internal calls, a mock's interactions, exact log wording — goes red on a refactor that broke nothing, and the cheapest way back to green is to weaken the assertion, which is the bullet below. And forty assertions over getters, constructors, and framework behavior look like coverage while the error paths sit untested. Read the test names against the requirement; the count tells you nothing.
 - **A failing test is information, not an obstacle.** Deleting it, weakening its assertions, or marking it skipped to get a green run hides the defect it found. Fix the cause, or leave it red and say so — an agent under pressure to finish takes the other path readily, and a suite that went green in the last commit of a long session is worth a look at how.
 - In peer review, treat "large diff, generated quickly" as a flag to slow down, not speed up.
 
@@ -114,7 +115,7 @@ AI produces insecure code as fluently as secure code. On every engagement:
 
 If you're building UI for a client with accessibility obligations — public-sector clients especially — AI-generated markup and components must be checked against **WCAG 2.1 AA / Section 508 / ADA** (2.1 AA is the ADA Title II baseline; use **WCAG 2.2** where the client has adopted it). AI routinely ships missing alt text, unlabeled controls, poor contrast, and markup that breaks screen readers. Automated checks plus manual/assistive-tech review before you call it done.
 
-**The agent-facing form of §§6–10 splits along one seam, and the seam is worth knowing because it tells you which failures are negotiable.** `coding-rules.md` §§1–4 are the *risk* half — dependencies and supply chain, security by default, tests that verify the requirement, accessibility in generated UI — and they bind whether or not the agent opened `coding-patterns.md`. That file is the *craft* half: reliable, efficient, maintainable code, which a reviewer can trade against a deadline in a way the four rule sections can't. Know which half you're invoking when you send code back: "this is insecure" is not a preference, "this is over-abstracted" is a judgment call.
+**The agent-facing form of §§6–10 splits along one seam, and the seam is worth knowing because it tells you which failures are negotiable.** `coding-rules.md` §§1–4 are the *risk* half — dependencies and supply chain, security by default, tests that verify the requirement without misreporting their own depth, accessibility in generated UI — and they bind whether or not the agent opened `coding-patterns.md`. That file is the *craft* half: reliable, efficient, maintainable code, which a reviewer can trade against a deadline in a way the four rule sections can't. Know which half you're invoking when you send code back: "this is insecure" is not a preference, "this is over-abstracted" is a judgment call.
 
 ## 11. AI-written documentation
 

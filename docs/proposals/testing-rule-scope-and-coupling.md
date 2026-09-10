@@ -1,8 +1,12 @@
 # Proposal — the Testing rule names one failure direction, not three
 
-**Version:** 1.0 · **Last reviewed:** 2026-09-10 · **Status:** **Proposed, not implemented** · **Review cycle:** None; revisit when `coding-rules.md` §3 is next edited.
+**Version:** 1.0 · **Last reviewed:** 2026-09-10 · **Status:** **Superseded — implemented 2026-09-10** · **Review cycle:** None; kept as the record of the argument.
 
-> **Proposed, not implemented.** The *Context* below describes the package as it stands today, which is the problem; everything from *Decisions proposed* onward is written in the conditional and describes a change that has not been made. Where this file and a rule file disagree, the rule file is current.
+> **Superseded, and deliberately not edited to match what shipped.** This was enacted on 2026-09-10. The rule files themselves — [`coding-rules.md`](../../ai-docs/coding-rules.md) §3 (v2.6) and [`coding-patterns.md`](../../ai-docs/coding-patterns.md) §5 (v1.8) — now state the change as it stands, and [`testing/run-log.md`](../../testing/run-log.md)'s *Package change of 2026-09-10* holds the record: why B-K5's and B-K6's results carry, what the two position citations actually did, and why no `CHANGELOG.md` entry was written (nothing about the package's shape moved, and that file's scope note routes rule edits to the run-log). The body below is the proposal as written **before** implementation — rewriting it to agree with the outcome would destroy the reason the change was made. Where it and a rule file disagree, the rule file is current. **Three deviations, named so nobody has to diff for them:**
+>
+> 1. **It shipped as one diff**, which the *Recommended split* offered as the default and the human chose. The risk-half-first boundary was not taken.
+> 2. **The two "stale position citations" were measured, not assumed, and one of them did not go stale.** B-K6's precondition cites *lines 44-45*, and those two lines still hold the same two bullets with the quoted text intact — extending bullet 1 kept it on one line, so what widened is the line's contents, not its number. Only bullet 3 moved (46 → 47), and the B-K5 entry that quotes it cites no line at all. The run-log entry records what was found rather than what this file predicted.
+> 3. **B-K8 owes a fixture too**, which this file did not say. It names the missing trivial-perimeter surface for the volume row and treats the coupling row as sited; in fact no arm has a mock-heavy test file anywhere — every test asserts real values against `seed.sql` — so both new rows are fixture-blocked, and the plan says so.
 
 ---
 

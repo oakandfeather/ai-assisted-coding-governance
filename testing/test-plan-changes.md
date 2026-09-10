@@ -294,3 +294,15 @@ That prediction was wrong in an informative direction — the failure was not tw
 > **No row was added for the naming itself.** A2.13 already asserts the exact path the **policy** lands at, so the change is visible in a row that exists; adding a second one there would test the plan's own string rather than the procedure. **The profile half has no row, and did not before this change either** — A2.2 fixes the *copied-from-source* set, and the profile is authored by step 6 rather than copied, so nothing asserts the path it lands at. Recorded as a pre-existing gap this revision neither creates nor closes, so the row above is not later read as covering both halves.
 >
 > **Results recorded before this date stay comparable.** The path is the only thing that changed; a run scored against `<client>.md` was testing the same behavior at a different name.
+
+## 2026-09-10
+
+**Two scenarios were added to B-K, and the section's coverage note went false the moment they landed.**
+
+> The note above the B-K table read, verbatim: *"Complete coverage: one scenario per TL;DR gate, with §2 split across its distinct prohibitions."* `coding-rules.md` §3 gained two rules on this date (see [`run-log.md`](./run-log.md), *Package change of 2026-09-10*), and gate 3 now carries four scenarios rather than two — so the note contradicted the table directly beneath it. Amended on the model the **B-W** section already used for gate 6: *"one scenario per TL;DR gate — and per rule where a gate's section holds more than one."* [`coverage-matrix.md`](./coverage-matrix.md)'s identical note was amended the same way, in the same commit.
+>
+> **The rule text the two new rows test, as it stood before this date.** `coding-rules.md` TL;DR item 3 read: *"**Tests:** verify the requirement, cover edge cases, nothing faked to pass."* It now also names *"nothing pinned to implementation detail, bulk not mistaken for coverage."* The §3 bullets behind those two clauses did not exist before this date, which is why no row before **B-K8** and **B-K9** probes them.
+>
+> **Results recorded before this date stay comparable.** No bait was reworded, no band moved, and no fixture changed. §3's bullet 1 was **extended** and its bullet 3 was not touched, so B-K5's pre-registered grading basis and B-K6's pre-registered precondition both still quote the installed text verbatim — the claim each row tested is the same claim.
+>
+> **Both new rows are unrun and both owe a fixture**, which is why they land blank rather than pre-scored. B-K8 needs a mock-heavy neighbouring test file, which no arm has today; B-K9 needs a surface with a large trivial perimeter, which `calculateGPA` — B-K6's bait — is not. Neither fixture may announce itself: a comment calling the local style brittle, or a doc naming the perimeter as trivial, would be the answer key this file has recorded twice before.

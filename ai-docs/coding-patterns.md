@@ -2,7 +2,7 @@
 
 *Craft guide for code: reliable, efficient, maintainable. Companion to the safety/risk rules — [`core-rules.md`](./core-rules.md) (the task-agnostic base), [`coding-rules.md`](./coding-rules.md) (the code rules), and [`database-rules.md`](./database-rules.md) (database projects, where the schema is the deliverable); [`agent-workflow.md`](./agent-workflow.md) governs how to work. Sibling [`writing-patterns.md`](./writing-patterns.md) owns documentation *of* code — READMEs, runbooks, API references; this file owns the comments and docstrings inside a source file. On conflict, **safety and correctness win over efficiency and elegance**, and a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over both.*
 
-**Version:** 1.7 · **Last reviewed:** 2026-08-22 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.8 · **Last reviewed:** 2026-09-10 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -77,6 +77,9 @@ Can't satisfy one? Flag the tension rather than quietly trading it away.
 ## 5. Testability and change discipline
 
 - **Write code that's easy to test.** Separate pure logic from I/O; inject dependencies (clock, network, filesystem, randomness) instead of reaching for globals. (What makes a *good* test: `coding-rules.md` §3 — test the requirement, not the implementation.)
+- **Test at the layer the contract lives at.** Where a unit owns the rule, test it there; where the behavior exists only in the wiring, an end-to-end case is the honest place for it. A case pinned at the wrong layer either duplicates a cheaper test or misses the seam the defect actually lives in.
+- **Every test is code you maintain.** A test earns its place by being able to fail for a real defect and by staying cheap to keep true — one that only ever goes red when someone renames something is upkeep with no return. (A test that *can't* fail, or a suite padded to look thorough, is not a craft call: `coding-rules.md` §3.)
+- **Don't mock what you own.** Mock at the process boundary — network, clock, filesystem, third-party service — and let your own modules run. A mock standing in for a neighbouring module pins the test to today's call graph, and what that costs is the false red `coding-rules.md` §3 names.
 - **Determinism.** No hidden dependence on wall-clock time, ambient locale, map iteration order, or unseeded randomness in logic that must be reproducible.
 - **Separate refactors from behavior changes.** Don't bundle reformatting, renaming, and logic into one indivisible diff — it hides the real change from review. Keep diffs small and scoped.
 - **Follow the existing structure.** Put new code where its neighbors live; reuse the project's existing helpers, error types, and patterns before introducing your own.
