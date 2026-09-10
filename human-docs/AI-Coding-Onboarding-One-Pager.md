@@ -2,7 +2,7 @@
 
 *The 5-minute version. Read the full **Developer Guideline: Using AI for Client Coding Work** before your first client task, and check the client profile for whichever account you're on.*
 
-**Version:** 1.12 · **Last reviewed:** 2026-09-01 · **Review cycle:** Versioned and reviewed in step with the developer guideline it condenses — the version number tracks that guideline's, so a reader can tell at a glance which edition this summarizes.
+**Version:** 1.13 · **Last reviewed:** 2026-09-10 · **Review cycle:** Versioned and reviewed in step with the developer guideline it condenses — the version number tracks that guideline's, so a reader can tell at a glance which edition this summarizes.
 
 ---
 
@@ -26,7 +26,7 @@ Every client has different constraints. Before you write a line, check the **cli
 2. **Prompt with abstractions, not secrets.**
 3. **Read the output critically** — invented APIs? happy-path only? subtle bugs?
 4. **Verify dependencies** before installing.
-5. **Test against the requirement** — not just "looks right." (AI tests often just confirm whatever the code already does.)
+5. **Test against the requirement** — not just "looks right," and not just plentiful. (AI tests often confirm whatever the code already does, pin themselves to *how* it works so any refactor turns them red, or pile up shallow assertions that read as coverage.)
 6. **Review it like a junior wrote it fast** — because that's what happened.
 7. **Commit with honest provenance** where the client expects disclosure.
 
@@ -36,7 +36,7 @@ Every client has different constraints. Before you write a line, check the **cli
 - [ ] I've read and understood every line
 - [ ] Passed SAST + secret scan + dependency scan
 - [ ] Dependencies real, legitimate, correctly licensed, version-pinned
-- [ ] Tests are real, and nothing was skipped or weakened to go green; security reviewed
+- [ ] Tests are real — they check the requirement, they survive a refactor, and the count isn't the coverage — and nothing was skipped or weakened to go green; security reviewed
 - [ ] Accessible (if UI + client requires it) · meets client compliance
 - [ ] Nothing from another client leaked in
 - [ ] Docs it wrote: I ran the examples (a real flag name isn't a working command), and a one-line fix came back as a one-line diff

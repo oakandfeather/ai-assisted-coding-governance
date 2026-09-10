@@ -2,7 +2,7 @@
 
 *Rules for writing, editing, or running code, with §§1–4 below the whole scope. **Read [`core-rules.md`](./core-rules.md) first:** it holds the task-agnostic base that binds on every task; this file adds only the code rules on top of it. Reference it from your project's entry file alongside `core-rules.md`. **A database project** — a repository where the schema itself is the deliverable — is [`database-rules.md`](./database-rules.md); this file governs application code, including the code that queries a database. Where a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, it wins. Companions: [`coding-patterns.md`](./coding-patterns.md) (engineering craft) and [`agent-workflow.md`](./agent-workflow.md) (how to work).*
 
-**Version:** 2.5 · **Last reviewed:** 2026-08-22 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 2.7 · **Last reviewed:** 2026-09-10 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -12,7 +12,7 @@ Run this **after** the `core-rules.md` TL;DR. Full detail in §§1–4.
 
 1. **Dependencies:** every package real, necessary, and flagged for verification.
 2. **Security:** input validated, output escaped, safe defaults, no injection surface.
-3. **Tests:** verify the requirement, cover edge cases, nothing faked to pass.
+3. **Tests:** verify the requirement, cover edge cases, nothing faked to pass, nothing pinned to implementation detail, bulk not mistaken for coverage.
 4. **Accessibility:** WCAG-compliant if UI.
 
 Any "no" or "unsure": fix or flag it before presenting. Scale depth to the blast radius (`core-rules.md`) — anything touching auth, input handling, data storage/transmission, or dependencies gets the full check deliberately, stated in your hand-off.
@@ -41,8 +41,10 @@ Generate secure code the first time; don't rely on a later pass to fix it.
 
 ## 3. Testing
 
-- Write tests that **verify the requirement**, not tests that merely restate the implementation. A test that passes regardless of whether the code is correct is worse than no test.
+- Write tests that **verify the requirement**, not tests that merely restate the implementation. A test that passes regardless of whether the code is correct is worse than no test. Assert the observable behavior the requirement names.
+- **The mirror failure is a test that fails when the code is right.** One pinned to *how* the code works — call order, internal calls, private structure, exact log or error wording, a mock's interactions — goes red on a refactor that changed nothing a caller can see, and the cheapest route back to green is to weaken the assertion, which this section forbids below. Two checks, in the order you meet them. **Mock at a process boundary** — network, clock, filesystem, third-party service — and let your own modules run. **A neighbouring test file already faking a module you own does not license you to do the same, and neither does its ready-made fake:** `core-rules.md` §2's match-the-existing-conventions rule is about fitting in, not about propagating a defect, and where the two collide this file is the stricter one — if you believe the local style is brittle, say so **rather than** extending it. Then **name what each assertion pins before you write it:** if the answer is *"a function I own was called, this many times, with these arguments,"* it is pinned to today's call graph, not to the requirement.
 - Cover edge cases, error paths, and boundary conditions — not just the happy path.
+- **Test count is not evidence of coverage.** Assertions padded over getters, constructors, restated constants, and framework behavior you don't own — while the error paths and boundaries above go untested — leave a suite that reads as *tested* and isn't. The reviewer calibrates trust on the test directory, not on your hand-off, so this is the suite itself overstating its depth, not you overstating it in prose. Write what the requirement's behavior needs, and say in your hand-off what you did **not** cover rather than padding around it.
 - Don't delete, weaken, or skip failing tests to make a suite go green; fix the cause or surface it.
 - Never fake, stub, or hardcode a result so a test appears to pass while the underlying functionality doesn't work.
 

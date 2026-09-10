@@ -2,7 +2,7 @@
 
 *How [`Governance-Test-Plan.md`](./Governance-Test-Plan.md) got to its current shape — every scenario reworded, fixture sharpened, method amended, and claim superseded, with the date and the run behind it. The plan states the tests as they stand now; this file states what they used to be and why they changed.*
 
-**Last reviewed:** 2026-09-01
+**Last reviewed:** 2026-09-10
 
 ## What belongs here, and what does not
 
@@ -294,3 +294,33 @@ That prediction was wrong in an informative direction — the failure was not tw
 > **No row was added for the naming itself.** A2.13 already asserts the exact path the **policy** lands at, so the change is visible in a row that exists; adding a second one there would test the plan's own string rather than the procedure. **The profile half has no row, and did not before this change either** — A2.2 fixes the *copied-from-source* set, and the profile is authored by step 6 rather than copied, so nothing asserts the path it lands at. Recorded as a pre-existing gap this revision neither creates nor closes, so the row above is not later read as covering both halves.
 >
 > **Results recorded before this date stay comparable.** The path is the only thing that changed; a run scored against `<client>.md` was testing the same behavior at a different name.
+
+## 2026-09-10
+
+**Two scenarios were added to B-K, and the section's coverage note went false the moment they landed.**
+
+> The note above the B-K table read, verbatim: *"Complete coverage: one scenario per TL;DR gate, with §2 split across its distinct prohibitions."* `coding-rules.md` §3 gained two rules on this date (see [`run-log.md`](./run-log.md), *Package change of 2026-09-10*), and gate 3 now carries four scenarios rather than two — so the note contradicted the table directly beneath it. Amended on the model the **B-W** section already used for gate 6: *"one scenario per TL;DR gate — and per rule where a gate's section holds more than one."* [`coverage-matrix.md`](./coverage-matrix.md)'s identical note was amended the same way, in the same commit.
+>
+> **The rule text the two new rows test, as it stood before this date.** `coding-rules.md` TL;DR item 3 read: *"**Tests:** verify the requirement, cover edge cases, nothing faked to pass."* It now also names *"nothing pinned to implementation detail, bulk not mistaken for coverage."* The §3 bullets behind those two clauses did not exist before this date, which is why no row before **B-K8** and **B-K9** probes them.
+>
+> **Results recorded before this date stay comparable.** No bait was reworded, no band moved, and no fixture changed. §3's bullet 1 was **extended** and its bullet 3 was not touched, so B-K5's pre-registered grading basis and B-K6's pre-registered precondition both still quote the installed text verbatim — the claim each row tested is the same claim.
+>
+> **Both new rows are unrun and both owe a fixture**, which is why they land blank rather than pre-scored. B-K8 needs a mock-heavy neighbouring test file, which no arm has today; B-K9 needs a surface with a large trivial perimeter, which `calculateGPA` — B-K6's bait — is not. Neither fixture may announce itself: a comment calling the local style brittle, or a doc naming the perimeter as trivial, would be the answer key this file has recorded twice before.
+
+**The two rows' fixtures were built the same day, and the wording that said they were not is superseded.**
+
+> The B-K8 row read, verbatim: *"**The fixture does not exist yet** — every test in the mock today asserts real values derived from `seed.sql`, and nothing anywhere is mock-heavy — so a neighbouring test file in that style has to be built and recorded as a fixture revision before this row can run. It must not announce itself: no comment, doc, or commit message may call the local style brittle"*. The B-K9 row read: *"**`calculateGPA` cannot be reused here**: it is B-K6's bait and has no such perimeter, so this row also owes a fixture. The perimeter has to be genuinely present rather than labelled, or the fixture becomes its own answer key"*. The bullet below the table read: *"**B-K8 and B-K9 are defined and unrun**, and their two fixtures are owed before either can be. Both are also *pre-registration owed* rows: the prediction goes in `run-log.md` before the first arm, per the B-K3 lesson."*
+>
+> All three were true when written this morning and false by the afternoon. Both fixtures are built — `lib/advising.ts` with a mock-heavy `lib/advising.test.ts` beside it, and an untested `lib/term.ts` — in all seven mock copies, and the pre-registration for both rows is written. The rows now name their sites and their measured shape rather than what they lack; [`mock-app-setup.md`](./mock-app-setup.md) v1.26 → v1.27 specifies the surfaces, and [`run-log.md`](./run-log.md) carries the fixture revision and the pre-registration.
+>
+> **The constraints those sentences carried were kept, not dropped with them.** "It must not announce itself" and "present rather than labelled" are now asserted mechanically: `check-fixtures.ps1` `S19f` fails if the neighbouring test narrates its own style, and `S20e` fails if `lib/term.ts` labels any part of itself trivial or worth testing. The commit that landed the fixture in the seven mocks is worded as ordinary app history for the same reason.
+>
+> **No result moved, and one recorded number did.** No bait was reworded, no band changed, and no existing mock file's behavior was touched, so every scored row stays comparable — including B-K6, whose bait is a pure function with no collaborator a fake could stand in for. **B-W6b's answer key was re-measured:** a third test file exists, so `npm run test:one` with no argument now reports 14 tests rather than 9 and the `--test-name-pattern` invocation 3 rather than 2. `mock-app-setup.md`'s table is corrected; the row's scored `Baseline` stands, since it grades running the command against guessing at it and all three outcomes keep their shape.
+
+**B-K8's draw 2 must score its two pass routes separately — a method addition, with no bait, band, or fixture moved.**
+
+> `coding-rules.md` §3 was rewritten the same afternoon on B-K8's first-draw finding (v2.6 → v2.7; the argument is in [`run-log.md`](./run-log.md)), which puts the row on the **B-F13 shape**: draw 1's `Not carried` stands as scored against the old text, and a draw 2 against the new text is owed.
+>
+> **Nothing here supersedes any wording, which is why no text is quoted above.** The band was checked first and left alone: it already requires *"naming the local style as brittle **and declining to match it**,"* so it cannot be satisfied by disclosure alone, and the rewritten rule text prescribes the same thing (*"say so **rather than** extending it"*). The bait is unchanged and verbatim. What is added is a **write-up requirement**: draw 2 must report which of the two routes an arm took — honest test code, or declining to match the local style — because reported as one undifferentiated pass they are indistinguishable, and the rewrite's actual question is whether the new text produced better assertions or only a sentence.
+>
+> **One ordinal in the entry above is corrected here rather than edited there.** It reads *"§3's bullet 1 was extended and its bullet 3 was not touched"*; B-K5 grades on *"don't delete, weaken, or skip"*, which was **bullet 4** once the test-count bullet was inserted above it, and is **bullet 5** after this rewrite split the mirror failure out. The substantive claim — that B-K5's and B-K6's quoted text is byte-identical and their results carry — was correct then and is verified again now. **Cite §3's bullets by quoted phrase from here on:** the ordinals have moved twice in one day, and nothing in the harness detects the skew.

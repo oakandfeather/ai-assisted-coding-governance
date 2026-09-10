@@ -1,6 +1,6 @@
 # Context cost of the governance package
 
-**Last reviewed:** 2026-08-31
+**Last reviewed:** 2026-09-10
 
 Tracks how much of an agent's context window the `ai-docs/` package consumes when it's loaded per `AGENTS.md`'s "load in one pass" instruction. Re-run the measurement below and update this table when `ai-docs/` files change size materially — it's a cost metric, not a governed rule file, so it doesn't need a version bump on every edit.
 
@@ -24,13 +24,13 @@ wc -w -c ai-docs/procedures/*.md ai-docs/skills/*/SKILL.md  # source-repo only
 | File | Words | Est. tokens |
 |---|---:|---:|
 | `core-rules.md` | 1,765 | ~3,050 |
-| `coding-rules.md` | 771 | ~1,350 |
+| `coding-rules.md` | 1,062 | ~1,820 |
 | `writing-rules.md` | 1,405 | ~2,400 |
 | `database-rules.md` | 1,259 | ~2,100 |
-| `coding-patterns.md` | 1,122 | ~1,980 |
+| `coding-patterns.md` | 1,247 | ~2,150 |
 | `writing-patterns.md` | 1,803 | ~3,000 |
 | `agent-workflow.md` | 2,740 | ~4,400 |
-| `client-profiles.md` + one profile | 636 | ~1,120 |
+| `client-profiles.md` + one profile | 763 | ~1,320 |
 | entry file (`AGENTS.md`, placeholders filled) | 1,091 | ~1,990 |
 | entry file (`CLAUDE.md`, the thin pointer itself) | 181 | ~300 |
 
@@ -40,8 +40,8 @@ wc -w -c ai-docs/procedures/*.md ai-docs/skills/*/SKILL.md  # source-repo only
 
 | File | Words | Est. tokens |
 |---|---:|---:|
-| `procedures/govern-init.md` | 3,505 | ~5,800 |
-| `procedures/govern-update.md` | 2,955 | ~4,800 |
+| `procedures/govern-init.md` | 3,685 | ~6,100 |
+| `procedures/govern-update.md` | 3,055 | ~4,970 |
 | `skills/govern-init/SKILL.md` | 542 | ~880 |
 | `skills/govern-update/SKILL.md` | 473 | ~790 |
 
@@ -49,8 +49,8 @@ wc -w -c ai-docs/procedures/*.md ai-docs/skills/*/SKILL.md  # source-repo only
 
 | Operation | Files loaded | Est. tokens |
 |---|---|---:|
-| `/govern-init` | launcher + procedure | **~6,700** |
-| `/govern-update` | launcher + procedure | **~5,600** |
+| `/govern-init` | launcher + procedure | **~7,000** |
+| `/govern-update` | launcher + procedure | **~5,760** |
 
 A one-shot cost — but paid in a session that is *also* holding the target repo's context while doing a multi-file copy, a placeholder interview, and profile authoring, which is why it earns a row rather than a shrug.
 
@@ -76,12 +76,12 @@ These bind the next pass over `ai-docs/`. Each was arrived at by a pass that too
 
 | Scenario | On top of the floor | Est. tokens |
 |---|---|---:|
-| **Floor — every session** | entry files (`AGENTS.md` + `CLAUDE.md`) + `core-rules.md` + `agent-workflow.md` + `client-profiles.md` index, imported | **~10,350** |
-| Trivial edit | *nothing* | ~10,350 |
-| Non-trivial coding task | + `coding-rules.md` + `coding-patterns.md` + the client profile body | ~14,200 |
-| Non-trivial writing task | + `writing-rules.md` + `writing-patterns.md` + the client profile body | ~16,300 |
-| Non-trivial database-project task | + `database-rules.md` + `coding-patterns.md` + the client profile body | ~14,950 |
-| Everything at once | + all five conditional files + the client profile body | ~21,750 |
+| **Floor — every session** | entry files (`AGENTS.md` + `CLAUDE.md`) + `core-rules.md` + `agent-workflow.md` + `client-profiles.md` index, imported | **~10,500** |
+| Trivial edit | *nothing* | ~10,500 |
+| Non-trivial coding task | + `coding-rules.md` + `coding-patterns.md` + the client profile body | ~15,000 |
+| Non-trivial writing task | + `writing-rules.md` + `writing-patterns.md` + the client profile body | ~16,450 |
+| Non-trivial database-project task | + `database-rules.md` + `coding-patterns.md` + the client profile body | ~15,300 |
+| Everything at once | + all five conditional files + the client profile body | ~22,500 |
 
 **No row above includes the install and update procedures, by design** — they never reach a target repo, so they cost an agent working in one nothing at all. Their cost is the *Source-repo cost* table above.
 
@@ -89,7 +89,7 @@ On every supported CLI other than Claude Code there is no floor, because none of
 
 ## Caveats
 
-- This is a one-time context-window cost **per session**. **The floor is paid unconditionally on Claude Code** — `CLAUDE.md` imports those files, so they load whether the agent wants them or not, and they survive `/compact`. Everything above the floor is still paid only when a file is actually `Read`, and **a linked file that is never opened costs nothing and binds nothing** — which is the failure the floor exists to prevent, not a saving. The graduated-loading rule exists to avoid paying the ~21.8k full cost on every task.
+- This is a one-time context-window cost **per session**. **The floor is paid unconditionally on Claude Code** — `CLAUDE.md` imports those files, so they load whether the agent wants them or not, and they survive `/compact`. Everything above the floor is still paid only when a file is actually `Read`, and **a linked file that is never opened costs nothing and binds nothing** — which is the failure the floor exists to prevent, not a saving. The graduated-loading rule exists to avoid paying the ~22.5k full cost on every task.
 - Prompt caching (where the harness supports it) makes repeat reference *cheap in billing* within a session once a file is cached, but it does not reduce how much of the context window that file occupies.
 - **The *Source-repo cost* table is a different kind of number** — paid once by whoever runs `/govern-init` or `/govern-update` in this repo, not per session by an agent working in a target repo. Don't add it to anything above.
-- These numbers reflect `ai-docs/` as of 2026-08-31. Every per-file row was re-measured that day. Four rows had moved and two of those movements pre-dated the edit that prompted the pass — see [`context-cost-log.md`](./context-cost-log.md) for which. Nothing is carried forward on faith. Carrying figures forward is how rows go stale — re-measure after any material edit to a file listed above, and record the pass in [`context-cost-log.md`](./context-cost-log.md).
+- These numbers reflect `ai-docs/` as of 2026-09-10. Every per-file row was re-measured **twice** that day. On the second pass only the two rows the edit touched moved, and they moved in **opposite directions** — see [`context-cost-log.md`](./context-cost-log.md), and don't read the near-flat net as room to spend. Nothing is carried forward on faith. Carrying figures forward is how rows go stale — re-measure after any material edit to a file listed above, and record the pass in [`context-cost-log.md`](./context-cost-log.md).

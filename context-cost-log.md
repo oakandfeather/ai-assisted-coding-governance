@@ -2,7 +2,7 @@
 
 *Every compression and deduplication pass over `ai-docs/`, and every re-measurement of it: what the pass took, what it declined, what it reverted, and what the numbers moved. [`context-cost.md`](./context-cost.md) states the current cost and the standing constraints; this file states how they were arrived at.*
 
-**Last reviewed:** 2026-08-31
+**Last reviewed:** 2026-09-10
 
 **Where the other half of the edit history lives.** This file holds package changes made for **context-window cost**. Package changes derived from **Layer B runs** — the rule edits answering a scored scenario — are in [`testing/run-log.md`](./testing/run-log.md), beside the runs that motivated them. A change can appear in both when it was made for one reason and measured for the other; say so rather than moving it.
 
@@ -103,3 +103,38 @@ The installer stopped requiring the target repo's commands to be executed (see [
 **Floor ~9,650 → ~10,350**, and all four scenario totals moved with it (~13,450 → ~14,200 coding, ~15,500 → ~16,300 writing, ~14,200 → ~14,950 database, ~20,900 → ~21,750 everything).
 
 **The standing lesson holds a third time:** a table maintained by carrying figures forward goes stale silently, and the file that says *"nothing is carried forward on faith"* was, on 2026-08-31, carrying six rows on faith. No compression pass was run here and none is proposed — this is measurement only.
+
+### Re-measurement of 2026-09-10 — prompted by the `coding-rules.md` §3 widening, and three of the five moved rows pre-dated it
+
+[`coding-rules.md`](./ai-docs/coding-rules.md) §3 gained the false-red direction on bullet 1 and a new bulk-is-not-coverage bullet (v2.6), and [`coding-patterns.md`](./ai-docs/coding-patterns.md) §5 gained three craft bullets on test design (v1.8) — the risk/craft split argued in [`docs/proposals/testing-rule-scope-and-coupling.md`](./docs/proposals/testing-rule-scope-and-coupling.md). Both are measured rows, so the whole table was re-measured rather than the two rows patched, per the standing method note.
+
+**Moved by this edit:**
+
+- **`coding-rules.md`** — 771 → **938 words** (~1,350 → ~1,630 tokens). The largest single-file jump this file has recorded for a rule addition, and it is paid on every non-trivial coding task. What it buys is two failure modes the section named nowhere: a test that fails when the code is right, and a suite whose bulk misreports its depth.
+- **`coding-patterns.md`** — 1,122 → **1,288 words** (~1,980 → ~2,210). Also on the database-project row, since it is `database-rules.md`'s craft companion too.
+
+**Already stale before this edit, and surfaced only by re-measuring:**
+
+- **`client-profiles.md` + one profile** 636 → **763 words** (~1,120 → ~1,320), from the 2026-09-01 profile-authoring changes — the positive scope test, the length ceiling, and the profile/policy filename pairing. **The index half of that is in the floor**, so the floor moved with it before this edit touched anything.
+- **`procedures/govern-init.md`** 3,505 → **3,685** and **`procedures/govern-update.md`** 2,955 → **3,055**, same cause. `/govern-init` as an operation went ~6,700 → **~7,000** tokens, `/govern-update` ~5,600 → **~5,760**. Source-repo cost only; no scenario total moves with it.
+
+**Floor ~10,350 → ~10,500**, and all four scenario totals moved (~14,200 → ~14,900 coding, ~16,300 → ~16,450 writing, ~14,950 → ~15,350 database, ~21,750 → ~22,400 everything). The coding and database rows moved most, which is the honest shape of this change: it is a coding-task cost, and it lands on the two scenarios that load `coding-patterns.md`.
+
+**The standing lesson holds a fourth time.** Three of the five moved rows had nothing to do with the edit that prompted the pass. Carrying figures forward is still how this table goes stale.
+
+**No compression pass was run and none is proposed here.** The `ai-docs` efficiency constraint above stands: what is left in these two files is duplication that reachability protects, and this pass *added* rule text deliberately rather than looking for room to pay for it.
+
+### Second re-measurement of 2026-09-10 — prompted by the §3 rewrite on the B-K8 finding, and the first pass in this file's history where nothing else had gone stale
+
+[`coding-rules.md`](./ai-docs/coding-rules.md) §3 split its mirror-failure clause into a bullet of its own and absorbed the mock-boundary instruction (v2.7); [`coding-patterns.md`](./ai-docs/coding-patterns.md) §5 gave that instruction up and folded its pointer into the neighbouring bullet rather than leaving a stub (v1.9). The whole table was re-measured rather than the two rows patched, per the standing method note.
+
+**Moved by this edit, and only these two:**
+
+- **`coding-rules.md`** — 938 → **1,062 words** (~1,630 → ~1,820 tokens). The rule gained a recognition trigger, the mock boundary moved in from the craft file, and the `core-rules.md` §2 conventions collision is now named and resolved in the text.
+- **`coding-patterns.md`** — 1,288 → **1,247 words** (~2,210 → ~2,150). One bullet out, its pointer folded into the existing parenthetical on the *write code that's easy to test* bullet — §5 had three separate pointers at `coding-rules.md` §3 across five bullets, and now has two.
+
+**Net, stated plainly because it invites the wrong conclusion.** A non-trivial coding task moves ~14,900 → **~15,000**, a database-project task ~15,350 → **~15,300** (it loads `coding-patterns.md` but not `coding-rules.md`, so it is the one row that got *cheaper*), everything-at-once ~22,400 → **~22,500**. The floor does not move. **Near-flat is not slack.** This pass moved ~120 tokens onto the coding row to buy a rule that was measured failing to bind — B-K8 draw 1, `Not carried`, with `coding-rules.md` open in the agent's context at the moment of the violation. The standing `ai-docs` finding holds: what remains in these files is duplication that reachability protects, and a flat net is not a budget.
+
+**Nothing else had drifted — the first time that is true here.** The three prior passes each surfaced rows stale for reasons unrelated to the edit that prompted them (six on 2026-08-31, three on the first 2026-09-10 pass). This one found none, which is what re-measuring the same table twice in one day buys and is not evidence the habit can lapse.
+
+**No compression pass was run and none is proposed.** This edit added rule text deliberately and paid for a fifth of it out of the craft file; it did not go looking for room.
