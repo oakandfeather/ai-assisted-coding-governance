@@ -2,7 +2,7 @@
 
 *Every compression and deduplication pass over `ai-docs/`, and every re-measurement of it: what the pass took, what it declined, what it reverted, and what the numbers moved. [`context-cost.md`](./context-cost.md) states the current cost and the standing constraints; this file states how they were arrived at.*
 
-**Last reviewed:** 2026-08-31
+**Last reviewed:** 2026-09-10
 
 **Where the other half of the edit history lives.** This file holds package changes made for **context-window cost**. Package changes derived from **Layer B runs** — the rule edits answering a scored scenario — are in [`testing/run-log.md`](./testing/run-log.md), beside the runs that motivated them. A change can appear in both when it was made for one reason and measured for the other; say so rather than moving it.
 

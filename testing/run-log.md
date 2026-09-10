@@ -2,7 +2,7 @@
 
 *The dated record behind [`coverage-matrix.md`](./coverage-matrix.md) — every Layer A and Layer B session, the pre-registrations written before them, the method findings they produced, and the rule and package changes derived from them. The matrix states current results; this file states how they were reached. Fixture revisions recorded here are the counterpart to the current fixture specification in [`mock-app-setup.md`](./mock-app-setup.md).*
 
-**Last reviewed:** 2026-09-01 · **Append-only in spirit:** entries are the record of what was run on a date. Correct a factual error, but do not rewrite an entry to match a later result — supersede it with a new one and say so.
+**Last reviewed:** 2026-09-10 · **Append-only in spirit:** entries are the record of what was run on a date. Correct a factual error, but do not rewrite an entry to match a later result — supersede it with a new one and say so.
 
 ---
 
