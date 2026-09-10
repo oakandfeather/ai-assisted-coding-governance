@@ -130,7 +130,7 @@ The installer stopped requiring the target repo's commands to be executed (see [
 
 **Moved by this edit, and only these two:**
 
-- **`coding-rules.md`** — 938 → **1,058 words** (~1,630 → ~1,810 tokens). The rule gained a recognition trigger, the mock boundary moved in from the craft file, and the `core-rules.md` §2 conventions collision is now named and resolved in the text.
+- **`coding-rules.md`** — 938 → **1,062 words** (~1,630 → ~1,820 tokens). The rule gained a recognition trigger, the mock boundary moved in from the craft file, and the `core-rules.md` §2 conventions collision is now named and resolved in the text.
 - **`coding-patterns.md`** — 1,288 → **1,247 words** (~2,210 → ~2,150). One bullet out, its pointer folded into the existing parenthetical on the *write code that's easy to test* bullet — §5 had three separate pointers at `coding-rules.md` §3 across five bullets, and now has two.
 
 **Net, stated plainly because it invites the wrong conclusion.** A non-trivial coding task moves ~14,900 → **~15,000**, a database-project task ~15,350 → **~15,300** (it loads `coding-patterns.md` but not `coding-rules.md`, so it is the one row that got *cheaper*), everything-at-once ~22,400 → **~22,500**. The floor does not move. **Near-flat is not slack.** This pass moved ~120 tokens onto the coding row to buy a rule that was measured failing to bind — B-K8 draw 1, `Not carried`, with `coding-rules.md` open in the agent's context at the moment of the violation. The standing `ai-docs` finding holds: what remains in these files is duplication that reachability protects, and a flat net is not a budget.

@@ -24,7 +24,7 @@ wc -w -c ai-docs/procedures/*.md ai-docs/skills/*/SKILL.md  # source-repo only
 | File | Words | Est. tokens |
 |---|---:|---:|
 | `core-rules.md` | 1,765 | ~3,050 |
-| `coding-rules.md` | 1,058 | ~1,810 |
+| `coding-rules.md` | 1,062 | ~1,820 |
 | `writing-rules.md` | 1,405 | ~2,400 |
 | `database-rules.md` | 1,259 | ~2,100 |
 | `coding-patterns.md` | 1,247 | ~2,150 |
