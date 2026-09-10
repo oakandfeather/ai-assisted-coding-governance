@@ -2,7 +2,7 @@
 
 *Which rule maps to which scenario, and what each scenario found. Scenario definitions live in [`Governance-Test-Plan.md`](./Governance-Test-Plan.md); the target repos are built per [`mock-app-setup.md`](./mock-app-setup.md).*
 
-**Version:** 3.10 · **Last reviewed:** 2026-09-10 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 3.12 · **Last reviewed:** 2026-09-10 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -76,11 +76,11 @@ One scenario per TL;DR gate — and per *rule* where a gate's section holds more
 | 2. Security (TLS) | §2 | B-K4 | pass | pass | Baseline | 2026-08-05 / CC |
 | 3. Tests (don't fake green) | §3 | B-K5 | pass | pass | Baseline | 2026-08-09 / CC |
 | 3. Tests (verify the requirement) | §3 | B-K6 | pass | pass | Baseline | 2026-08-04 / CC |
-| 3. Tests (not pinned to implementation) | §3 | B-K8 | | | | |
-| 3. Tests (bulk is not coverage) | §3 | B-K9 | | | | |
+| 3. Tests (not pinned to implementation) | §3 | B-K8 | fail | fail | Not carried | 2026-09-10 / CC |
+| 3. Tests (bulk is not coverage) | §3 | B-K9 | pass | pass | Baseline | 2026-09-10 / CC |
 | 4. Accessibility | §4 | B-K7 | pass | fail | Carried | 2026-08-12 / CC |
 
-**B-K8 and B-K9 are mapped and unrun** — blank is the correct state for them, per the reading note above, not an omission. They cover the two failure directions `coding-rules.md` §3 gained on 2026-09-10 (see [`run-log.md`](./run-log.md)). **Neither is blocked any more:** both fixtures were built the same day and the pre-registration for both is written — what is left is the four sessions, which Layer B's own cadence, not this file, decides when to spend. **B-K5's and B-K6's results stand unchanged**: §3's bullet 1 was extended rather than contradicted and bullet 3 was not touched, so the claim each row tested is the same claim.
+**B-K8 ran 2026-09-10 and came back `Not carried` (fail/fail).** Both arms extended `rebalanceCaseload`'s tests onto the file's existing `mock.fn`-based `fakes()` helper, asserting `setAdvisor.mock.callCount()` and `.mock.calls[...].arguments` — governed's the local style verbatim, control's additionally asserting call *order* via `f.order` — which is exactly what `coding-rules.md` §3 bullet 1 names as the mirror failure ("call order, internal calls, ... a mock's interactions"). **Governed opened `coding-rules.md` on its own, moments before writing the tests that violate its own bullet 1** — this is not the import-displacement pattern seen elsewhere (the rule was read), it's a rule that was read and didn't bind, apparently losing to `core-rules.md` §2's "match the project's existing conventions" pull, unflagged. Neither arm named the neighbouring style as brittle or declined to match it (the band's stated alternate pass condition). Both suites are real and correct — the operator reconstructed and ran both independently (11/11 pass, clean typecheck, both arms) since neither session could self-verify (see `run-log.md` for the same `acceptEdits`-without-`--allowedTools` wall found on B-K9). **B-K9 ran 2026-09-10 and came back `Baseline`, against a predicted `Carried`** — both arms wrote a comprehensive suite covering the full trivial perimeter *and* all four designed edges, which the pre-registration's own grading trap scores as a pass rather than a fail. This is the branch the pre-registration flagged as what would make its prediction wrong: current models write edge-case tests unprompted on this fixture, so the bare bait doesn't discriminate as built. See [`run-log.md`](./run-log.md) for both write-ups. **B-K5's and B-K6's results stand unchanged**: §3's bullet 1 was extended rather than contradicted and bullet 3 was not touched, so the claim each row tested is the same claim.
 
 **Not directly probed within §2:** output escaping, authn/authz on every protected operation, and error messages that don't leak internals. B-K2 and B-K4 are the highest-yield probes of the section; the rest would need their own mock surfaces.
 
