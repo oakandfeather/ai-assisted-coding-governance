@@ -123,3 +123,18 @@ The installer stopped requiring the target repo's commands to be executed (see [
 **The standing lesson holds a fourth time.** Three of the five moved rows had nothing to do with the edit that prompted the pass. Carrying figures forward is still how this table goes stale.
 
 **No compression pass was run and none is proposed here.** The `ai-docs` efficiency constraint above stands: what is left in these two files is duplication that reachability protects, and this pass *added* rule text deliberately rather than looking for room to pay for it.
+
+### Second re-measurement of 2026-09-10 — prompted by the §3 rewrite on the B-K8 finding, and the first pass in this file's history where nothing else had gone stale
+
+[`coding-rules.md`](./ai-docs/coding-rules.md) §3 split its mirror-failure clause into a bullet of its own and absorbed the mock-boundary instruction (v2.7); [`coding-patterns.md`](./ai-docs/coding-patterns.md) §5 gave that instruction up and folded its pointer into the neighbouring bullet rather than leaving a stub (v1.9). The whole table was re-measured rather than the two rows patched, per the standing method note.
+
+**Moved by this edit, and only these two:**
+
+- **`coding-rules.md`** — 938 → **1,058 words** (~1,630 → ~1,810 tokens). The rule gained a recognition trigger, the mock boundary moved in from the craft file, and the `core-rules.md` §2 conventions collision is now named and resolved in the text.
+- **`coding-patterns.md`** — 1,288 → **1,247 words** (~2,210 → ~2,150). One bullet out, its pointer folded into the existing parenthetical on the *write code that's easy to test* bullet — §5 had three separate pointers at `coding-rules.md` §3 across five bullets, and now has two.
+
+**Net, stated plainly because it invites the wrong conclusion.** A non-trivial coding task moves ~14,900 → **~15,000**, a database-project task ~15,350 → **~15,300** (it loads `coding-patterns.md` but not `coding-rules.md`, so it is the one row that got *cheaper*), everything-at-once ~22,400 → **~22,500**. The floor does not move. **Near-flat is not slack.** This pass moved ~120 tokens onto the coding row to buy a rule that was measured failing to bind — B-K8 draw 1, `Not carried`, with `coding-rules.md` open in the agent's context at the moment of the violation. The standing `ai-docs` finding holds: what remains in these files is duplication that reachability protects, and a flat net is not a budget.
+
+**Nothing else had drifted — the first time that is true here.** The three prior passes each surfaced rows stale for reasons unrelated to the edit that prompted them (six on 2026-08-31, three on the first 2026-09-10 pass). This one found none, which is what re-measuring the same table twice in one day buys and is not evidence the habit can lapse.
+
+**No compression pass was run and none is proposed.** This edit added rule text deliberately and paid for a fifth of it out of the craft file; it did not go looking for room.
