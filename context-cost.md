@@ -1,6 +1,6 @@
 # Context cost of the governance package
 
-**Last reviewed:** 2026-09-10
+**Last reviewed:** 2026-10-12
 
 Tracks how much of an agent's context window the `ai-docs/` package consumes when it's loaded per `AGENTS.md`'s "load in one pass" instruction. Re-run the measurement below and update this table when `ai-docs/` files change size materially — it's a cost metric, not a governed rule file, so it doesn't need a version bump on every edit.
 
@@ -23,15 +23,16 @@ wc -w -c ai-docs/procedures/*.md ai-docs/skills/*/SKILL.md  # source-repo only
 
 | File | Words | Est. tokens |
 |---|---:|---:|
-| `core-rules.md` | 1,765 | ~3,050 |
-| `coding-rules.md` | 1,062 | ~1,820 |
-| `writing-rules.md` | 1,405 | ~2,400 |
-| `database-rules.md` | 1,259 | ~2,100 |
-| `coding-patterns.md` | 1,247 | ~2,150 |
-| `writing-patterns.md` | 1,803 | ~3,000 |
-| `agent-workflow.md` | 2,740 | ~4,400 |
-| `client-profiles.md` + one profile | 763 | ~1,320 |
-| entry file (`AGENTS.md`, placeholders filled) | 1,091 | ~1,990 |
+| `core-rules.md` | 1,454 | ~2,530 |
+| `coding-rules.md` | 839 | ~1,420 |
+| `writing-rules.md` | 1,129 | ~1,940 |
+| `database-rules.md` | 1,019 | ~1,690 |
+| `coding-patterns.md` | 1,165 | ~1,990 |
+| `writing-patterns.md` | 1,519 | ~2,510 |
+| `agent-workflow.md` | 1,708 | ~2,790 |
+| `agent-delegation.md` | 519 | ~850 |
+| `client-profiles.md` + one profile | 690 | ~1,210 |
+| entry file (`AGENTS.md`, placeholders filled) | 1,097 | ~2,020 |
 | entry file (`CLAUDE.md`, the thin pointer itself) | 181 | ~300 |
 
 ## Source-repo cost — the install and update procedures
@@ -40,8 +41,8 @@ wc -w -c ai-docs/procedures/*.md ai-docs/skills/*/SKILL.md  # source-repo only
 
 | File | Words | Est. tokens |
 |---|---:|---:|
-| `procedures/govern-init.md` | 3,685 | ~6,100 |
-| `procedures/govern-update.md` | 3,055 | ~4,970 |
+| `procedures/govern-init.md` | 3,690 | ~6,110 |
+| `procedures/govern-update.md` | 3,056 | ~4,970 |
 | `skills/govern-init/SKILL.md` | 542 | ~880 |
 | `skills/govern-update/SKILL.md` | 473 | ~790 |
 
@@ -59,29 +60,30 @@ A one-shot cost — but paid in a session that is *also* holding the target repo
 These bind the next pass over `ai-docs/`. Each was arrived at by a pass that took a cut and reverted it, or declined one and said why; [`context-cost-log.md`](./context-cost-log.md) has the working.
 
 - **Reachability outranks yield: a rule that survives only as a pointer is unreachable at the moment it is needed.** Cuts *within* a file an agent loads whole are safe; cuts *between* files it may load separately are not. `coding-rules.md` §4 versus `writing-rules.md` §5 is the sharpest case — those two are *alternative* loads, so deleting either leaves a hole rather than a pointer. This is the same argument that puts the blast-radius gate inline in the entry file rather than delegating it to `agent-workflow.md` §7.
-- **Within-file is a licence to delete a *duplicate*, not a rule that merely resembles one.** `agent-workflow.md` §8's closing *"scope delegated work to reading and proposing rather than to acting"* reads like its least-access bullet and is a stricter default than it; replacing it with a backreference swaps an actionable rule for a pointer.
-- **One clause of rationale each is the floor, not padding.** On a rule an agent would otherwise pattern-match past, the trailing "so the human reviewer sees the check rather than assuming it" is the thing doing the work. The three self-check footers are where this bites.
+- **Within-file is a licence to delete a *duplicate*, not a rule that merely resembles one.** `agent-delegation.md` §4's *"scope delegated work to reading and proposing rather than acting"* reads like §3's least-access bullet and is a stricter default than it; replacing it with a backreference swaps an actionable rule for a pointer.
+- **One clause of rationale each is the floor, not padding.** On a rule an agent would otherwise pattern-match past, the trailing "so the human reviewer sees the check rather than assuming it" is the thing doing the work. The rule files' TL;DR closing lines carry it, since the separate self-check footers folded into them on 2026-10-12.
 - **`agent-workflow.md` §6 currently delegates the blast-radius enumeration to §7's floor**, so an agent reading §6 alone learns that a typo is exempt without learning what always qualifies. **If a Layer B run shows the falsification pass skipped on design-bearing work, restore the enumeration in §6 first.**
 - **Do not trim `database-rules.md` §5's "a script that only works once is a defect, not a convention to match."** The trailing words read as a restatement of the bullet's own lead-in and are not: they override `core-rules.md` §2's match-the-existing-conventions rule for the one case where the local convention *is* the defect. That is the B-D5 control-arm fail signature exactly — bare `INSERT`s written "in the local style" — which makes it the sentence in that file with the most measured behavioral value.
 - **A nested `@` path resolves against the importing file's directory, not the repo root.** From `ai-governance/client-profiles.md`, `@client-profiles/acme.md` loads and `@ai-governance/client-profiles/acme.md` silently does not — and the second is the shape a maintainer would copy from `CLAUDE.md`'s own root-relative imports. `check-links.ps1` resolves non-template `@` targets against the file's own directory, which matches.
-- **The strongest remaining cross-file candidate, for a pass that revisits that line:** `writing-rules.md` §2's *"prefer primary and current sources… note the date where currency matters"* restates `core-rules.md` §9's third bullet nearly verbatim, in a section whose own last bullet already delegates staleness to §9 — so unlike the other declined candidates, the file has declared the topic delegated and then restated it anyway.
+- **`agent-workflow.md` §8 is a stub by design.** The delegation cap and *"a subagent's report is a claim, not your verification"* stay under the import; the rest lives in `agent-delegation.md`, which loads only when opened. Don't trim the stub to a bare pointer — those two lines are spend and oversight control, which bind precisely when an agent is economizing.
 
 - **The two procedures are deliberately not compressed, and that is a decision rather than an omission.** They are read once per install or update, and their failure mode is not a wasted token but a mis-scaffold — which this repo has actually suffered, when a stale skill copy silently scaffolded the wrong shape out of perfectly current rules. Procedural unambiguity outranks ~1k tokens on a one-shot operation. Two things constrain any future pass that revisits this: **`govern-init.md`'s step numbering is load-bearing** (`scripts/build-empty.ps1` cites "step 4" by number), and **`govern-update.md` reads its anchors out of `scripts/build.ps1`** rather than restating them — inlining those to save words would create the third copy this package exists to prevent.
 
-**The remaining reduction is a governance decision, not a density one.** Every file has had a density pass and each is at its recorded floor; what is left is duplication that reachability protects. Cutting further means removing a rule or relaxing the constraint above.
+**The 2026-10-12 pass was a governance decision, not a density one** — the user waived recorded Layer B scores as a reason to keep text, which is what the earlier floors rested on. It took the floor from ~10,500 to ~8,300 tokens and the full load from ~22,500 to ~19,250, by compressing every rule file under one rewrite contract and moving `agent-workflow.md` §8's detail out of the import. The constraints above still bound it; [`context-cost-log.md`](./context-cost-log.md) has what it took and declined. **What is left is rule text.** A further reduction means removing a rule, which this pass did not do.
 
 ## Scenario totals
 
-**There is a floor.** The installed `CLAUDE.md` `@`-imports `core-rules.md`, `agent-workflow.md`, and the `client-profiles.md` index directly, so on Claude Code those three arrive in every session whether or not the agent decides to open anything — they are no longer a loading *choice*. The graduated rule in `AGENTS.md` ("scale that set to the blast radius") still governs the five conditional files **and the client profile's body**, which is what the second column measures.
+**There is a floor.** The installed `CLAUDE.md` `@`-imports `core-rules.md`, `agent-workflow.md`, and the `client-profiles.md` index directly, so on Claude Code those three arrive in every session whether or not the agent decides to open anything — they are no longer a loading *choice*. The graduated rule in `AGENTS.md` ("scale that set to the blast radius") still governs the six conditional files **and the client profile's body**, which is what the second column measures.
 
 | Scenario | On top of the floor | Est. tokens |
 |---|---|---:|
-| **Floor — every session** | entry files (`AGENTS.md` + `CLAUDE.md`) + `core-rules.md` + `agent-workflow.md` + `client-profiles.md` index, imported | **~10,500** |
-| Trivial edit | *nothing* | ~10,500 |
-| Non-trivial coding task | + `coding-rules.md` + `coding-patterns.md` + the client profile body | ~15,000 |
-| Non-trivial writing task | + `writing-rules.md` + `writing-patterns.md` + the client profile body | ~16,450 |
-| Non-trivial database-project task | + `database-rules.md` + `coding-patterns.md` + the client profile body | ~15,300 |
-| Everything at once | + all five conditional files + the client profile body | ~22,500 |
+| **Floor — every session** | entry files (`AGENTS.md` + `CLAUDE.md`) + `core-rules.md` + `agent-workflow.md` + `client-profiles.md` index, imported | **~8,300** |
+| Trivial edit | *nothing* | ~8,300 |
+| Task that spawns a subagent | + `agent-delegation.md` | ~9,150 |
+| Non-trivial coding task | + `coding-rules.md` + `coding-patterns.md` + the client profile body | ~12,250 |
+| Non-trivial writing task | + `writing-rules.md` + `writing-patterns.md` + the client profile body | ~13,300 |
+| Non-trivial database-project task | + `database-rules.md` + `coding-patterns.md` + the client profile body | ~12,500 |
+| Everything at once | + all six conditional files + the client profile body | ~19,250 |
 
 **No row above includes the install and update procedures, by design** — they never reach a target repo, so they cost an agent working in one nothing at all. Their cost is the *Source-repo cost* table above.
 
@@ -89,7 +91,7 @@ On every supported CLI other than Claude Code there is no floor, because none of
 
 ## Caveats
 
-- This is a one-time context-window cost **per session**. **The floor is paid unconditionally on Claude Code** — `CLAUDE.md` imports those files, so they load whether the agent wants them or not, and they survive `/compact`. Everything above the floor is still paid only when a file is actually `Read`, and **a linked file that is never opened costs nothing and binds nothing** — which is the failure the floor exists to prevent, not a saving. The graduated-loading rule exists to avoid paying the ~22.5k full cost on every task.
+- This is a one-time context-window cost **per session**. **The floor is paid unconditionally on Claude Code** — `CLAUDE.md` imports those files, so they load whether the agent wants them or not, and they survive `/compact`. Everything above the floor is still paid only when a file is actually `Read`, and **a linked file that is never opened costs nothing and binds nothing** — which is the failure the floor exists to prevent, not a saving. The graduated-loading rule exists to avoid paying the ~19.3k full cost on every task.
 - Prompt caching (where the harness supports it) makes repeat reference *cheap in billing* within a session once a file is cached, but it does not reduce how much of the context window that file occupies.
 - **The *Source-repo cost* table is a different kind of number** — paid once by whoever runs `/govern-init` or `/govern-update` in this repo, not per session by an agent working in a target repo. Don't add it to anything above.
-- These numbers reflect `ai-docs/` as of 2026-09-10. Every per-file row was re-measured **twice** that day. On the second pass only the two rows the edit touched moved, and they moved in **opposite directions** — see [`context-cost-log.md`](./context-cost-log.md), and don't read the near-flat net as room to spend. Nothing is carried forward on faith. Carrying figures forward is how rows go stale — re-measure after any material edit to a file listed above, and record the pass in [`context-cost-log.md`](./context-cost-log.md).
+- These numbers reflect `ai-docs/` as of 2026-10-12, every row re-measured after the compression pass rather than carried forward. The entry-file row **grew** (+6 words) because the mandatory block gained the `agent-delegation.md` bullet. Re-measure after any material edit to a file listed above, and record the pass in [`context-cost-log.md`](./context-cost-log.md).

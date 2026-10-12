@@ -2,7 +2,7 @@
 
 *How the package got its current **shape** — every change to what it ships, which files carry which body, and which tools it targets, with the date and the reasoning behind it. [`AGENTS.md`](./AGENTS.md) and [`README.md`](./README.md) state the shape as it stands now; this file states what it used to be and why it changed.*
 
-**Last reviewed:** 2026-09-01
+**Last reviewed:** 2026-10-12
 
 ## What belongs here, and what does not
 
@@ -94,3 +94,11 @@ Two deliberate non-changes:
 - **`ai-docs/client-profiles/example-university.md` was not renamed.** Its filename models nothing a derived profile copies — `govern-init` step 6 reads it for *shape*, step 2 never copies it, and step 4 deletes the sample link from the copied index — while `testing/mock-app-setup.md` pins that exact name in a Layer B fixture built outside this repo. Its body changed: the cite-only note now names `client-policies/example-university-policy.md`.
 
 **Existing installs are grandfathered, and `govern-update` says so rather than fixing it.** Tier E matches `client-profiles/*.md` by glob, not by name pattern, so nothing breaks — but after an update an older install's refreshed index describes a shape its `esu.md` does not match. The procedure now states that this is cosmetic, that the convention governs newly authored profiles only, and that tier E still forbids renaming them.
+
+## 2026-10-12 — a compression pass, and `agent-workflow.md` §8's detail moves to `agent-delegation.md`
+
+**The file set grows by one.** `agent-workflow.md` §8 keeps its heading and a stub — the two-subagent cap (one at a time, no chaining, a stated justification to exceed it) and *"a subagent's report is a claim, not your verification"* — and its full body moves to a new linked file, `agent-delegation.md`, at `agent-workflow.md`'s precedence tier. The installed set is now the two entry files plus **ten** `ai-governance/` items; the build scripts, both procedures, `README.md`, both entry files, A2.2, and the harness's file lists were updated together. **This overrides a recorded decision:** the 2026-08-12 pass considered the same split and declined it on the ground that most of §8 is spend and oversight control ([`context-cost-log.md`](./context-cost-log.md)). The stub is the answer to that — the cap and the trust boundary stay under the `@` import — while model and permission scoping and the "reading and proposing" default now load only when the agent opens the linked file, which on Claude Code it is told to do before spawning. That is a trade the user chose, not a free saving.
+
+**Every governed rule file was compressed in the same change**, under a rewrite contract: rule plus at most one clause of reason, worked examples kept only where they are a rule's sole discriminator, banners reduced to scope, the read-`core-rules.md`-first line, and the scope-boundary pointer; precedence stated once, in `core-rules.md`. The separate *Self-check* footer in each of the six rule and craft files that had one folds into its TL;DR's closing line, keeping the *"so the reviewer sees the check rather than assuming it"* clause. Every TL;DR item and every `§N` heading stays where it was. Root `AGENTS.md` (6,162 → 3,869 words) moves its dated narrative to one-line pointers into this file and `testing/run-log.md`; its forward rules stay in the present tense. The numbers are in [`context-cost-log.md`](./context-cost-log.md).
+
+**Layer B results predate this wording.** Every score in [`testing/coverage-matrix.md`](./testing/coverage-matrix.md) was recorded against the pre-compression text, and this change re-runs none of them. The scores describe the earlier wording; they are not evidence that the compressed text binds the same way. **The brief explicitly waived past scores as a reason to keep text** — the B-W4 hedge paragraph and the B-K8 mirror-failure bullet were compressed on their content, not preserved on their rows — so a row that later regresses should be read against this entry first.

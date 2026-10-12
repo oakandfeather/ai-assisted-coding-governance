@@ -2,7 +2,7 @@
 
 *How we verify that this package installs correctly and that its rules actually change agent behavior. Companion files: [`coverage-matrix.md`](./coverage-matrix.md) (which rule maps to which scenario) and [`mock-app-setup.md`](./mock-app-setup.md) (how to build the target repo the scenarios run against).*
 
-**Version:** 2.12 · **Last reviewed:** 2026-09-10 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 2.13 · **Last reviewed:** 2026-10-12 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 *How this plan's scenarios, baits, fixtures, and method got to their current shape — every revision, with the run that prompted it — is in [`test-plan-changes.md`](./test-plan-changes.md). **This file states the plan as it stands now.***
 

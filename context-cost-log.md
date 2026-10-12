@@ -2,7 +2,7 @@
 
 *Every compression and deduplication pass over `ai-docs/`, and every re-measurement of it: what the pass took, what it declined, what it reverted, and what the numbers moved. [`context-cost.md`](./context-cost.md) states the current cost and the standing constraints; this file states how they were arrived at.*
 
-**Last reviewed:** 2026-09-10
+**Last reviewed:** 2026-10-12
 
 **Where the other half of the edit history lives.** This file holds package changes made for **context-window cost**. Package changes derived from **Layer B runs** — the rule edits answering a scored scenario — are in [`testing/run-log.md`](./testing/run-log.md), beside the runs that motivated them. A change can appear in both when it was made for one reason and measured for the other; say so rather than moving it.
 
@@ -74,6 +74,30 @@ A fourth within-file cut was drafted and **reverted**, and it is the cautionary 
 **A method note worth keeping, because the estimate was made before the measurement and was wrong.** The change was planned as "+~75 words, under this file's *materially* threshold, leave the tables alone." The actual delta was +125, and the rounding boundary fell between the two — so the row that was going to be skipped had to be updated. **Estimate the delta if you like; decide from `wc`.** This is the same failure the method note in `context-cost.md` guards against from the other direction: there, a figure carried forward went stale; here, a figure predicted forward was simply wrong.
 
 **Growth that bought a rule, not a pass that bought window** — the same trade the 2026-08-15 and 2026-08-24 entries describe, and the third consecutive one in that direction. What distinguishes this one is that the rule it bought had already been measured *not binding* in its shorter form: B-F13 draw 1 confirmed the v1.19 sentence was in the governed arm's context verbatim and did not change behavior. Whether +125 words buys binding is exactly what draw 2 measures, which makes this the first entry here with a pre-registered test of its own cost-effectiveness. The run write-up is in [`testing/run-log.md`](./testing/run-log.md).
+
+
+**2026-10-12 — a whole-package compression pass, authorized as a governance decision, and the first one here that moved the floor.** The user asked for a fresh analysis that treated recorded test *results* as possibly faulty, and decided three things up front: compress but keep every rule; split `agent-workflow.md` §8's detail into a linked file so it leaves the import; and include root `AGENTS.md`. **Past `Baseline` and `Carried` scores were waived as reasons to keep text** — that waiver is what every earlier "at its floor" verdict in this file rested on, so this pass is not a contradiction of them so much as a change of the premise under them. The mechanisms stayed binding: § numbering, the build anchors, the placeholder count, reachability for import-less CLIs, the always-on core in both entry files, and the `CLAUDE.md` import lines.
+
+| File | Before | After |
+|---|---:|---:|
+| `core-rules.md` | 1,765 | 1,454 |
+| `agent-workflow.md` | 2,740 | 1,708 |
+| `agent-delegation.md` (new) | — | 519 |
+| `coding-rules.md` | 1,062 | 839 |
+| `writing-rules.md` | 1,405 | 1,129 |
+| `database-rules.md` | 1,259 | 1,019 |
+| `coding-patterns.md` | 1,247 | 1,165 |
+| `writing-patterns.md` | 1,803 | 1,519 |
+| `client-profiles.md` | 459 | 386 |
+| `AGENTS.template.md` | 1,398 | 1,339 |
+| `CLAUDE.template.md` | 421 | 362 |
+| root `AGENTS.md` (this repo only) | 6,162 | 3,869 |
+
+**What it took:** the six *Self-check* footers, folded into each TL;DR's closing line with the reviewer-sees-the-check clause kept; the restated precedence and companion lists in every banner (precedence now lives once, in `core-rules.md`); `core-rules.md` §7's no-profile elaboration, merged into §8; `writing-rules.md` §2's primary-sources bullet, now a pointer to `core-rules.md` §9 (the candidate this file had named strongest); the argumentation around the B-W4 hedge example and the B-K8 mirror-failure bullet, each now its rule plus one discriminating line; and `agent-workflow.md` §7's module-loading lever, which the entry file owns.
+
+**What it declined:** the procedures and launchers (one-shot reads, mis-scaffold failure mode — unchanged reasoning); `database-rules.md` §5's *"a defect, not a convention to match"*, kept verbatim; `coding-rules.md` §4 and `writing-rules.md` §5's accessibility text, which remain alternative loads; and the always-on core paragraph, unchanged in both entry files.
+
+**The estimates were optimistic, and the gap is recorded rather than closed.** The plan aimed the floor at ~6,500 tokens; it landed at ~8,300. `agent-workflow.md` came in at 1,708 against a ~1,250 target, `core-rules.md` at 1,454 against ~1,200, and root `AGENTS.md` at 3,869 against ~3,000. In each case the residue was rule text the contract said to keep; cutting to the number would have meant dropping rules. **This reverses the 2026-08-12 decline to split §8**, recorded above, on the user's call: the cap and the trust boundary stay always-on in the stub, and model and permission scoping plus the reading-and-proposing default now load only when `agent-delegation.md` is opened.
 
 ---
 
