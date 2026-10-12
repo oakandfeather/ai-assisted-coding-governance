@@ -1,8 +1,8 @@
 # Writing Patterns for AI-Assisted Content
 
-*Craft guide for written deliverables: clear, useful, maintainable content. Companion to the safety/risk rules — [`core-rules.md`](./core-rules.md) (the task-agnostic base) and [`writing-rules.md`](./writing-rules.md) (the content rules); this file governs writing quality, [`agent-workflow.md`](./agent-workflow.md) governs how to work. Content-track sibling of [`coding-patterns.md`](./coding-patterns.md). On overlap or conflict, **accuracy and fidelity win over elegance and concision**, and a stricter client profile (see [`client-profiles.md`](./client-profiles.md)) wins over both.*
+*Craft guide for written deliverables: clear, useful, maintainable content. The safety rules it sits beneath are [`core-rules.md`](./core-rules.md) and [`writing-rules.md`](./writing-rules.md); on conflict, **accuracy and fidelity win over elegance and concision**. Content-track sibling of [`coding-patterns.md`](./coding-patterns.md).*
 
-**Version:** 1.3 · **Last reviewed:** 2026-08-23 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 1.4 · **Last reviewed:** 2026-10-12 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -16,7 +16,7 @@
 6. **State each fact in one owning place** and link to it from everywhere else.
 7. **Edit the draft; don't regenerate it.** A rewrite discards the edits a human already made.
 
-If a request can't satisfy these, flag the tension rather than quietly trading one away.
+If a request can't satisfy these, flag the tension rather than quietly trading one away, and name the trade-off in your hand-off. The safety checklists in `core-rules.md` and `writing-rules.md` still apply — including running every example you ship (`writing-rules.md` §6).
 
 ---
 
@@ -45,53 +45,45 @@ If a request can't satisfy these, flag the tension rather than quietly trading o
 
 ## 3. Precision and economy
 
-- **Cut everything that carries no information.** No preamble restating the heading, no "in this section we will," no closing paragraph summarizing three sentences. Front-load and stop. Length is not thoroughness, and prose the reader learns to skip costs you the parts they should have read.
+- **Cut everything that carries no information.** No preamble restating the heading, no "in this section we will," no closing summary of three sentences. Prose the reader learns to skip costs you the parts they should have read.
 
   ```text
   BAD:  "It's important to note that there are a number of different options
          available when it comes to configuring the timeout value."
   GOOD: "Set `timeout` in seconds. Default: 30."
   ```
-- **Be concrete.** Name the thing, give the number, show the case. "Significantly faster" is unusable; "40% fewer round trips" is checkable — and checkability is the point (`writing-rules.md` §1).
-- **Prefer the plain verb to the noun phrase built from it.** "Use" over "utilize," "decide" over "make a determination," "we tested" over "testing was performed." Name the actor wherever responsibility matters — passive voice that hides who does what is a defect in a runbook, not a style preference.
-- **Don't let emphasis substitute for evidence.** Bold, superlatives, and intensifiers — "critical," "seamless," "robust," "incredibly" — add heat, not information, and a reader who sees them everywhere stops seeing them anywhere. Reserve emphasis for the few places a reader must not miss. (Adding a *claim* the source never made is a different and more serious problem — `writing-rules.md` §4.)
-- **Keep parallel things parallel.** One grammatical shape per list, one form per heading level, one meaning per term throughout. Switching mid-document makes the reader stop to work out what the change signifies.
+- **Be concrete.** Name the thing, give the number, show the case: "40% fewer round trips" is checkable where "significantly faster" is not (`writing-rules.md` §1).
+- **Prefer the plain verb to the noun phrase built from it** — "use" over "utilize," "we tested" over "testing was performed." Name the actor wherever responsibility matters; passive voice that hides who does what is a defect in a runbook.
+- **Don't let emphasis substitute for evidence.** Bold, superlatives, and intensifiers — "critical," "seamless," "robust" — add heat, not information; reserve emphasis for the few places a reader must not miss. (Adding a *claim* the source never made is `writing-rules.md` §4.)
+- **Keep parallel things parallel:** one grammatical shape per list, one form per heading level, one meaning per term throughout.
 
 ## 4. Documentation of software
 
-Applies when the deliverable documents software — a README, API reference, runbook, release note, help-center article, or in-repo guide. Everything above applies; this section adds what software documentation owes its reader. *(Comments and docstrings that travel inside a source file are [`coding-patterns.md`](./coding-patterns.md) §2.)*
+Applies when the deliverable documents software — a README, API reference, runbook, release note, help-center article, or in-repo guide. *(Comments and docstrings inside a source file are [`coding-patterns.md`](./coding-patterns.md) §2. Running every example you ship is risk, not craft: [`writing-rules.md`](./writing-rules.md) §6.)*
 
-**One documentation rule is not in this file: run every example before you ship it.** An unrun command is an unverified claim, so it is risk rather than craft — [`writing-rules.md`](./writing-rules.md) §6, binding whether or not you opened this file.
-
-- **Pick the document type and hold it.** Four shapes, each with a different job: **tutorial** (learning by doing), **how-to** (one specific goal), **reference** (exhaustive lookup), **explanation** (why it works this way). Blending all four in one document is the default failure of generated documentation — too long to look something up in, too shallow to learn from. §1's audience question decides which one you're writing.
+- **Pick the document type and hold it.** Four shapes, each with a different job: **tutorial** (learning by doing), **how-to** (one specific goal), **reference** (exhaustive lookup), **explanation** (why it works this way). Blending all four is the default failure of generated documentation — too long to look something up in, too shallow to learn from.
 - **Show what success looks like.** A step that says what to type but not what to expect leaves the reader unable to tell whether it worked. Give the meaningful part of the output, the resulting state, or the error that means they got it wrong.
-- **Explain the why, not just the what.** Restating a signature, a flag name, or a UI label adds nothing the reader couldn't already see. Document purpose, constraints, non-obvious consequences, and the reason behind a surprising choice — the documentation form of the comment rule in `coding-patterns.md` §2.
+- **Explain the why, not just the what.** Restating a signature, a flag name, or a UI label adds nothing the reader couldn't already see; document purpose, constraints, non-obvious consequences, and the reason behind a surprising choice.
 - **Cover what the document type owes.** README: what this is, who it's for, how to install, run, and test it, and where to go next. How-to: prerequisites up front, ordered steps. Reference: completeness and skimmability — every parameter, its default, and its error cases, in one consistent shape. Explanation: the trade-offs and the alternatives rejected.
-- **Keep documentation true when behavior changes.** A README, runbook, or help article doesn't travel with the source file the way a docstring does, so nothing will flag it when the code moves underneath it. When you change behavior, update the documentation describing it in the same change; when you find documentation already stale, fix it or flag it rather than writing around it.
+- **Keep documentation true when behavior changes.** Nothing flags a README or runbook when the code moves underneath it, so update the documentation in the same change, and fix or flag stale documentation rather than writing around it.
 
 ## 5. Revision and change discipline
 
-- **Edit the draft; don't regenerate it.** When revising a document that already exists — especially one a human has edited — change the parts the request names and leave the rest untouched. Regenerating from scratch silently discards accepted edits, resets wording someone chose deliberately, and produces a diff nobody can review.
+- **Edit the draft; don't regenerate it.** When revising an existing document — especially one a human has edited — change the parts the request names and leave the rest untouched. Regenerating discards accepted edits and produces a diff nobody can review.
 
   ```text
   BAD:  asked to fix one stale command; returns a rewritten README
   GOOD: asked to fix one stale command; returns a one-line diff
   ```
-- **Don't reformat and rewrite in the same pass.** Rewrapping lines, reordering sections, or converting bullets to prose alongside a substantive edit buries the real change — the content form of `coding-patterns.md` §5's separate-refactors-from-behavior-changes rule. Formatting that genuinely needs fixing gets its own change.
+- **Don't reformat and rewrite in the same pass.** Rewrapping, reordering, or converting bullets to prose alongside a substantive edit buries the real change; formatting that needs fixing gets its own change.
 - **Match the document's existing conventions.** Terminology, heading style, list punctuation, code-fence language tags, citation form, date format — follow what the document and its siblings already do rather than importing your own. (The client's *voice* and register are `writing-rules.md` §4's; this is the mechanical layer beneath it.)
-- **Never ship an unfilled placeholder as finished text.** An unfilled `*(TBD)*` signals that something is unconfigured — but only when it's visible and called out. Fill it, delete it, or name it in your hand-off; buried mid-document it reads as content.
-- **Leave the document navigable after you edit it.** Update the table of contents, section numbers, and cross-references your edit invalidated. An internal link that no longer resolves, or a "see §4" now pointing at renumbered content, is a defect you introduced.
-- **Put the current state in the document and the dated record in its log.** A reference document's job is to say what is true *now*; a reader reconstructing that from a stack of "amended 2026-03-04" clauses is reading a change log with the current version scattered through it. When history accumulates — superseded steps, revised decisions, prior wording — move the narrative to the log that owns it (a `CHANGELOG.md`, a decision record, a run log) and leave the document in the present tense with a pointer. The time dimension of §2's one-owning-place rule.
+- **Never ship an unfilled placeholder as finished text.** Fill it, delete it, or name it in your hand-off; buried mid-document, an unfilled `*(TBD)*` reads as content.
+- **Leave the document navigable after you edit it.** Update the table of contents, section numbers, and cross-references your edit invalidated; a link that no longer resolves, or a "see §4" pointing at renumbered content, is a defect you introduced.
+- **Put the current state in the document and the dated record in its log.** A reference document says what is true *now*. When history accumulates — superseded steps, revised decisions, prior wording — move the narrative to the log that owns it (a `CHANGELOG.md`, a decision record, a run log) and leave the document in the present tense with a pointer.
 
   ```text
   BAD:  "Deploy with `ship --release`. (2026-03-04: replaced `ship --prod`,
          which still works. 2026-06-12: `--prod` now errors.)"
   GOOD: "Deploy with `ship --release`." + a dated entry in the change log
   ```
-- **A passage that reads as history but carries a forward instruction is not history.** *"We dropped the retry wrapper in March — don't add it back, it masked the timeout"* is two things: a dated event, which belongs in the log, and a rule, which belongs in the document in the present tense. Summarise the whole passage into a change-log line and the instruction leaves with it, inviting exactly the regression it recorded. Move the narrative; keep the rule.
-
----
-
-## Self-check before presenting content
-
-Re-run the TL;DR above, and name in your hand-off any trade-off a requirement forced against it. Then run the safety self-checks in `core-rules.md` and `writing-rules.md` — all gates apply, including [`writing-rules.md`](./writing-rules.md) §6 — run every example before you ship it — and accuracy wins over polish.
+- **A passage that reads as history but carries a forward instruction is not history.** *"We dropped the retry wrapper in March — don't add it back, it masked the timeout"* is a dated event, which belongs in the log, and a rule, which stays in the document in the present tense. Move the narrative; keep the rule.

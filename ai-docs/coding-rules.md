@@ -1,8 +1,8 @@
 # AI Coding Rules for Coding Agents
 
-*Rules for writing, editing, or running code, with §§1–4 below the whole scope. **Read [`core-rules.md`](./core-rules.md) first:** it holds the task-agnostic base that binds on every task; this file adds only the code rules on top of it. Reference it from your project's entry file alongside `core-rules.md`. **A database project** — a repository where the schema itself is the deliverable — is [`database-rules.md`](./database-rules.md); this file governs application code, including the code that queries a database. Where a client profile (see [`client-profiles.md`](./client-profiles.md)) is stricter, it wins. Companions: [`coding-patterns.md`](./coding-patterns.md) (engineering craft) and [`agent-workflow.md`](./agent-workflow.md) (how to work).*
+*Rules for writing, editing, or running code, with §§1–4 below the whole scope. **Read [`core-rules.md`](./core-rules.md) first:** it holds the base that binds on every task; this file adds only the code rules. **A database project** — a repository where the schema itself is the deliverable — is [`database-rules.md`](./database-rules.md); this file governs application code, including the code that queries a database.*
 
-**Version:** 2.7 · **Last reviewed:** 2026-09-10 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
+**Version:** 2.8 · **Last reviewed:** 2026-10-12 · **Review cycle:** Quarterly, or whenever a client's AI terms change.
 
 ---
 
@@ -15,15 +15,15 @@ Run this **after** the `core-rules.md` TL;DR. Full detail in §§1–4.
 3. **Tests:** verify the requirement, cover edge cases, nothing faked to pass, nothing pinned to implementation detail, bulk not mistaken for coverage.
 4. **Accessibility:** WCAG-compliant if UI.
 
-Any "no" or "unsure": fix or flag it before presenting. Scale depth to the blast radius (`core-rules.md`) — anything touching auth, input handling, data storage/transmission, or dependencies gets the full check deliberately, stated in your hand-off.
+Any "no" or "unsure": fix or flag it before presenting. Scale depth to the blast radius (`core-rules.md`) — anything touching auth, input handling, data storage/transmission, or dependencies gets the full check deliberately, and your hand-off states which items you verified, so the reviewer sees the check rather than assuming it.
 
 ---
 
 ## 1. Dependencies and supply chain
 
-- **Only use packages you are confident exist.** Never invent a package name; if unsure one is real, say so explicitly and tell the user to verify before installing — hallucinated names are a known malware vector (slopsquatting).
+- **Only use packages you are confident exist.** Never invent a package name; if unsure one is real, say so and tell the user to verify before installing — hallucinated names are a known malware vector (slopsquatting).
 - **Prefer the standard library and already-present dependencies**; don't add a dependency for something small you can write directly.
-- When you do suggest a new dependency, name it exactly, state what it's for, and note that it should be checked for legitimacy, maintenance status, and license compatibility before install — see `core-rules.md` §9 for how to research that.
+- When you do suggest a new dependency, name it exactly, state what it's for, and note that it should be checked for legitimacy, maintenance status, and license compatibility before install (`core-rules.md` §9).
 - **Never auto-install packages** as part of an agentic action without surfacing them for confirmation first.
 - Pin/announce versions where relevant; don't silently pull "latest."
 
@@ -42,9 +42,9 @@ Generate secure code the first time; don't rely on a later pass to fix it.
 ## 3. Testing
 
 - Write tests that **verify the requirement**, not tests that merely restate the implementation. A test that passes regardless of whether the code is correct is worse than no test. Assert the observable behavior the requirement names.
-- **The mirror failure is a test that fails when the code is right.** One pinned to *how* the code works — call order, internal calls, private structure, exact log or error wording, a mock's interactions — goes red on a refactor that changed nothing a caller can see, and the cheapest route back to green is to weaken the assertion, which this section forbids below. Two checks, in the order you meet them. **Mock at a process boundary** — network, clock, filesystem, third-party service — and let your own modules run. **A neighbouring test file already faking a module you own does not license you to do the same, and neither does its ready-made fake:** `core-rules.md` §2's match-the-existing-conventions rule is about fitting in, not about propagating a defect, and where the two collide this file is the stricter one — if you believe the local style is brittle, say so **rather than** extending it. Then **name what each assertion pins before you write it:** if the answer is *"a function I own was called, this many times, with these arguments,"* it is pinned to today's call graph, not to the requirement.
+- **Don't pin a test to how the code works** — call order, internal calls, private structure, exact log or error wording, a mock's interactions. Such a test fails when the code is right, on a refactor no caller can see. **Mock only at a process boundary** — network, clock, filesystem, third-party service — and let your own modules run. **A neighbouring test file's fake of a module you own is no licence to extend it:** matching conventions (`core-rules.md` §2) doesn't extend to propagating a defect, and where the two collide this file is stricter. If the local style is brittle, say so **rather than** extending it. **Name what each assertion pins before you write it** — *"a function I own was called, this many times, with these arguments"* pins today's call graph, not the requirement.
 - Cover edge cases, error paths, and boundary conditions — not just the happy path.
-- **Test count is not evidence of coverage.** Assertions padded over getters, constructors, restated constants, and framework behavior you don't own — while the error paths and boundaries above go untested — leave a suite that reads as *tested* and isn't. The reviewer calibrates trust on the test directory, not on your hand-off, so this is the suite itself overstating its depth, not you overstating it in prose. Write what the requirement's behavior needs, and say in your hand-off what you did **not** cover rather than padding around it.
+- **Test count is not evidence of coverage.** Padding assertions over getters, constructors, restated constants, and framework behavior while the error paths and boundaries go untested makes the suite itself overstate its depth. Write what the requirement's behavior needs, and say in your hand-off what you did **not** cover.
 - Don't delete, weaken, or skip failing tests to make a suite go green; fix the cause or surface it.
 - Never fake, stub, or hardcode a result so a test appears to pass while the underlying functionality doesn't work.
 
@@ -57,10 +57,4 @@ Generate secure code the first time; don't rely on a later pass to fix it.
 - Use semantic HTML and keyboard-navigable, screen-reader-friendly structures.
 - Don't ship inaccessible defaults and leave it to the reviewer to catch.
 
-*(This file governs code, not the documents around it. Non-UI document accessibility — headings, alt text, plain language, contrast — is [`writing-rules.md`](./writing-rules.md) §5. Documentation a change ships — README, API reference, runbook, release note — is a written deliverable: [`writing-rules.md`](./writing-rules.md) §6 governs its risks (actually run any command or snippet you document), [`writing-patterns.md`](./writing-patterns.md) §4 its craft. This file governs the code they describe. Nor does it govern the schema itself: deploying a schema, destructive DDL, and the data that ships with a database project are [`database-rules.md`](./database-rules.md) — §2's parameterized-query rule still binds on any dynamic SQL built inside a procedure or function.)*
-
----
-
-## Self-check before presenting code
-
-Re-run this file's **TL;DR** **and** the `core-rules.md` TL;DR — both gates apply, at the depth the blast radius warrants. For changes with a security-sensitive surface or client-regulated data, state in your hand-off which items you verified, so the human reviewer sees the check rather than assuming it.
+*(Documents are [`writing-rules.md`](./writing-rules.md): §5 for their accessibility, §6 for documentation a change ships — run any command or snippet you document. The schema itself — deploying it, destructive DDL, shipped data — is [`database-rules.md`](./database-rules.md); §2's parameterized-query rule still binds on dynamic SQL built inside a procedure or function.)*
