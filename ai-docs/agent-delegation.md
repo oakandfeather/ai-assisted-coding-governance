@@ -17,7 +17,7 @@ Delegation trades context isolation against re-derivation. It pays when the subt
 ## 2. The ceiling
 
 - **At most two subagents per task, run one at a time** — the first one's report is in hand before the next launches; a backgrounded spawn you moved on from is still running. Each one pays the full context load again, so a delegated subtask commonly costs several times the inline work, plus the human's time reviewing another report.
-- **Exceeding it needs a justification stated in your hand-off** (`agent-workflow.md` §4): a genuinely independent line of inquiry the task actually has, or an explicit user request for more parallel agents. More thoroughness on the same question does not qualify, and a request naming N threads describes the work, not the agent count.
+- **Exceeding it needs the same justification a stop-and-ask does, stated in your hand-off** (`agent-workflow.md` §4): a genuinely independent line of inquiry the task actually has, or an explicit user request for more parallel agents. More thoroughness on the same question does not qualify, and a request naming N threads describes the work, not the agent count.
 - **Apply the pays-off test per delegation** — justifying the first subagent does not pre-justify the second.
 - **No chaining.** A subagent you launch may not spawn its own; a subtask that needs that comes back to you as a stop-and-ask (`agent-workflow.md` §2) or a smaller re-scoped delegation.
 

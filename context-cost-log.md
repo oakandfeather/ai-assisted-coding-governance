@@ -80,10 +80,10 @@ A fourth within-file cut was drafted and **reverted**, and it is the cautionary 
 
 | File | Before | After |
 |---|---:|---:|
-| `core-rules.md` | 1,765 | 1,454 |
-| `agent-workflow.md` | 2,740 | 1,708 |
-| `agent-delegation.md` (new) | — | 519 |
-| `coding-rules.md` | 1,062 | 839 |
+| `core-rules.md` | 1,765 | 1,490 |
+| `agent-workflow.md` | 2,740 | 1,801 |
+| `agent-delegation.md` (new) | — | 523 |
+| `coding-rules.md` | 1,062 | 851 |
 | `writing-rules.md` | 1,405 | 1,129 |
 | `database-rules.md` | 1,259 | 1,019 |
 | `coding-patterns.md` | 1,247 | 1,165 |
@@ -97,7 +97,7 @@ A fourth within-file cut was drafted and **reverted**, and it is the cautionary 
 
 **What it declined:** the procedures and launchers (one-shot reads, mis-scaffold failure mode — unchanged reasoning); `database-rules.md` §5's *"a defect, not a convention to match"*, kept verbatim; `coding-rules.md` §4 and `writing-rules.md` §5's accessibility text, which remain alternative loads; and the always-on core paragraph, unchanged in both entry files.
 
-**The estimates were optimistic, and the gap is recorded rather than closed.** The plan aimed the floor at ~6,500 tokens; it landed at ~8,300. `agent-workflow.md` came in at 1,708 against a ~1,250 target, `core-rules.md` at 1,454 against ~1,200, and root `AGENTS.md` at 3,869 against ~3,000. In each case the residue was rule text the contract said to keep; cutting to the number would have meant dropping rules. **This reverses the 2026-08-12 decline to split §8**, recorded above, on the user's call: the cap and the trust boundary stay always-on in the stub, and model and permission scoping plus the reading-and-proposing default now load only when `agent-delegation.md` is opened.
+**The estimates were optimistic, and the gap is recorded rather than closed.** The plan aimed the floor at ~6,500 tokens; it landed at ~8,500. `agent-workflow.md` came in at 1,801 against a ~1,250 target, `core-rules.md` at 1,490 against ~1,200, and root `AGENTS.md` at 3,869 against ~3,000. In each case the residue was rule text the contract said to keep; cutting to the number would have meant dropping rules. **The first draft did drop some, and a fresh-context review caught them:** a found-credentials *use* ban, "explicitly" on the transmit condition, the build-vs-flag reading of speculative scope, the licence note for introduced material, the active "name any second reading" duty, three phrases of the B-F13-scored §1 step 3, the late-objection routing, and the stop-and-ask bar plus the inherits-obligations line in the §8 stub. All were restored before the numbers above were taken (+142 words across four files) — the measure of how easily a compression pass loses a condition while keeping its bullet. **This reverses the 2026-08-12 decline to split §8**, recorded above, on the user's call: the cap and the trust boundary stay always-on in the stub, and model and permission scoping plus the reading-and-proposing default now load only when `agent-delegation.md` is opened.
 
 ---
 

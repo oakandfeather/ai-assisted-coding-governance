@@ -15,7 +15,7 @@ Run this **after** the `core-rules.md` TL;DR. Full detail in §§1–4.
 3. **Tests:** verify the requirement, cover edge cases, nothing faked to pass, nothing pinned to implementation detail, bulk not mistaken for coverage.
 4. **Accessibility:** WCAG-compliant if UI.
 
-Any "no" or "unsure": fix or flag it before presenting. Scale depth to the blast radius (`core-rules.md`) — anything touching auth, input handling, data storage/transmission, or dependencies gets the full check deliberately, and your hand-off states which items you verified, so the reviewer sees the check rather than assuming it.
+Any "no" or "unsure": fix or flag it before presenting. Scale depth to the blast radius (`core-rules.md`) — anything touching auth, input handling, data storage/transmission, dependencies, or client-regulated data gets the full check deliberately, and your hand-off states which items you verified, so the reviewer sees the check rather than assuming it.
 
 ---
 
@@ -57,4 +57,4 @@ Generate secure code the first time; don't rely on a later pass to fix it.
 - Use semantic HTML and keyboard-navigable, screen-reader-friendly structures.
 - Don't ship inaccessible defaults and leave it to the reviewer to catch.
 
-*(Documents are [`writing-rules.md`](./writing-rules.md): §5 for their accessibility, §6 for documentation a change ships — run any command or snippet you document. The schema itself — deploying it, destructive DDL, shipped data — is [`database-rules.md`](./database-rules.md); §2's parameterized-query rule still binds on dynamic SQL built inside a procedure or function.)*
+*(Documents are [`writing-rules.md`](./writing-rules.md): §5 for their accessibility, §6 for documentation a change ships — README, API reference, runbook — so run any command or snippet you document; their craft is [`writing-patterns.md`](./writing-patterns.md) §4. The schema itself — deploying it, destructive DDL, shipped data — is [`database-rules.md`](./database-rules.md); §2's parameterized-query rule still binds on dynamic SQL built inside a procedure or function.)*
