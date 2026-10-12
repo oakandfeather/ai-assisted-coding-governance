@@ -6,14 +6,14 @@ Assert-MockPresent
 
 $src = $RepoRoot
 $tgt = $MockArms.update
-$tierA = 'core-rules.md','coding-rules.md','writing-rules.md','database-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md'
+$tierA = 'core-rules.md','coding-rules.md','writing-rules.md','database-rules.md','coding-patterns.md','writing-patterns.md','agent-workflow.md','agent-delegation.md'
 
 "=== A3.1 - tier A replaced wholesale ==="
 $drift = @()
 foreach ($f in $tierA) {
   if ((Read-Doc "$src\ai-docs\$f") -ne (Read-Doc "$tgt\ai-governance\$f")) { $drift += $f }
 }
-Assert 'A3.1a' ($drift.Count -eq 0) "all 7 rule files match new upstream ($($drift -join ', '))"
+Assert 'A3.1a' ($drift.Count -eq 0) "all 8 rule files match new upstream ($($drift -join ', '))"
 
 "=== A3.2 - tier B re-derived, and the diff stayed reviewable ==="
 $cl = Read-Doc "$tgt\CLAUDE.md"

@@ -28,7 +28,7 @@ Resolve it the way the launcher describes — a path the user gives you, `$AI_GO
 
 ### 2. Copy the file set
 
-The two entry files land at the repo root; the other nine items travel together into an **`ai-governance/`** directory you create at the root. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` imports `AGENTS.md` plus `ai-governance/core-rules.md`, `ai-governance/agent-workflow.md`, and the `ai-governance/client-profiles.md` index, and the files inside `ai-governance/` link each other with relative `./` paths — separating them breaks the chain.
+The two entry files land at the repo root; the other ten items travel together into an **`ai-governance/`** directory you create at the root. `AGENTS.md` links into `./ai-governance/`, `CLAUDE.md` imports `AGENTS.md` plus `ai-governance/core-rules.md`, `ai-governance/agent-workflow.md`, and the `ai-governance/client-profiles.md` index, and the files inside `ai-governance/` link each other with relative `./` paths — separating them breaks the chain.
 
 | From `ai-docs/` | To target repo |
 | --- | --- |
@@ -41,6 +41,7 @@ The two entry files land at the repo root; the other nine items travel together 
 | `coding-patterns.md` | `ai-governance/coding-patterns.md` |
 | `writing-patterns.md` | `ai-governance/writing-patterns.md` |
 | `agent-workflow.md` | `ai-governance/agent-workflow.md` |
+| `agent-delegation.md` | `ai-governance/agent-delegation.md` |
 | `client-profiles.md` | `ai-governance/client-profiles.md` |
 | `client-profiles/` | `ai-governance/client-profiles/` *(the directory — see the exclusion below)* |
 

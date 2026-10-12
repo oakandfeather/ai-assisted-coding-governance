@@ -112,6 +112,7 @@ Copy-Verbatim (Join-Path $aiDocs 'database-rules.md')  (Join-Path $buildDir 'ai-
 Copy-Verbatim (Join-Path $aiDocs 'coding-patterns.md') (Join-Path $buildDir 'ai-governance\coding-patterns.md')
 Copy-Verbatim (Join-Path $aiDocs 'writing-patterns.md') (Join-Path $buildDir 'ai-governance\writing-patterns.md')
 Copy-Verbatim (Join-Path $aiDocs 'agent-workflow.md')  (Join-Path $buildDir 'ai-governance\agent-workflow.md')
+Copy-Verbatim (Join-Path $aiDocs 'agent-delegation.md') (Join-Path $buildDir 'ai-governance\agent-delegation.md')
 
 # ---------- ai-governance/client-profiles.md ----------
 # Drop the "Sample profile" section (no sample file is bundled here) and
@@ -142,5 +143,5 @@ $profiles = $profiles.Substring(0, $sampleIdx).TrimEnd() + "`n"
 
 Write-Text (Join-Path $buildDir 'ai-governance\client-profiles.md') $profiles
 
-Write-Host "empty-build/ regenerated (10 files)."
+Write-Host "empty-build/ regenerated (11 files)."
 Write-Host "empty-build/ is gitignored and generated - do not hand-edit it; edit ai-docs/ and rerun this script."
