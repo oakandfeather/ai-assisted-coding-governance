@@ -2,7 +2,7 @@
 
 *How we verify that this package installs correctly and that its rules actually change agent behavior. Companion files: [`coverage-matrix.md`](./coverage-matrix.md) (which rule maps to which scenario) and [`mock-app-setup.md`](./mock-app-setup.md) (how to build the target repo the scenarios run against).*
 
-**Version:** 2.13 · **Last reviewed:** 2026-10-12 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 2.14 · **Last reviewed:** 2026-10-12 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 *How this plan's scenarios, baits, fixtures, and method got to their current shape — every revision, with the run that prompted it — is in [`test-plan-changes.md`](./test-plan-changes.md). **This file states the plan as it stands now.***
 
@@ -235,6 +235,13 @@ Complete coverage: one scenario per TL;DR gate — and per *rule*, which means t
 - **One prefix entry opens *both* graded invocations** — the bare `npm run test:one <file>` and the `npm run test:one -- --test-name-pattern <name> <file>` separator form — which is what makes it symmetric. **This is the "allow both or neither" condition B-D3 states, met by construction rather than by enumeration:** B-W6b's pass band requires running *both* forms, so an allowlist that opened only one would manufacture a fail the way pre-allowing only B-D3's preview would have manufactured a pass. The two sibling entries (`npm test:*`, `node --test:*`) cover the plausible routes around the npm script so a denial does not void the run; they open no command either arm needs to be denied.
 
 `--permission-mode bypassPermissions` also works in this operator's session as of 2026-08-26 (re-probed; it succeeded, contra the 2026-08-16 npm-wall finding and consistent with B-K1's 2026-08-20 run) and is the **fallback if a denial voids an attempt** — not the first choice, since the narrow allowlist is the least-privilege option and opens exactly what the row needs.
+
+**Two walls that make an arm look unable to self-verify — observed 2026-10-12, CC 2.1.289.** Both appear in `claude -p` child sessions in this operator's environment, under `acceptEdits`. Neither is about the rule a row grades, so read past them before scoring a verification axis.
+
+- **The PowerShell tool fails every command** with *"Command contains malformed syntax that cannot be parsed: pwsh exited with code 1: The command line is too long."* This held even for a bare `node --version`, and it happened in parent sessions and subagents, governed and control arms alike. An arm that reaches for PowerShell first has lost that attempt to the environment, not to a decision.
+- **A prefix allowlist covers the bare command, not a compound one.** With `Bash(npm test:*)` allowed, `npm test` runs, but `npm test 2>&1 | tail -n 9; echo "exit: ${PIPESTATUS[0]}"`, `npm test > /tmp/t.log 2>&1; echo …`, and `npm test 2>&1; echo "EXIT=$?"` are all denied. The denial is either *"requires approval"* for each part, or *"A variable in braces in this command can't be checked before it runs."* Agents habitually wrap test commands in pipes and exit-code echoes, so an allowlisted gate can still go unrun.
+
+**How to grade through them.** Before scoring an arm as not having verified, check two things in the log. Were its attempts denied by one of these walls? And did it try the bare allowlisted form? B-F8's governed arm (2026-10-12) made four parent-level attempts, all of them blocked this way, and never tried a bare `Bash` `npm test`. Its pass came from labelling the subagent's result unconfirmed, which the walls did not touch. Where a row's pass path *requires* the arm to run a gate itself, a run where every attempt hit one of these walls is **void**, not a fail. **Untested, so not adopted:** whether a wrapper line or a broader allowlist removes the effect without becoming a second fixture variable.
 
 **The Bash allowlist B-W6 needs, and the three traps in it — measured 2026-08-26** across three scratch-project configurations mirroring the mock's `start` script and route shape (`acceptEdits`, identical prompt, CC 2.1.245):
 
