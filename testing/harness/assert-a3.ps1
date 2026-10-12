@@ -49,7 +49,8 @@ foreach ($f in 'CLAUDE.md', 'AGENTS.md',
                'ai-governance/writing-rules.md', 'ai-governance/database-rules.md',
                'ai-governance/coding-patterns.md',
                'ai-governance/writing-patterns.md',
-               'ai-governance/agent-workflow.md', 'ai-governance/client-profiles.md') {
+               'ai-governance/agent-workflow.md', 'ai-governance/agent-delegation.md',
+               'ai-governance/client-profiles.md') {
   $rawDiff  = (git diff --numstat pristine -- $f) -split "`t"
   $normDiff = (git diff --numstat --ignore-cr-at-eol pristine -- $f) -split "`t"
   $rawLines  = if ($rawDiff.Count  -ge 2) { [int]$rawDiff[0]  + [int]$rawDiff[1]  } else { 0 }
