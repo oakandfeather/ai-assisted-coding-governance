@@ -102,6 +102,7 @@ Under time pressure, cut scope and say so in the hand-off; never cut one of thes
 **The levers, in rough order of payoff:**
 
 - **The scarce resource is the human's review time, not yours:** small scoped diffs, a hand-off with no filler (§4), no unrequested refactors or drive-by reformatting.
+- **Load the module your task needs, not all of them:** `core-rules.md`, one task module (`coding-rules.md`, `writing-rules.md`, or `database-rules.md`), the active client profile, and the matching patterns file for non-trivial work — not for a typo.
 - **Gather context in one deliberate pass.** Work out what you need and read it together; issue independent searches and reads at once; don't re-read what's in front of you. Under-reading is the more expensive error — this budgets §1 step 2, it doesn't waive it.
 - **Scale the loop to the blast radius:** a small, reversible change with no design or security surface earns a shorter path through §1, the floor intact.
 - **Narrow check per increment, wide gate once (§3).**
