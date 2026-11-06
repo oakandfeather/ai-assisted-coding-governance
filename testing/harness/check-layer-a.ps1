@@ -31,6 +31,12 @@ Assert 'A2.3' (-not (Test-Path "$g\ai-governance\client-profiles\example-univers
 Assert 'A2.4' (-not (Test-Path "$g\human-docs") -and -not (Test-Path "$g\procedures") -and -not (Test-Path "$g\skills") -and -not (Test-Path "$g\testing")) `
               'excluded trees absent'
 
+# One install, at the root. A nested ai-governance/ is a second copy of every
+# rule; govern-init step 1's ancestor check should make it impossible.
+$nested = Get-ChildItem -LiteralPath $g -Directory -Recurse -Force -Filter 'ai-governance' -ErrorAction SilentlyContinue |
+  Where-Object { $_.FullName -ne (Join-Path $g 'ai-governance') -and $_.FullName -notmatch '\\(\.git|node_modules)\\' }
+Assert 'A2.14' (@($nested).Count -eq 0) "no ai-governance/ below the install root ($(@($nested).FullName -join ', '))"
+
 $agents  = Read-Doc "$g\AGENTS.md"
 $claude  = Read-Doc "$g\CLAUDE.md"
 # CLAUDE.md is thin because of what it CONTAINS, not how many lines it has.

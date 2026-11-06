@@ -2,7 +2,7 @@
 
 **Applies to:** All engineers, contractors, and subcontractors who write, review, or ship code for client engagements
 **Status:** Internal standard
-**Version:** 1.13 · **Last reviewed:** 2026-09-10
+**Version:** 1.14 · **Last reviewed:** 2026-11-06
 **Review cycle:** Reviewed quarterly and whenever a client's AI terms change
 
 > **Read this first.** You are coding on behalf of clients, using their data, building their intellectual property, under their rules. AI tools make you faster, but they also make it easy to leak a client's data, ship insecure code under their name, or contaminate their codebase with badly-licensed material. This guideline is how we get the speed without the liability. When a client's own policy is stricter than this document, **the client's policy wins** — see the client profiles in Appendix A.
@@ -152,6 +152,8 @@ For AI agents that can run commands, edit files, install packages, or call servi
 **Loading the entry file is not the same as loading the rules.** The entry file *links* them, and a link an agent doesn't follow has delivered nothing. Claude Code closes part of that gap by importing the two always-on rule files (`core-rules.md` and `agent-workflow.md`) directly from `CLAUDE.md`, along with the client-profile index that names which client's rules bind, so those arrive in every session. Codex and the other supported CLIs have no import mechanism at all, so for them every rule file depends on the agent following a link. The practical consequence for you: the further a task gets from the always-on core, the less you can assume the agent read the rule you are relying on.
 
 So before you point an agent at a client repo, check that the entry files and `ai-governance/` are present and current, and get them installed or refreshed if not — the AI-governance source repository's `README.md` has the install and update paths. Their presence doesn't transfer accountability: §1 still holds, and you still own every line. Their absence just means you are the only control.
+
+**In a monorepo, install once, at the root.** The root entry files load wherever in the repository an agent starts, so one install governs every project beneath it; a second `ai-governance/` directory in a subfolder is a second copy of every rule, and the two will drift. A project that needs its own commands or stack notes gets a small `AGENTS.md` of facts in its own folder, with a one-line `CLAUDE.md` beside it so Claude Code reads it too. Two cautions for review. A nested file can add constraints but must never relax the root's, and no tool enforces that — some give the nearest file the last word — so a nested file that loosens a rule is a review finding. And nested files load late or not at all depending on where the agent starts, so anything every task must see belongs at the root. **One repository, one client's work:** if a monorepo holds unrelated clients' projects side by side, stop and ask the engagement lead (§13) before pointing an agent at it — §8's rule against carrying one client's code into another client's work has no per-folder exemption.
 
 ## 13. When to stop and ask the engagement lead
 

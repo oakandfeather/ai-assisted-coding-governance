@@ -22,7 +22,9 @@ Resolve it the way the launcher describes — a path the user gives you, `$AI_GO
 
 ### 1. Check before writing
 
-- Confirm the target is the intended repo **root**. `AGENTS.md` and `CLAUDE.md` land there — they only auto-load from the root — and the companion files go in an `ai-governance/` directory beneath the root.
+- Confirm the target is the intended repo **root**. `AGENTS.md` and `CLAUDE.md` land there — at the root they load wherever in the repo the agent launches, while a copy in a subfolder loads late or not at all — and the companion files go in an `ai-governance/` directory beneath the root.
+- **Check the target's ancestors too, not just the target.** If any directory above it, up to the repository root, holds an `AGENTS.md` or an `ai-governance/` directory, the repo is already governed and you are in a subfolder of it: **stop and say so.** A second install is a second copy of every rule. If the user wants per-project files, that is step 8, run from the root.
+- **If the repo holds unrelated clients' projects side by side, stop and ask the engagement lead.** Several clients governing the *same* work is configurable (`Active client` can name more than one, and `client-profiles.md` composes them); unrelated clients sharing one repository is not, and no per-folder setting makes it so.
 - If an `AGENTS.md` or `CLAUDE.md` already exists: **stop and show the user what's there.** Do not overwrite. Offer to merge the mandatory-rules block into the existing file instead, and let them decide.
 - If the companion files or an `ai-governance/` directory already exist, report which ones and ask before replacing — they may carry local edits.
 
@@ -144,6 +146,15 @@ The copied `AGENTS.md` already carries a short "For the humans on this project" 
   onboarding and the full guideline live in the AI-governance source repository.
   ```
 
+### 8. Offer nested project files (monorepos, opt-in)
+
+If the repo holds more than one project — `apps/`, `packages/`, `services/` — **offer** a nested file pair for each project the user names. Don't assume: a project with nothing to say beyond the root needs none.
+
+- **Follow the installed `AGENTS.md`'s *Nested project files* section** for what the pair holds. In short: a project-facts `AGENTS.md`, and a `CLAUDE.md` that is the single line `@AGENTS.md`. Always create both, never one.
+- Fill the nested `AGENTS.md` the same way as step 5: from the project's own configuration, marking any command nobody ran with `# unverified`, and asking rather than inventing.
+- **Never create an `ai-governance/` directory below the root, and never copy the mandatory-rules block into a nested file.**
+- If a nested `AGENTS.md` or `CLAUDE.md` already exists, apply step 1's discipline: stop and show the user rather than overwriting.
+
 ## Hand off
 
 Report:
@@ -151,6 +162,7 @@ Report:
 - Files copied, placeholders filled, and placeholders **left unfilled** — call these out explicitly, they are open work.
 - **The commands, in three states.** Which ones you wrote in marked `unverified`, which stayed italicized placeholders because nothing in the repo sourced them, and whether the offer to run them was **accepted, declined, or unanswered**. Anything still marked `unverified`, and any offer left unanswered, is open work — say so plainly rather than letting a filled-looking file imply otherwise.
 - **Whether a human-facing README/CONTRIBUTING pointer was added** (step 7), or declined.
+- **Which nested project file pairs were created** (step 8), or that the offer was declined or did not apply.
 - **Whether a client profile was authored, and from what source** — the client's own policy document, an interview, or not at all. Name the policy by title and version if there was one, and say which fields it did not address. If no profile was authored, say that `core-rules.md` §8's sensitive-by-default applies until one exists. **Name what you cut from the draft as out of scope**, so the human can move it to the human guideline if that is where it belongs.
 - **Whether an overlay was used, and whether anything was written back to it.** Say which client artifacts came from the overlay and which you authored here, and whether the write-back offer was accepted, declined, or never made because there is no overlay. A write-back that was offered and not answered is open work, not a completed step.
 - **Whether the policy itself landed in the repo** — reproduced at `ai-governance/client-policies/<client>-policy.md`, cited only (title, version, canonical URL in the profile's authority note), or absent because there is no policy. A cite-only install is a smaller claim than a reproduced one; say which the reviewer is looking at.

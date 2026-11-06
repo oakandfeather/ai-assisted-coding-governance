@@ -41,9 +41,11 @@ Adopt `build.ps1`'s failure posture too — **if an anchor is not found in the f
 | **B — banner-stripped** | `CLAUDE.md` | Re-derive from the template (slice the banner per step 2), then replace — but diff first, and gate it separately. See below. |
 | **C — merge** | `AGENTS.md` | Replace **only** the mandatory-rules block. See step 5. |
 | **D — merge** | `ai-governance/client-profiles.md` | Preserve the active-client paragraph. See step 6. |
-| **E — never touch** | `ai-governance/client-profiles/*.md`, `ai-governance/client-policies/*.md` | Leave alone entirely. Report as untouched. |
+| **E — never touch** | `ai-governance/client-profiles/*.md`, `ai-governance/client-policies/*.md`, and any nested `AGENTS.md` / `CLAUDE.md` below the repo root | Leave alone entirely. Report as untouched. |
 
 **Tier E is absolute.** These files are client-authored: the profiles summarize a client's own AI policy, and `client-policies/` holds that policy itself, reproduced verbatim. You do not need their contents to do this job, so do not read them — list them to report them and nothing more.
+
+**Nested `AGENTS.md` / `CLAUDE.md` files are project-owned, like the sections below the root `AGENTS.md`'s seam.** They carry no package text — the rule that governs them (they may add constraints, never loosen) arrives in the root mandatory-rules block in step 5 — so there is nothing upstream to merge into them. List them so the hand-off can name them; **an `ai-governance/` directory below the root is not a nested file but a second install: report it as a defect and do not update it.**
 
 **Existing profile and policy filenames stay as they are.** The `<client>-profile.md` / `<client>-policy.md` convention in the refreshed `client-profiles.md` governs files authored **from now on**. An install predating it holds names like `esu.md`, so the refreshed index will describe a shape those files do not match - that is cosmetic, because the index links each profile by its own path and nothing dangles. Tier E still governs: **do not rename them**, and do not report the mismatch as a defect. Name the convention once in the tier-D hand-off so the team can rename on their own schedule if they want to.
 
@@ -115,7 +117,7 @@ Report, per tier:
 
 - **Updated** — which files, with their `Version:` deltas.
 - **Merged** — for `AGENTS.md` and `client-profiles.md`: what was replaced, and explicitly **what was preserved** (the active-client value, the project sections, the client list, and any legacy header field the current template no longer defines). State that the placeholder check passed.
-- **Untouched** — name `ai-governance/client-profiles/` and `ai-governance/client-policies/` and their files explicitly. Reviewers need to see that client content was not in scope. If the target has profiles but no `client-policies/`, report that as open work here too (see tier E).
+- **Untouched** — name `ai-governance/client-profiles/` and `ai-governance/client-policies/` and their files explicitly, and any nested `AGENTS.md` / `CLAUDE.md` files. Reviewers need to see that client content was not in scope. If the target has profiles but no `client-policies/`, report that as open work here too (see tier E).
 - **Still unconfigured** — if the target's `Active client` or its active-profiles paragraph was unfilled, say so plainly. The rules are now current, but the repo has no client profile, so `core-rules.md` §8's sensitive-by-default governs until someone authors one. This is open work, not a clean result.
 - **Added / removed upstream** — including anything you refused to delete and why.
 - **Anything that stopped the run** — a missing anchor, a legacy layout, a dirty working tree, a stale source clone, or a stale launcher that halted before this file was reached. Say what you did not do.

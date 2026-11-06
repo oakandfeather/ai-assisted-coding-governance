@@ -2,7 +2,7 @@
 
 *Every compression and deduplication pass over `ai-docs/`, and every re-measurement of it: what the pass took, what it declined, what it reverted, and what the numbers moved. [`context-cost.md`](./context-cost.md) states the current cost and the standing constraints; this file states how they were arrived at.*
 
-**Last reviewed:** 2026-10-12
+**Last reviewed:** 2026-11-06
 
 **Where the other half of the edit history lives.** This file holds package changes made for **context-window cost**. Package changes derived from **Layer B runs** — the rule edits answering a scored scenario — are in [`testing/run-log.md`](./testing/run-log.md), beside the runs that motivated them. A change can appear in both when it was made for one reason and measured for the other; say so rather than moving it.
 
@@ -162,3 +162,5 @@ The installer stopped requiring the target repo's commands to be executed (see [
 **Nothing else had drifted — the first time that is true here.** The three prior passes each surfaced rows stale for reasons unrelated to the edit that prompted them (six on 2026-08-31, three on the first 2026-09-10 pass). This one found none, which is what re-measuring the same table twice in one day buys and is not evidence the habit can lapse.
 
 **No compression pass was run and none is proposed.** This edit added rule text deliberately and paid for a fifth of it out of the craft file; it did not go looking for room.
+
+**2026-11-06 — monorepo support added +192 words to the installed entry file (1,097 → 1,289; ~2,020 → ~2,330 tokens), raising the floor from ~8,600 to ~8,900.** Measured from `build/AGENTS.md` before and after, with the pre-change build reproducing the table's old figure exactly. About 30 words are the *never loosen* sentence in the mandatory-rules block. The rest is the *Nested project files* body section, which every install pays for, including single-project repos that will never use it. That trade was taken so a fresh install documents the pair. It is the first candidate if the floor needs to come down: the section could move into `govern-init` step 8 and stop shipping. The procedures grew too, but they are source-repo cost only: `govern-init.md` +301 words, `govern-update.md` +99.

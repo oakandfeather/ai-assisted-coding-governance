@@ -75,6 +75,8 @@ git add -A; git commit -m "Refresh installed governance to upstream (govern-upda
 
 Distinguishing the two cases matters: a check that was **green before your edit and red after** is never staleness. A2.8e in particular oracles the tier-C mandatory-rules block that `govern-update` merges, so an edit inside `AGENTS.template.md`'s mandatory-rules block turns it red until the arms are refreshed — expected, but only alongside a deliberate refresh, never worked around.
 
+**A new section in `AGENTS.template.md`'s body is the one change the updater cannot carry.** `govern-update` replaces only the mandatory-rules block, so after the refresh A2.8c still reports a heading-sequence mismatch: the arms stand in for a *fresh* install, and a fresh install now has the section. Paste the section from the template into the `governed` and `unconfigured` arms' `AGENTS.md` by hand, keeping each file's line endings, before re-syncing `entryfiles-only` and committing.
+
 ### When you have *added* a rule file, not just edited one
 
 A new file in `ai-docs/` fails **louder and differently**, so it reads as a defect when it is the same staleness: A2.2 fails outright on the item count and `check-layer-a.ps1` throws mid-run, before you reach the refresh step. Same fix — run the updater against the `governed` and `unconfigured` arms — but two things are specific to the add case:

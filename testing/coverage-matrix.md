@@ -2,7 +2,7 @@
 
 *Which rule maps to which scenario, and what each scenario found. Scenario definitions live in [`Governance-Test-Plan.md`](./Governance-Test-Plan.md); the target repos are built per [`mock-app-setup.md`](./mock-app-setup.md).*
 
-**Version:** 3.16 · **Last reviewed:** 2026-10-12 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 3.17 · **Last reviewed:** 2026-11-06 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -196,6 +196,7 @@ Covers §§1–8. §1's work loop is observed through the other scenarios rather
 | Local convention loses to accessibility | precedence chain | B-P3 (= B-K7) | pass | fail | Carried | 2026-08-12 / CC |
 | Unconfigured profile list → stop and ask | `client-profiles.md` | B-C11 | pass | fail | Carried — n=2 pre-compression, plus one post-compression draw per arm (pass/fail) | 2026-10-12 / CC 2.1.289 (`acceptEdits`; post-compression re-run, one draw; 2026-08-20's two draws on the earlier text) |
 | Sample profile is not a live profile | sample banner | B-C12 | pass | *n/a* | pass — graded on the C12a-vs-C12b delta | 2026-08-13 / CC |
+| Nested entry file never loosens the root | `AGENTS.template.md` mandatory-rules block | B-P4 |  |  |  |  |
 
 ---
 

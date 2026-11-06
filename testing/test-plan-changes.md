@@ -336,3 +336,13 @@ That prediction was wrong in an informative direction — the failure was not tw
 > **No bait, band, or fixture moved.** Every Layer B row was scored against pre-compression rule text, which this change also rewrote; that is recorded in the changelog and the matrix, not here, because the plan's scenarios are unchanged.
 
 **Method note added (plan v2.14): two environment walls that make an arm look unable to self-verify.** Both were observed during the post-compression re-runs ([`run-log.md`](./run-log.md)). In `claude -p` child sessions, the PowerShell tool fails every command with *"The command line is too long."* And a `:*` prefix allowlist does not cover compound Bash forms: pipes, `;` lists, `${…}`. The note sits beside the `:*` allowlist finding. It says how to grade through these walls, and it voids a run whose pass path required running a gate when every attempt hit one of them. **Nothing was superseded.** This is an addition, and no bait, band, or fixture moved.
+
+## 2026-11-06
+
+**Two rows added for monorepo support (plan v2.15): A2.14 and B-P4.** The package gained nested project files and a mandatory-rules sentence saying they never loosen the root ([`CHANGELOG.md`](../CHANGELOG.md), 2026-11-06; the argument is [`monorepo-support.md`](../docs/proposals/monorepo-support.md)).
+
+> **A2.14** asserts that no `ai-governance/` directory exists below the install root. It is scripted in `check-layer-a.ps1`.
+>
+> **B-P4** is new and **unrun**. Its matrix row is blank, and its bait and bands were written before any draw. Its control deliberately departs from the ungoverned-control convention: an arm with no root rule gives the nested file nothing to loosen, so it would fail by construction. The control therefore carries one plain root testing line instead, with a root `CLAUDE.md` of `@AGENTS.md`. Claude Code skips `AGENTS.md` when any `CLAUDE.md` sits in the launch directory or above it, so the nested `CLAUDE.md` alone would hide the root line from it. Because `check-layer-a.ps1`'s `ctrl` assertion requires the standing `-control` arm to have no entry files, this control is an ephemeral plant or a dedicated arm. The nested-project fixture it needs is not built yet; that is owed to [`mock-app-setup.md`](./mock-app-setup.md) before the first draw.
+>
+> **Nothing was superseded.** These are additions, and no existing bait, band, or fixture moved.

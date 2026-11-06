@@ -2,7 +2,7 @@
 
 *How the package got its current **shape** — every change to what it ships, which files carry which body, and which tools it targets, with the date and the reasoning behind it. [`AGENTS.md`](./AGENTS.md) and [`README.md`](./README.md) state the shape as it stands now; this file states what it used to be and why it changed.*
 
-**Last reviewed:** 2026-10-12
+**Last reviewed:** 2026-11-06
 
 ## What belongs here, and what does not
 
@@ -102,3 +102,20 @@ Two deliberate non-changes:
 **Every governed rule file was compressed in the same change**, under a rewrite contract: rule plus at most one clause of reason, worked examples kept only where they are a rule's sole discriminator, banners reduced to scope, the read-`core-rules.md`-first line, and the scope-boundary pointer; precedence stated once, in `core-rules.md`. The separate *Self-check* footer in each of the six rule and craft files that had one folds into its TL;DR's closing line, keeping the *"so the reviewer sees the check rather than assuming it"* clause. Every TL;DR item and every `§N` heading stays where it was. Root `AGENTS.md` (6,162 → 3,869 words) moves its dated narrative to one-line pointers into this file and `testing/run-log.md`; its forward rules stay in the present tense. The numbers are in [`context-cost-log.md`](./context-cost-log.md).
 
 **Layer B results predate this wording.** Every score in [`testing/coverage-matrix.md`](./testing/coverage-matrix.md) was recorded against the pre-compression text, and this change re-runs none of them. The scores describe the earlier wording; they are not evidence that the compressed text binds the same way. **The brief explicitly waived past scores as a reason to keep text** — the B-W4 hedge paragraph and the B-K8 mirror-failure bullet were compressed on their content, not preserved on their rows — so a row that later regresses should be read against this entry first.
+
+## 2026-11-06 — monorepos: one install at the root, optional nested project files
+
+The package assumed one repository, one root `AGENTS.md`, and one `ai-governance/`. Running `govern-init` inside `apps/<x>/` would have scaffolded a second install, because step 1 checked only the target directory and not the directories above it.
+
+**The shape now:**
+
+- **One install per repository, at the root.** `govern-init` step 1 stops when it finds an `AGENTS.md` or `ai-governance/` in any ancestor directory. Its old claim that the entry files *"only auto-load from the root"* was wrong against the vendor docs and was corrected the same day.
+- **Optional nested pair per project:** an `AGENTS.md` of project facts plus a `CLAUDE.md` that is the single line `@AGENTS.md`. `AGENTS.template.md` (v1.19) describes the pair in a new *Nested project files* section, and `govern-init` offers to create pairs in a new **step 8**. It is appended, not inserted, because the step numbers are load-bearing.
+- **The "never loosen" rule lives in the mandatory-rules block**, as one sentence. No loader enforces it: Codex gives the closer file the last word, and one Copilot page says the same. `govern-update` refreshes only that block, so a body-only rule would never have reached an existing install.
+- **This repo's own root `AGENTS.md` mandatory block was not given the sentence**, although the proposal's verification section said it would land in both. The root mirrors only the always-on non-negotiables list, which is unchanged (A4.3(iii) still passes), and this repo has no nested projects.
+- **`govern-update` puts nested entry files in tier E** (never touched), and reports an `ai-governance/` directory below the root as a defect.
+- **Unrelated clients side by side in one repo is a stop-and-ask** in `govern-init` step 1 and guideline §12. Several clients over the same work is unchanged and still composes through `client-profiles.md`.
+
+**One premise moved between the proposal and the landing.** The proposal said Claude Code never reads `AGENTS.md`. A direct read of the vendor page on landing day found that Claude Code v2.1.277 and later can. By default, though, it skips `AGENTS.md` whenever a `CLAUDE.md` exists in the launch directory or any directory above it, which every governed repo's root has. So the nested `CLAUDE.md` is still required, for that reason. Two wider claims are now imprecise, and both were left alone in this change and flagged as follow-up. The package says Claude Code does not read `AGENTS.md` (template banner, root `AGENTS.md`). Guideline §12 says no CLI other than Claude Code has an import mechanism, but the Copilot CLI page documents `@` imports.
+
+**Coverage:** A2.14 (no nested `ai-governance/`) is scripted. B-P4 (a nested file tries to loosen a root rule) is specified and **blank**; its nested-project fixture is not built yet. Details are in [`testing/test-plan-changes.md`](./testing/test-plan-changes.md). The argument is in [`docs/proposals/monorepo-support.md`](./docs/proposals/monorepo-support.md), Piece 1 of which this is.

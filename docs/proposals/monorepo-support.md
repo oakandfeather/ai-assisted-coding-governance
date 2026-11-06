@@ -1,8 +1,10 @@
 # Proposal — monorepo support: one install at the root, thin project files beneath it
 
-**Version:** 1.0 · **Last reviewed:** 2026-11-06 · **Status:** **Proposed, not implemented** · **Review cycle:** None; revisit when `AGENTS.template.md` or `govern-init.md` is next edited.
+**Version:** 1.1 · **Last reviewed:** 2026-11-06 · **Status:** **Piece 1 implemented 2026-11-06; Piece 2 open** · **Review cycle:** None; revisit when `AGENTS.template.md` or `govern-init.md` is next edited.
 
-> **Proposed, not implemented.** The *Context* below describes the package as it stands today, which is the problem; everything from *Decisions proposed* onward is written in the conditional and describes a change that has not been made. Where this file and a rule file disagree, the rule file is current.
+> **Piece 1 implemented 2026-11-06 — see [`CHANGELOG.md`](../../CHANGELOG.md), which records what shipped and where it differs from this text.** This file is not edited to match. Piece 2 — the nested-project fixture and the B-P4 runs — is still open.
+>
+> **As originally written:** the *Context* below describes the package as it stands today, which is the problem; everything from *Decisions proposed* onward is written in the conditional and describes a change that has not been made. Where this file and a rule file disagree, the rule file is current.
 
 ---
 
