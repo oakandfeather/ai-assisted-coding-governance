@@ -139,3 +139,9 @@ The template's *Nested project files* section shipped in every install, includin
 - **`agent-workflow.md` §7's module-routing bullet (v1.22) is now a pointer** to the entry file's mandatory-rules list, which already names each module and when it applies. The list reaches context on every CLI; `agent-workflow.md` is imported on Claude Code only. Why no B-F10 re-run is owed is in [`testing/coverage-matrix.md`](./testing/coverage-matrix.md).
 
 What the move saved is in [`context-cost-log.md`](./context-cost-log.md). B-P4's fixture adjustments are in [`testing/run-log.md`](./testing/run-log.md), *Fixture revisions*.
+
+## 2026-11-16 — root `AGENTS.md` keeps the rules; the rationale moves to `docs/design/`
+
+Root `AGENTS.md` (v1.37) went from 4,062 to 3,251 words. Six sections — *How the ai-docs files chain together*, *Multi-tool entry points*, *The testing track*, *human-docs mapping*, *Client material*, and *Procedures vs. launchers* — now hold only their rules, each with a pointer that says when to open the explanation. The explanation, the rejected alternatives, and the fidelity-caveat evidence moved to a new [`docs/design/package-shape.md`](./docs/design/package-shape.md), under a new `docs/design/` subfolder for current-state rationale. `docs/proposals/` was the wrong home: proposals are conditional and get superseded.
+
+**The rewrite contract:** every sentence that prohibits or requires something stayed in `AGENTS.md`, in the present tense. The plan's ~2,400-word target was not reached; the contract held instead. The mandatory-rules block and the inline non-negotiable core are untouched. `README.md`'s description of `docs/` now names both subfolders.
