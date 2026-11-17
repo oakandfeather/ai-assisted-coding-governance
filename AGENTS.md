@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Version:** 1.37 · **Last reviewed:** 2026-11-16 · **Active client:** none (internal repository)
+**Version:** 1.38 · **Last reviewed:** 2026-11-17 · **Active client:** none (internal repository)
 
 Guidance for AI agents working in this repository — the source repo for the AI-assisted coding governance package. This repo applies its own rules to itself.
 
@@ -130,7 +130,7 @@ The package supports **coding CLIs**: Claude Code, OpenAI Codex, the GitHub Copi
 - **`CLAUDE.md` `@`-imports `core-rules.md`, `agent-workflow.md`, and the `client-profiles.md` index; every other rule file and the profile body stay linked.** **State the fidelity caveat, don't paper over it**: an imported `AGENTS.md` reaches the linked files only if the agent follows the link.
 - **Both entry files restate the non-negotiable core inline and define *load*.** Do not remove that inline core thinking the link is enough, and do not remove the imports thinking the imperative is enough.
 - **A nested `@` path resolves against the importing file's directory, not the repo root** — the root-relative shape copied from `CLAUDE.md` fails silently there; `check-links.ps1` catches it.
-- **Drift surface.** The precedence line reads "project entry file," not "`CLAUDE.md`," in `README.md`, this file, and `core-rules.md`. The always-on core is duplicated *by design* into `AGENTS.template.md` and this file — **change both**. **Do not add a seventh non-negotiable to that core** to restore the retired Copilot files' *"human review before merge; SAST, secret scanning, and dependency analysis in CI"* item: the inline copy never bound where it was measured (`coverage-matrix.md`, B-T1), and the requirement already lives in `AGENTS.template.md`'s *Security & CI expectations* section. `govern-init.md` scaffolds both entry files; keep its copy table and this section in sync.
+- **Drift surface.** The precedence line reads "project entry file," not "`CLAUDE.md`," in `README.md`, this file, and `core-rules.md`. The always-on core is duplicated *by design* into `AGENTS.template.md` and this file — **change both**. **Do not add a seventh non-negotiable to that core** for *"human review before merge; SAST, secret scanning, and dependency analysis in CI"*: the requirement lives in `AGENTS.template.md`'s *Security & CI expectations* section, and an inline copy of it did not bind where measured (`coverage-matrix.md`, B-T1). `govern-init.md` scaffolds both entry files; keep its copy table and this section in sync.
 - **"Do not reconstruct the rule files from memory" lives in both the launcher and the procedure, deliberately** — the launcher's copy must survive *not finding* the procedure. Don't dedupe it.
 - **A change that only works under Claude Code belongs in the launcher, not the procedure.**
 
