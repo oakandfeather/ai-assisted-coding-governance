@@ -75,7 +75,7 @@ git add -A; git commit -m "Refresh installed governance to upstream (govern-upda
 
 Distinguishing the two cases matters: a check that was **green before your edit and red after** is never staleness. A2.8e in particular oracles the tier-C mandatory-rules block that `govern-update` merges, so an edit inside `AGENTS.template.md`'s mandatory-rules block turns it red until the arms are refreshed — expected, but only alongside a deliberate refresh, never worked around.
 
-**A new section in `AGENTS.template.md`'s body is the one change the updater cannot carry.** `govern-update` replaces only the mandatory-rules block, so after the refresh A2.8c still reports a heading-sequence mismatch: the arms stand in for a *fresh* install, and a fresh install now has the section. Paste the section from the template into the `governed` and `unconfigured` arms' `AGENTS.md` by hand, keeping each file's line endings, before re-syncing `entryfiles-only` and committing.
+**Adding or removing a section in `AGENTS.template.md`'s body is the one change the updater cannot carry.** `govern-update` replaces only the mandatory-rules block, so after the refresh A2.8c still reports a heading-sequence mismatch: the arms stand in for a *fresh* install, and a fresh install's sections have changed. Paste an added section from the template into the `governed` and `unconfigured` arms' `AGENTS.md` by hand, or delete a removed one from both, keeping each file's line endings, before re-syncing `entryfiles-only` and committing. A removal left undone fails A2.8c, which names the leftover heading.
 
 ### When you have *added* a rule file, not just edited one
 
