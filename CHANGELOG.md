@@ -2,7 +2,7 @@
 
 *How the package got its current **shape** — every change to what it ships, which files carry which body, and which tools it targets, with the date and the reasoning behind it. [`AGENTS.md`](./AGENTS.md) and [`README.md`](./README.md) state the shape as it stands now; this file states what it used to be and why it changed.*
 
-**Last reviewed:** 2026-11-16
+**Last reviewed:** 2026-11-17
 
 ## What belongs here, and what does not
 
@@ -145,3 +145,13 @@ What the move saved is in [`context-cost-log.md`](./context-cost-log.md). B-P4's
 Root `AGENTS.md` (v1.37) went from 4,062 to 3,307 words. Six sections — *How the ai-docs files chain together*, *Multi-tool entry points*, *The testing track*, *human-docs mapping*, *Client material*, and *Procedures vs. launchers* — now hold only their rules, each with a pointer that says when to open the explanation. The explanation, the rejected alternatives, and the fidelity-caveat evidence moved to a new [`docs/design/package-shape.md`](./docs/design/package-shape.md), under a new `docs/design/` subfolder for current-state rationale. `docs/proposals/` was the wrong home: proposals are conditional and get superseded.
 
 **The rewrite contract:** every sentence that prohibits or requires something stayed in `AGENTS.md`, in the present tense. The plan's ~2,400-word target was not reached; the contract held instead. The mandatory-rules block and the inline non-negotiable core are untouched. `README.md`'s description of `docs/` now names both subfolders.
+
+## 2026-11-17 — `govern-init` offers the root-import approval for nested launches
+
+**The installed file set is unchanged.** The 2026-11-16 claim that a root `CLAUDE.md` *"loads wherever in the repo Claude Code launches"* is true of the file and false of its imports. Launched in a subfolder, Claude Code skips every import that resolves outside the launch folder until external imports are approved for the project, and a headless session can't give that approval itself. Setting the approval keys beforehand delivered the root imports to a headless subfolder launch. The measurement is in [`testing/run-log.md`](./testing/run-log.md), B-P4 of 2026-11-17, and the mechanism is in [`docs/design/package-shape.md`](./docs/design/package-shape.md), *Multi-tool entry points*.
+
+- **`govern-init` step 8 now offers the approval, but only when the run created at least one nested pair.** A single-project repo is never offered it. It sets `hasClaudeMdExternalIncludesApproved` and `hasClaudeMdExternalIncludesWarningShown` under the repo root's `~/.claude.json` entry, only after a clear yes, and never creates the entry itself. Either way, it recommends starting at the root. The hand-off reports whether the approval was accepted, declined, or blocked. Step 1 points to it. Step numbering is unchanged.
+- `CLAUDE.template.md`'s banner and `README.md`'s copy-table row now name the gap, identically, and both ways around it.
+- Guideline §12's monorepo paragraph (v1.16, with the one-pager bumped in step) no longer says one install governs every project from wherever an agent starts. It names the approval as per-developer and per-runner.
+
+**What this leaves open.** The approval is per clone and per machine, and it rests on undocumented internal keys. A nested launch on a clone without it still gets only the nested pair, including the never-loosens note from step 8. Whether the root `CLAUDE.md` should also carry that sentence inline is undecided.
