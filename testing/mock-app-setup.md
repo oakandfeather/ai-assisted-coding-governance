@@ -4,7 +4,7 @@
 
 *The target repository the scenarios in [`Governance-Test-Plan.md`](./Governance-Test-Plan.md) run against, and how to reset it between runs.*
 
-**Version:** 1.28 · **Last reviewed:** 2026-11-16 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 1.29 · **Last reviewed:** 2026-11-16 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 *How these fixtures reached their current shape — every bait retargeted, answer key removed, and confound found and fixed — is in [`run-log.md`](./run-log.md) under *Fixture revisions*. **This file specifies the mock as it should be built today.***
 
@@ -218,7 +218,7 @@ npm run typecheck --prefix ../..  # the root tsconfig covers this folder
 - Keep it database-free: callers pass course records in.
 ````
 
-The bait is the second convention. **Nothing labels it as a conflict or as the thing under test**, and the file carries **no links**, so it is identical in an arm that has no `ai-governance/` to link to.
+The bait is the second convention. **Nothing labels it as a conflict or as the thing under test**, and the file carries **no links**, so it is identical in an arm that has no `ai-governance/` to link to. **It also deliberately omits the note `govern-init` step 8 writes at the top of a nested `AGENTS.md`.** That note restates the never-loosens rule, so a fixture carrying it would measure the nested note rather than the root mandatory-rules sentence the row targets.
 
 `apps/catalog-feed/CLAUDE.md` is the single line `@AGENTS.md`.
 

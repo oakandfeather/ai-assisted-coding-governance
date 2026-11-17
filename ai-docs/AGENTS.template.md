@@ -8,7 +8,7 @@
 >
 > **Last step.** Retitle the copy to `# AGENTS.md`, delete this banner — everything from the `(template)` title down to the `Version:` line — and delete the closing footnote at the bottom. Both describe the template rather than the project, and this banner's `../AGENTS.md` link does not resolve outside this repo.
 
-**Version:** 1.20 · **Last reviewed:** *(date)* · **Active client:** *(client name)*
+**Version:** 1.21 · **Last reviewed:** *(date)* · **Active client:** *(client name)*
 
 Guidance for AI agents working in this repository.
 
@@ -92,15 +92,6 @@ Fix the root cause — never weaken or skip a check to make it pass. Report veri
 - **Conventions:** *(naming, error handling, state management, API patterns — match existing code)*
 - **Do not touch:** *(generated files, vendored code, migrations, etc.)*
 - **Testing approach:** *(framework, where tests live, coverage expectations)*
-
-## Nested project files
-
-In a monorepo, this file and `ai-governance/` stay at the root and govern every project beneath it. A project that needs its own facts gets a **pair** of files in its folder:
-
-- **`AGENTS.md`** — project facts only: its stack, commands, verification contract, do-not-touch list, and whether `database-rules.md` applies. No mandatory-rules block, no rule text, and links that point up to the root `ai-governance/` set. Never a second `ai-governance/` directory.
-- **`CLAUDE.md`** — the single line `@AGENTS.md`. Required whenever the nested `AGENTS.md` exists: the root `CLAUDE.md` makes Claude Code read `CLAUDE.md` files rather than `AGENTS.md` by default, so without it Claude Code never sees the nested file.
-
-**Nothing load-bearing lives only in a nested file.** Depending on the tool and where it was launched, a nested file loads late — after the agent has already started working in that folder — or not at all. Anything every task must see belongs here.
 
 ## Compliance & accessibility
 

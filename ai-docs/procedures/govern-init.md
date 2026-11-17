@@ -150,7 +150,17 @@ The copied `AGENTS.md` already carries a short "For the humans on this project" 
 
 If the repo holds more than one project — `apps/`, `packages/`, `services/` — **offer** a nested file pair for each project the user names. Don't assume: a project with nothing to say beyond the root needs none.
 
-- **Follow the installed `AGENTS.md`'s *Nested project files* section** for what the pair holds. In short: a project-facts `AGENTS.md`, and a `CLAUDE.md` that is the single line `@AGENTS.md`. Always create both, never one.
+- **Create a pair, always both, never one:**
+  - **`AGENTS.md`** — project facts only: the project's stack, commands, verification contract, do-not-touch list, and whether `database-rules.md` applies. No rule text, with links pointing up to the root `ai-governance/` set.
+  - **`CLAUDE.md`** — the single line `@AGENTS.md`. It is what makes Claude Code see the nested file at all: with a root `CLAUDE.md` present, Claude Code reads `CLAUDE.md` files rather than `AGENTS.md` by default.
+- **Put this two-line note directly under each nested `AGENTS.md`'s title**, so the constraint sits in the file a later editor opens:
+
+  ```markdown
+  *Project facts only — no rule text. Nested files never loosen the root `AGENTS.md` or `ai-governance/`; a nested file loads late or not at all, so anything every task must see belongs at the root.*
+  *Keep the `CLAUDE.md` beside this file (the single line `@AGENTS.md`); without it Claude Code never reads this one.*
+  ```
+
+- **Put nothing load-bearing only in a nested file.** If the user offers a rule every task must follow, it goes in the root `AGENTS.md`, not here.
 - Fill the nested `AGENTS.md` the same way as step 5: from the project's own configuration, marking any command nobody ran with `# unverified`, and asking rather than inventing.
 - **Never create an `ai-governance/` directory below the root, and never copy the mandatory-rules block into a nested file.**
 - If a nested `AGENTS.md` or `CLAUDE.md` already exists, apply step 1's discipline: stop and show the user rather than overwriting.
