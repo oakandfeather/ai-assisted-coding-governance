@@ -110,7 +110,7 @@ A deliberate reference chain; edits must preserve it. What each file is for, and
 - **`database-rules.md`** states only the schema-specific residue and defers to `core-rules.md`; query code stays in `coding-rules.md` §2 and query performance in `coding-patterns.md` §3. **Don't add a `database-patterns.md`** without re-running the risk-vs-craft test.
 - **The two patterns files defer safety to their rules files.** A new `writing-patterns.md` bullet must be craft — what a heading *says* — not the accessibility baseline restated. Documentation *about* code lives in `writing-patterns.md` §4; comments and docstrings inside a source file live in `coding-patterns.md` §2.
 - **`agent-workflow.md`'s section numbering is load-bearing** — append new sections, never insert. §8 is a stub that keeps the delegation cap and trust boundary always-on; the detail lives in `agent-delegation.md`.
-- **The procedures contain no rule text.** Change the file set or placeholder list in `govern-init.md` and the template's install note together, and keep its step 7 snippet in sync with `README.md`'s Path C. **`govern-init.md`'s step numbering is load-bearing**: `build-empty.ps1` cites "step 4." **`govern-update.md` reads its anchors out of `scripts/build.ps1`** — never add a third copy of them.
+- **The procedures contain no rule text.** Change the file set or placeholder list in `govern-init.md` and the template's install note together, and keep its step 7 snippet in sync with `README.md`'s Path C. **`govern-init.md`'s step numbering is load-bearing**: `build-empty.ps1` cites "step 4." **`govern-update.md` reads its anchors out of `scripts/build.ps1`** — never add a third copy of them. It merges only `AGENTS.md`'s mandatory-rules block (preserving the filled `Active client`) and `client-profiles.md`'s active-client paragraph, and **never touches `ai-governance/client-profiles/` or nested project files**; keep it that way.
 - **Each rule is stated once in its owning file**; the template and other files carry pointers plus a short always-on core. Link instead of restating.
 
 ## The root entry files (this repo governs itself)
@@ -139,6 +139,7 @@ The package supports **coding CLIs**: Claude Code, OpenAI Codex, the GitHub Copi
 The installer and updater are **procedures** in `ai-docs/procedures/`, with **thin launchers** in `ai-docs/skills/` — the same one-body-thin-pointer shape as the entry files. Why, in [`docs/design/package-shape.md`](./docs/design/package-shape.md), *Procedures vs. launchers*.
 
 - **Keep the procedures tool-neutral**: no step may need a tool or a tool-specific feature, so any CLI can run them.
+- **The launcher reads the procedure fresh from the source repo on every run** — never make it copy or cache the procedure.
 - **What must stay in the launcher, not only the procedure:** the source-resolution ladder and "do not reconstruct the rule files from memory." Everything else belongs in the procedure; keep the launchers at roughly their current length and parallel to each other.
 - **Neither procedures nor launchers are part of the installed package.** The build scripts do not copy them, and `govern-init` step 2 excludes them explicitly.
 
@@ -148,7 +149,7 @@ The installer and updater are **procedures** in `ai-docs/procedures/`, with **th
 
 - **The load-bearing invariant: the overlay is a source the installer reads *from*, never a location an installed repo points *at*.** Anything the engagement repo references must resolve for someone holding only that repo. So the client's policy is copied in rather than linked, and `govern-update` must *report* a target with profiles but no `client-policies/` rather than create one.
 - **`client-policies/` is authored by `govern-init` step 6, not copied from source** — don't add it to the step 2 copy table; the copied-from-source count stays at ten `ai-governance/` items.
-- **The overlay holds `clients/<client>/profile.md` and `policy.md`, never a rule file.**
+- **The overlay holds `clients/<client>/profile.md` and `policy.md`, never a rule file.** A missing overlay is not a stop.
 
 ## The precedence rule (the single most important invariant)
 

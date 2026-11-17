@@ -151,12 +151,12 @@ The copied `AGENTS.md` already carries a short "For the humans on this project" 
 If the repo holds more than one project — `apps/`, `packages/`, `services/` — **offer** a nested file pair for each project the user names. Don't assume: a project with nothing to say beyond the root needs none.
 
 - **Create a pair, always both, never one:**
-  - **`AGENTS.md`** — project facts only: the project's stack, commands, verification contract, do-not-touch list, and whether `database-rules.md` applies. No rule text, with links pointing up to the root `ai-governance/` set.
+  - **`AGENTS.md`** — project facts only: the project's stack, commands, verification contract, do-not-touch list, and whether `database-rules.md` applies. No rule text other than the note below, with links pointing up to the root `ai-governance/` set.
   - **`CLAUDE.md`** — the single line `@AGENTS.md`. It is what makes Claude Code see the nested file at all: with a root `CLAUDE.md` present, Claude Code reads `CLAUDE.md` files rather than `AGENTS.md` by default.
 - **Put this two-line note directly under each nested `AGENTS.md`'s title**, so the constraint sits in the file a later editor opens:
 
   ```markdown
-  *Project facts only — no rule text. Nested files never loosen the root `AGENTS.md` or `ai-governance/`; a nested file loads late or not at all, so anything every task must see belongs at the root.*
+  *Project facts only — no rules of its own. Nested files never loosen the root `AGENTS.md` or `ai-governance/`; a nested file loads late or not at all, so anything every task must see belongs at the root.*
   *Keep the `CLAUDE.md` beside this file (the single line `@AGENTS.md`); without it Claude Code never reads this one.*
   ```
 

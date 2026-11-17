@@ -87,7 +87,7 @@ These bind the next pass over `ai-docs/`. Each was arrived at by a pass that too
 
 **No row above includes the install and update procedures, by design** — they never reach a target repo, so they cost an agent working in one nothing at all. Their cost is the *Source-repo cost* table above.
 
-On every supported CLI other than Claude Code there is no floor, because none of them has an import mechanism: every rule file including `core-rules.md` still depends on the agent following a link. The first column is a Claude Code guarantee and an aspiration everywhere else.
+On Codex there is no floor, because it has no import mechanism: every rule file including `core-rules.md` still depends on the agent following a link. The Copilot CLI documents `@` expansion in `AGENTS.md` and `CLAUDE.md`, so it should receive the same floor, but that is unmeasured. The first column is a Claude Code guarantee, expected on the Copilot CLI, and an aspiration on Codex.
 
 ## Caveats
 
