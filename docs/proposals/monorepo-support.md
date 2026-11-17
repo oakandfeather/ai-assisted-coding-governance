@@ -1,8 +1,8 @@
 # Proposal — monorepo support: one install at the root, thin project files beneath it
 
-**Version:** 1.1 · **Last reviewed:** 2026-11-06 · **Status:** **Piece 1 implemented 2026-11-06; Piece 2 open** · **Review cycle:** None; revisit when `AGENTS.template.md` or `govern-init.md` is next edited.
+**Version:** 1.2 · **Last reviewed:** 2026-11-16 · **Status:** **Piece 1 implemented 2026-11-06; Piece 2's fixture specified 2026-11-16, B-P4 runs open** · **Review cycle:** None; revisit when `AGENTS.template.md` or `govern-init.md` is next edited.
 
-> **Piece 1 implemented 2026-11-06 — see [`CHANGELOG.md`](../../CHANGELOG.md), which records what shipped and where it differs from this text.** This file is not edited to match. Piece 2 — the nested-project fixture and the B-P4 runs — is still open.
+> **Piece 1 implemented 2026-11-06 — see [`CHANGELOG.md`](../../CHANGELOG.md), which records what shipped and where it differs from this text.** This file is not edited to match. Piece 2's fixture is specified and dry-run in [`mock-app-setup.md`](../../testing/mock-app-setup.md) (2026-11-16), with B-P4's bait re-specified on the way ([`test-plan-changes.md`](../../testing/test-plan-changes.md)); the B-P4 runs are still open.
 >
 > **As originally written:** the *Context* below describes the package as it stands today, which is the problem; everything from *Decisions proposed* onward is written in the conditional and describes a change that has not been made. Where this file and a rule file disagree, the rule file is current.
 
