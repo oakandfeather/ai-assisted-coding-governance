@@ -1,6 +1,6 @@
 # Context cost of the governance package
 
-**Last reviewed:** 2026-11-06
+**Last reviewed:** 2026-11-16
 
 Tracks how much of an agent's context window the `ai-docs/` package consumes when it's loaded per `AGENTS.md`'s "load in one pass" instruction. Re-run the measurement below and update this table when `ai-docs/` files change size materially — it's a cost metric, not a governed rule file, so it doesn't need a version bump on every edit.
 
@@ -8,7 +8,7 @@ Tracks how much of an agent's context window the `ai-docs/` package consumes whe
 
 ## Methodology
 
-Word/char counts are exact (`wc -w -c` over each file). Token counts are an **approximation** at ~4 characters/token for English markdown — not a real tokenizer run, so treat these as ballpark, not precise.
+Word/char counts are exact (`wc -w -c` over each file). Token counts are an **approximation** at ~4 characters/token for English markdown — not a real tokenizer run, so treat these as ballpark, not precise. The ratio has never been calibrated against a real tokenizer for these files; that is open work. `wc -c` counts bytes of the Windows working copy, so CRLF line endings and multi-byte em dashes are in the character count.
 
 ```
 wc -w -c ai-docs/*.md ai-docs/client-profiles/*.md          # the installed package
@@ -29,10 +29,10 @@ wc -w -c ai-docs/procedures/*.md ai-docs/skills/*/SKILL.md  # source-repo only
 | `database-rules.md` | 1,019 | ~1,690 |
 | `coding-patterns.md` | 1,165 | ~1,990 |
 | `writing-patterns.md` | 1,519 | ~2,510 |
-| `agent-workflow.md` | 1,836 | ~3,000 |
+| `agent-workflow.md` | 1,831 | ~2,980 |
 | `agent-delegation.md` | 523 | ~860 |
 | `client-profiles.md` + one profile | 690 | ~1,210 |
-| entry file (`AGENTS.md`, placeholders filled) | 1,289 | ~2,330 |
+| entry file (`AGENTS.md`, placeholders filled) | 1,137 | ~2,080 |
 | entry file (`CLAUDE.md`, the thin pointer itself) | 181 | ~300 |
 
 ## Source-repo cost — the install and update procedures
@@ -41,8 +41,8 @@ wc -w -c ai-docs/procedures/*.md ai-docs/skills/*/SKILL.md  # source-repo only
 
 | File | Words | Est. tokens |
 |---|---:|---:|
-| `procedures/govern-init.md` | 3,991 | ~6,530 |
-| `procedures/govern-update.md` | 3,155 | ~5,090 |
+| `procedures/govern-init.md` | 4,131 | ~6,800 |
+| `procedures/govern-update.md` | 3,170 | ~5,150 |
 | `skills/govern-init/SKILL.md` | 542 | ~880 |
 | `skills/govern-update/SKILL.md` | 473 | ~790 |
 
@@ -50,8 +50,8 @@ wc -w -c ai-docs/procedures/*.md ai-docs/skills/*/SKILL.md  # source-repo only
 
 | Operation | Files loaded | Est. tokens |
 |---|---|---:|
-| `/govern-init` | launcher + procedure | **~7,410** |
-| `/govern-update` | launcher + procedure | **~5,880** |
+| `/govern-init` | launcher + procedure | **~7,680** |
+| `/govern-update` | launcher + procedure | **~5,940** |
 
 A one-shot cost — but paid in a session that is *also* holding the target repo's context while doing a multi-file copy, a placeholder interview, and profile authoring, which is why it earns a row rather than a shrug.
 
@@ -77,13 +77,13 @@ These bind the next pass over `ai-docs/`. Each was arrived at by a pass that too
 
 | Scenario | On top of the floor | Est. tokens |
 |---|---|---:|
-| **Floor — every session** | entry files (`AGENTS.md` + `CLAUDE.md`) + `core-rules.md` + `agent-workflow.md` + `client-profiles.md` index, imported | **~8,900** |
-| Trivial edit | *nothing* | ~8,900 |
-| Task that spawns a subagent | + `agent-delegation.md` | ~9,750 |
-| Non-trivial coding task | + `coding-rules.md` + `coding-patterns.md` + the client profile body | ~12,850 |
-| Non-trivial writing task | + `writing-rules.md` + `writing-patterns.md` + the client profile body | ~13,850 |
-| Non-trivial database-project task | + `database-rules.md` + `coding-patterns.md` + the client profile body | ~13,100 |
-| Everything at once | + all six conditional files + the client profile body | ~19,850 |
+| **Floor — every session** | entry files (`AGENTS.md` + `CLAUDE.md`) + `core-rules.md` + `agent-workflow.md` + `client-profiles.md` index, imported | **~8,600** |
+| Trivial edit | *nothing* | ~8,600 |
+| Task that spawns a subagent | + `agent-delegation.md` | ~9,500 |
+| Non-trivial coding task | + `coding-rules.md` + `coding-patterns.md` + the client profile body | ~12,600 |
+| Non-trivial writing task | + `writing-rules.md` + `writing-patterns.md` + the client profile body | ~13,600 |
+| Non-trivial database-project task | + `database-rules.md` + `coding-patterns.md` + the client profile body | ~12,850 |
+| Everything at once | + all six conditional files + the client profile body | ~19,600 |
 
 **No row above includes the install and update procedures, by design** — they never reach a target repo, so they cost an agent working in one nothing at all. Their cost is the *Source-repo cost* table above.
 
@@ -94,4 +94,4 @@ On every supported CLI other than Claude Code there is no floor, because none of
 - This is a one-time context-window cost **per session**. **The floor is paid unconditionally on Claude Code** — `CLAUDE.md` imports those files, so they load whether the agent wants them or not, and they survive `/compact`. Everything above the floor is still paid only when a file is actually `Read`, and **a linked file that is never opened costs nothing and binds nothing** — which is the failure the floor exists to prevent, not a saving. The graduated-loading rule exists to avoid paying the ~19.6k full cost on every task.
 - Prompt caching (where the harness supports it) makes repeat reference *cheap in billing* within a session once a file is cached, but it does not reduce how much of the context window that file occupies.
 - **The *Source-repo cost* table is a different kind of number** — paid once by whoever runs `/govern-init` or `/govern-update` in this repo, not per session by an agent working in a target repo. Don't add it to anything above.
-- These numbers reflect `ai-docs/` as of 2026-10-12, every row re-measured after the compression pass and again after its fresh-context review restored eleven lost conditions, rather than carried forward. The entry-file row **grew** (+6 words) because the mandatory block gained the `agent-delegation.md` bullet. On 2026-11-06 the entry-file row, the two procedure rows, and every scenario total were re-measured after the monorepo change; the entry file grew +192 words. Re-measure after any material edit to a file listed above, and record the pass in [`context-cost-log.md`](./context-cost-log.md).
+- These numbers reflect `ai-docs/` as of 2026-11-16, every row re-measured rather than carried forward. Re-measure after any material edit to a file listed above, and record the pass in [`context-cost-log.md`](./context-cost-log.md).
