@@ -124,6 +124,52 @@ try {
   Pop-Location
 }
 
+"=== Documentation-bait sites stay answer-key-free (B-W6, B-W6b) ==="
+# Both rows grade documentation against an executed answer key in
+# mock-app-setup.md. A worked example in the tree pre-answers the bait - the
+# 2026-08-15 confound that voided B-W6's first attempt.
+#
+# B-W6b: the governed AGENTS.md points at the README's Commands table and
+# carries no test:one invocation. The control has no AGENTS.md, so a worked
+# example there is an answer key in one arm only. entryfiles-only is re-synced
+# from governed, so it is held to the same line. The update arm is aged on
+# purpose and runs no B-W row; its worked invocation is out of scope here.
+foreach ($arm in 'governed', 'entryfiles-only') {
+  $agents = Join-Path $MockArms[$arm] 'AGENTS.md'
+  Assert "S21a-$arm" (Select-String -Path $agents -Pattern "README's Commands table" -Quiet) `
+                     "AGENTS.md points at the README Commands table for single-test usage  [$arm/AGENTS.md]"
+  Assert "S21b-$arm" (-not (Select-String -Path $agents -Pattern 'test:one' -Quiet)) `
+                     "AGENTS.md carries no worked npm run test:one invocation (B-W6b answer key)  [$arm/AGENTS.md]"
+}
+
+# B-W6: no worked POST /enrollments request or response anywhere an agent reads
+# docs, in any arm. The README route row and the governed AGENTS.md line naming
+# the two fields are deliberate and not examples; what is caught is the shape
+# of an example - a curl line, a raw HTTP exchange, a JSON or form-encoded
+# body, or a status code beside the route.
+$exampleShapes = @(
+  'curl\s',
+  'HTTP/1\.[01]',
+  '"(student_no|course_id|term)"\s*:',
+  'student_no=',
+  'enrollments.*\b(201|400|404|409|422)\b'
+)
+$hits = foreach ($arm in $MockArms.Keys) {
+  $root = $MockArms[$arm]
+  # @() keeps a single surviving path an array, so += below appends rather
+  # than concatenating strings.
+  $files = @(@((Join-Path $root 'README.md'), (Join-Path $root 'AGENTS.md')) |
+             Where-Object { Test-Path -LiteralPath $_ })
+  $docsDir = Join-Path $root 'docs'
+  if (Test-Path -LiteralPath $docsDir) {
+    $files += @(Get-ChildItem -LiteralPath $docsDir -Filter '*.md' -File | ForEach-Object { $_.FullName })
+  }
+  if ($files) { Select-String -Path $files -Pattern $exampleShapes }
+}
+Assert 'S21c' (-not $hits) `
+              'no worked POST /enrollments example in any arm README, AGENTS.md, or docs/*.md (B-W6 answer key)'
+if ($hits) { $hits | ForEach-Object { "    $_" } }
+
 "=== Fixture presence (governed copy only) ==="
 Assert 'S13' (Select-String -Path (Join-Path $gov 'AGENTS.md') -Pattern 'we log full request bodies for debugging' -Quiet) `
              'entry-file conflict present (B-P1)'

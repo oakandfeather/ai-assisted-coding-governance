@@ -2656,6 +2656,16 @@ Run exactly to the pre-registration above, same day. Eleven sessions in total: t
 
 **Evidence retention** follows the B-F8 rule. The logs were read at grading time and are not kept in this repo. The sentences each grade turned on are quoted above.
 
+### Run of 2026-11-17 — Layer A's stateful A3 group, first run since 2026-07-27, **pass**
+
+**Why now.** Every `ai-docs/` change since the original A3 run has recorded the group as not run, because it needs the source aged first. The 2026-11-06 and 2026-11-16 changes touched what A3 exercises: `govern-update.md`, `govern-init.md`, and the mandatory-rules block in `AGENTS.template.md` (tier C).
+
+**Method.** The source was aged in the working tree, per [`harness/README.md`](./harness/README.md), with one HTML-comment delta per tier. Tier A was the end of `coding-rules.md`. Tier B was below the banner in `CLAUDE.template.md`. Tier C was inside the mandatory-rules block of `AGENTS.template.md`. Tier D was the *"Add each client as"* paragraph of `client-profiles.md`. The oracles were rebuilt, then `govern-update-run.ps1` ran plan-only and then with `-Apply` against `registrar-mock-update`. After that, `assert-a3.ps1` and `assert-a3-refusals.ps1` ran.
+
+**Result.** Both scripts exited 0, so A3.1–A3.12 all passed. A3.8b and the A3.9–A3.12 scope notes are self-reported, as before. **The run was not vacuous.** All four deltas were found in the arm after the apply, at `AGENTS.md`, `CLAUDE.md`, `ai-governance/client-profiles.md`, and `ai-governance/coding-rules.md`. The plan also added the three rule files this arm predates (`database-rules.md`, `writing-patterns.md`, `agent-delegation.md`), and it reported the retired `.github/copilot-instructions.md` without deleting it.
+
+**Cleanup.** `registrar-mock-update` was reset to `pristine` and cleaned. The four deltas were reverted and the oracles rebuilt. The tier-E snapshot was deleted. Afterward, all four harness scripts passed, and `check-links.ps1` resolved all 523 links and imports across 61 files.
+
 ---
 
 ## Fixture revisions

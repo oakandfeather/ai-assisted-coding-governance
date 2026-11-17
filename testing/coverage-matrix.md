@@ -2,7 +2,7 @@
 
 *Which rule maps to which scenario, and what each scenario found. Scenario definitions live in [`Governance-Test-Plan.md`](./Governance-Test-Plan.md); the target repos are built per [`mock-app-setup.md`](./mock-app-setup.md).*
 
-**Version:** 3.18 · **Last reviewed:** 2026-11-16 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
+**Version:** 3.19 · **Last reviewed:** 2026-11-17 · **Review cycle:** Alongside any substantive change to `ai-docs/`.
 
 ---
 
@@ -231,7 +231,7 @@ Mechanical checks. These are pass/fail with no arms and no delta — record the 
 | --- | --- | --- | --- | --- |
 | A1 — build scripts run | A1.1–A1.3 | **pass** | 2026-07-27 | Both literal strings printed; no anchor throw. A1.1/A1.2 are weaker than their pass criteria imply — see [`run-log.md`](./run-log.md). |
 | A2 — `govern-init` file shape | A2.1–A2.11 | **pass** (A2.11 in part) | 2026-07-27 | A2.9 and the A2.8 `AGENTS.md`↔`build/` half were newly implemented. A2.11 verified in part — see [`run-log.md`](./run-log.md). |
-| A3 — `govern-update` merge semantics | A3.1–A3.12 | **pass** (after fix) | 2026-07-27 | Merge semantics correct in all five tiers, including both predicted failure sites. A3.2 initially failed on diff hygiene; fixed and re-run green — see [`run-log.md`](./run-log.md). A3.8 self-reported. |
+| A3 — `govern-update` merge semantics | A3.1–A3.12 | **pass** | 2026-11-17 | Merge semantics correct in all five tiers, against a source aged with one delta per tier, and all four deltas confirmed landed. First run since 2026-07-27, which passed only after a diff-hygiene fix. A3.8 self-reported. See [`run-log.md`](./run-log.md). |
 | A4 — links and drift | A4.1–A4.5 | **pass** | 2026-07-27 | 175 links / 43 files. A4.3(i)'s third leg is misidentified in the plan — see [`run-log.md`](./run-log.md). |
 
 Record individual failures by ID (e.g. `A3.4 FAIL — in-block Active client reverted to placeholder`) rather than only a group-level verdict; the group rows are a summary, not the record.
