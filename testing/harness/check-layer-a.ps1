@@ -140,9 +140,10 @@ foreach ($name in $MockArms.Keys) {
 # per-import, so the surviving @AGENTS.md still loads. It is why A2.12 above is
 # scoped to $g - an unscoped version would be a permanent red here, which is
 # exactly how a checker teaches its operator to ignore it.
-# Treat this as the NO-IMPORT-MECHANISM arm for anything about rule delivery:
-# Codex and the other supported CLIs never process @ imports at all, so "entry
-# files only" still means exactly that for them. (It was labelled the Copilot
+# Treat this as the NO-IMPORT-MECHANISM arm for Codex: Codex never processes
+# @ imports, so "entry files only" still means exactly that for it. NOT for the
+# Copilot CLI, which documents @ expansion in AGENTS.md and CLAUDE.md and reads
+# both - here it would meet the dangling imports, not a no-import arm. (It was labelled the Copilot
 # arm until 2026-08-21, when in-IDE Copilot went out of scope.)
 # For a Claude row it now means "entry files, minus whatever the imports would
 # have carried" - do not reuse it as an entry-files-only Claude arm.

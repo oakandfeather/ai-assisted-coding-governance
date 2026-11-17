@@ -2,7 +2,7 @@
 
 *How the package got its current **shape** — every change to what it ships, which files carry which body, and which tools it targets, with the date and the reasoning behind it. [`AGENTS.md`](./AGENTS.md) and [`README.md`](./README.md) state the shape as it stands now; this file states what it used to be and why it changed.*
 
-**Last reviewed:** 2026-11-06
+**Last reviewed:** 2026-11-16
 
 ## What belongs here, and what does not
 
@@ -119,3 +119,12 @@ The package assumed one repository, one root `AGENTS.md`, and one `ai-governance
 **One premise moved between the proposal and the landing.** The proposal said Claude Code never reads `AGENTS.md`. A direct read of the vendor page on landing day found that Claude Code v2.1.277 and later can. By default, though, it skips `AGENTS.md` whenever a `CLAUDE.md` exists in the launch directory or any directory above it, which every governed repo's root has. So the nested `CLAUDE.md` is still required, for that reason. Two wider claims are now imprecise, and both were left alone in this change and flagged as follow-up. The package says Claude Code does not read `AGENTS.md` (template banner, root `AGENTS.md`). Guideline §12 says no CLI other than Claude Code has an import mechanism, but the Copilot CLI page documents `@` imports.
 
 **Coverage:** A2.14 (no nested `ai-governance/`) is scripted. B-P4 (a nested file tries to loosen a root rule) is specified and **blank**; its nested-project fixture is not built yet. Details are in [`testing/test-plan-changes.md`](./testing/test-plan-changes.md). The argument is in [`docs/proposals/monorepo-support.md`](./docs/proposals/monorepo-support.md), Piece 1 of which this is.
+
+## 2026-11-16 — tool-loader claims corrected against the vendor docs
+
+This closes the follow-up the 2026-11-06 entry deferred. **The package's shape is unchanged**: two root entry files, three imports in `CLAUDE.md`, and the same file set. Only the reasons and per-tool claims around them moved. Each claim was checked against the vendor's own page on 2026-11-16.
+
+- **Claude Code reads `AGENTS.md` natively from v2.1.277**, but under its default *Project instructions* setting it skips `AGENTS.md` whenever a `CLAUDE.md` exists. The claim that *"Claude Code does not read `AGENTS.md`"* is replaced by that reason in the template banner and in root `AGENTS.md`: the `@AGENTS.md` import is what delivers the body under every setting, and the [memory docs](https://code.claude.com/docs/en/memory) say an imported `AGENTS.md` is never loaded twice.
+- **The Copilot CLI reads `CLAUDE.md` as well as `AGENTS.md`, and documents `@` expansion in both** ([CLI instructions](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-custom-instructions)). *"Codex and the other supported CLIs have no import mechanism"* now names Codex alone, in root `AGENTS.md`, `README.md`, guideline §12, the one-pager, the test plan, and the `check-layer-a.ps1` comment. Whether the Copilot CLI actually receives the imports, how it resolves the relative paths, and whether it loads `AGENTS.md` twice (once directly and once through `@AGENTS.md`) are **unmeasured**.
+- **`CLAUDE.md` does not load "from the root only".** Claude Code loads every `CLAUDE.md` from the launch directory upward, and loads a subfolder's copy once the agent touches a file there. `CLAUDE.template.md` and `README.md`'s copy table now give the actual reason to place it at the root: from there it loads wherever the agent launches. The same claim was corrected in `govern-init` step 1 on 2026-11-06.
+- **Unchanged and still accurate:** Codex has no import mechanism, builds its chain once at startup from the Git root down to the cwd, and stops adding files at `project_doc_max_bytes` (32 KiB by default). Its guide now lives at `learn.chatgpt.com/docs/agent-configuration/agents-md`, and the old `developers.openai.com` URL redirects there.

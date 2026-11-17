@@ -4,11 +4,11 @@
 >
 > **How to use it.** Copy this canonical entry file to the target project's **repository root** as `AGENTS.md`, where Codex CLI, the GitHub Copilot CLI and coding agent, and every other `AGENTS.md` reader load it. Put `core-rules.md`, `coding-rules.md`, `writing-rules.md`, `database-rules.md`, `coding-patterns.md`, `writing-patterns.md`, `agent-workflow.md`, `agent-delegation.md`, `client-profiles.md`, and the `client-profiles/` directory together in an **`ai-governance/` directory at the repo root**, so the `./ai-governance/` links below resolve. Then fill in the italicized placeholders. **Unfilled placeholders mean the repo is unconfigured: ask before assuming a stack, client, or command — do not invent them.**
 >
-> **One thin companion travels with it:** `CLAUDE.template.md` → `CLAUDE.md` at the repo root, because Claude Code is the one supported CLI that does not read `AGENTS.md` directly. It `@`-imports this file plus `core-rules.md`, `agent-workflow.md`, and the `client-profiles.md` index, all of which this file only links. Fill the placeholders **here** — the companion carries none.
+> **One thin companion travels with it:** `CLAUDE.template.md` → `CLAUDE.md` at the repo root, because Claude Code reads `CLAUDE.md` first: by default it skips `AGENTS.md` whenever a `CLAUDE.md` exists, and older versions never read `AGENTS.md` at all, so the companion's `@AGENTS.md` import is what delivers this file under every setting. It `@`-imports this file plus `core-rules.md`, `agent-workflow.md`, and the `client-profiles.md` index, all of which this file only links. Fill the placeholders **here** — the companion carries none.
 >
 > **Last step.** Retitle the copy to `# AGENTS.md`, delete this banner — everything from the `(template)` title down to the `Version:` line — and delete the closing footnote at the bottom. Both describe the template rather than the project, and this banner's `../AGENTS.md` link does not resolve outside this repo.
 
-**Version:** 1.19 · **Last reviewed:** *(date)* · **Active client:** *(client name)*
+**Version:** 1.20 · **Last reviewed:** *(date)* · **Active client:** *(client name)*
 
 Guidance for AI agents working in this repository.
 

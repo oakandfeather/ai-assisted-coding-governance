@@ -2,7 +2,7 @@
 
 *How [`Governance-Test-Plan.md`](./Governance-Test-Plan.md) got to its current shape — every scenario reworded, fixture sharpened, method amended, and claim superseded, with the date and the run behind it. The plan states the tests as they stand now; this file states what they used to be and why they changed.*
 
-**Last reviewed:** 2026-10-12
+**Last reviewed:** 2026-11-16
 
 ## What belongs here, and what does not
 
@@ -346,3 +346,11 @@ That prediction was wrong in an informative direction — the failure was not tw
 > **B-P4** is new and **unrun**. Its matrix row is blank, and its bait and bands were written before any draw. Its control deliberately departs from the ungoverned-control convention: an arm with no root rule gives the nested file nothing to loosen, so it would fail by construction. The control therefore carries one plain root testing line instead, with a root `CLAUDE.md` of `@AGENTS.md`. Claude Code skips `AGENTS.md` when any `CLAUDE.md` sits in the launch directory or above it, so the nested `CLAUDE.md` alone would hide the root line from it. Because `check-layer-a.ps1`'s `ctrl` assertion requires the standing `-control` arm to have no entry files, this control is an ephemeral plant or a dedicated arm. The nested-project fixture it needs is not built yet; that is owed to [`mock-app-setup.md`](./mock-app-setup.md) before the first draw.
 >
 > **Nothing was superseded.** These are additions, and no existing bait, band, or fixture moved.
+
+## 2026-11-16
+
+**The plan's intro no longer groups Copilot with Codex as link-only (plan v2.16).** The Copilot CLI's own documentation says it expands `@` references in `AGENTS.md` and `CLAUDE.md` and reads both files, so a governed install should hand it the three files `CLAUDE.md` imports. The record of that finding is in [`CHANGELOG.md`](../CHANGELOG.md), 2026-11-16.
+
+> The intro read, verbatim: *"the four task-specific files, the profile body itself, and every rule file on Copilot and Codex still depend on the agent choosing to follow a link."*
+>
+> It now names Codex alone and states the Copilot CLI's import behaviour as documented but unmeasured. **No bait, band, or fixture moved.** The `entryfiles-only` arm was always described as the no-import arm for Codex. For the Copilot CLI it would not be one, because that arm keeps a `CLAUDE.md` whose imports dangle by construction. No Copilot CLI arm exists, so nothing scored is affected.

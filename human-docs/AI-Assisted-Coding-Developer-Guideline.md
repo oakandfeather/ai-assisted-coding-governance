@@ -2,7 +2,7 @@
 
 **Applies to:** All engineers, contractors, and subcontractors who write, review, or ship code for client engagements
 **Status:** Internal standard
-**Version:** 1.14 · **Last reviewed:** 2026-11-06
+**Version:** 1.15 · **Last reviewed:** 2026-11-16
 **Review cycle:** Reviewed quarterly and whenever a client's AI terms change
 
 > **Read this first.** You are coding on behalf of clients, using their data, building their intellectual property, under their rules. AI tools make you faster, but they also make it easy to leak a client's data, ship insecure code under their name, or contaminate their codebase with badly-licensed material. This guideline is how we get the speed without the liability. When a client's own policy is stricter than this document, **the client's policy wins** — see the client profiles in Appendix A.
@@ -149,7 +149,7 @@ For AI agents that can run commands, edit files, install packages, or call servi
 
 **These constraints only bind if the agent can read them.** The agent-facing half of this guidance is installed *into the engagement repository*: two entry files at the root — `AGENTS.md` and `CLAUDE.md` — plus an `ai-governance/` directory holding the rules they point to. The package covers command-line coding agents; in-IDE Copilot Chat, which reads its own `.github/copilot-instructions.md`, is out of scope. Whichever AI tool you use loads its entry file at the start of a session, and nothing loads if the files aren't there.
 
-**Loading the entry file is not the same as loading the rules.** The entry file *links* them, and a link an agent doesn't follow has delivered nothing. Claude Code closes part of that gap by importing the two always-on rule files (`core-rules.md` and `agent-workflow.md`) directly from `CLAUDE.md`, along with the client-profile index that names which client's rules bind, so those arrive in every session. Codex and the other supported CLIs have no import mechanism at all, so for them every rule file depends on the agent following a link. The practical consequence for you: the further a task gets from the always-on core, the less you can assume the agent read the rule you are relying on.
+**Loading the entry file is not the same as loading the rules.** The entry file *links* them, and a link an agent doesn't follow has delivered nothing. Claude Code closes part of that gap by importing the two always-on rule files (`core-rules.md` and `agent-workflow.md`) directly from `CLAUDE.md`, along with the client-profile index that names which client's rules bind, so those arrive in every session. The Copilot CLI documents the same `@` import syntax and reads `CLAUDE.md` alongside `AGENTS.md`, so it should receive those imports too, though nothing here has measured it. Codex has no import mechanism at all, so for it every rule file depends on the agent following a link. The practical consequence for you: the further a task gets from the always-on core, the less you can assume the agent read the rule you are relying on.
 
 So before you point an agent at a client repo, check that the entry files and `ai-governance/` are present and current, and get them installed or refreshed if not — the AI-governance source repository's `README.md` has the install and update paths. Their presence doesn't transfer accountability: §1 still holds, and you still own every line. Their absence just means you are the only control.
 
