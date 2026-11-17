@@ -41,7 +41,7 @@ wc -w -c ai-docs/procedures/*.md ai-docs/skills/*/SKILL.md  # source-repo only
 
 | File | Words | Est. tokens |
 |---|---:|---:|
-| `procedures/govern-init.md` | 4,131 | ~6,800 |
+| `procedures/govern-init.md` | 4,138 | ~6,810 |
 | `procedures/govern-update.md` | 3,170 | ~5,150 |
 | `skills/govern-init/SKILL.md` | 542 | ~880 |
 | `skills/govern-update/SKILL.md` | 473 | ~790 |
@@ -50,7 +50,7 @@ wc -w -c ai-docs/procedures/*.md ai-docs/skills/*/SKILL.md  # source-repo only
 
 | Operation | Files loaded | Est. tokens |
 |---|---|---:|
-| `/govern-init` | launcher + procedure | **~7,680** |
+| `/govern-init` | launcher + procedure | **~7,690** |
 | `/govern-update` | launcher + procedure | **~5,940** |
 
 A one-shot cost — but paid in a session that is *also* holding the target repo's context while doing a multi-file copy, a placeholder interview, and profile authoring, which is why it earns a row rather than a shrug.
