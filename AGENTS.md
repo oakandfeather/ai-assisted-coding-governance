@@ -1,6 +1,6 @@
 # AGENTS.md
 
-**Version:** 1.38 · **Last reviewed:** 2026-11-17 · **Active client:** none (internal repository)
+**Version:** 1.39 · **Last reviewed:** 2026-11-17 · **Active client:** none (internal repository)
 
 Guidance for AI agents working in this repository — the source repo for the AI-assisted coding governance package. This repo applies its own rules to itself.
 
@@ -127,7 +127,7 @@ A deliberate reference chain; edits must preserve it. What each file is for, and
 The package supports **coding CLIs**: Claude Code, OpenAI Codex, the GitHub Copilot CLI and coding agent, and any other tool that reads a root `AGENTS.md`. **In-IDE assistants are out of scope** — `.github/copilot-instructions.md` is not shipped. Why two files, what each loader does, and the rejected alternatives are in [`docs/design/package-shape.md`](./docs/design/package-shape.md), *Multi-tool entry points*. **Open it before changing either entry file or `CLAUDE.md`'s imports.**
 
 - **`AGENTS.md` is canonical** — one body, zero drift. Don't inline the rules into each entry file or symlink the entry files.
-- **`CLAUDE.md` `@`-imports `core-rules.md`, `agent-workflow.md`, and the `client-profiles.md` index; every other rule file and the profile body stay linked.** **State the fidelity caveat, don't paper over it**: an imported `AGENTS.md` reaches the linked files only if the agent follows the link.
+- **`CLAUDE.md` `@`-imports `core-rules.md`, `agent-workflow.md`, and the `client-profiles.md` index; every other rule file and the profile body stay linked.** **State the fidelity caveat, don't paper over it**: an imported `AGENTS.md` reaches the linked files only if the agent follows the link. **A session launched in a subfolder gets less still:** Claude Code skips every root import until the user approves external imports for the project, and a headless session never can. Don't claim the root mandatory-rules block reaches a nested-package session; what arrives unapproved is the root `CLAUDE.md`'s own text and the nested pair.
 - **Both entry files restate the non-negotiable core inline and define *load*.** Do not remove that inline core thinking the link is enough, and do not remove the imports thinking the imperative is enough.
 - **A nested `@` path resolves against the importing file's directory, not the repo root** — the root-relative shape copied from `CLAUDE.md` fails silently there; `check-links.ps1` catches it.
 - **Drift surface.** The precedence line reads "project entry file," not "`CLAUDE.md`," in `README.md`, this file, and `core-rules.md`. The always-on core is duplicated *by design* into `AGENTS.template.md` and this file — **change both**. **Do not add a seventh non-negotiable to that core** for *"human review before merge; SAST, secret scanning, and dependency analysis in CI"*: the requirement lives in `AGENTS.template.md`'s *Security & CI expectations* section, and an inline copy of it did not bind where measured (`coverage-matrix.md`, B-T1). `govern-init.md` scaffolds both entry files; keep its copy table and this section in sync.
