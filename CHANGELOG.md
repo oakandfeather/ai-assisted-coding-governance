@@ -155,3 +155,13 @@ Root `AGENTS.md` (v1.37) went from 4,062 to 3,307 words. Six sections — *How t
 - Guideline §12's monorepo paragraph (v1.16, with the one-pager bumped in step) no longer says one install governs every project from wherever an agent starts. It names the approval as per-developer and per-runner.
 
 **What this leaves open.** The approval is per clone and per machine, and it rests on undocumented internal keys. A nested launch on a clone without it still gets only the nested pair, including the never-loosens note from step 8. Whether the root `CLAUDE.md` should also carry that sentence inline is undecided.
+
+## 2026-11-17 — the subfolder-launch caveat names the one-time prompt and the denied reads
+
+**The installed file set is unchanged.** This lands Piece 1 of [`docs/proposals/subfolder-launch-delivery.md`](./docs/proposals/subfolder-launch-delivery.md), the documentation edits; Pieces 2 and 3 are not started. Both vendor pages it relies on, [Memory and project instructions](https://code.claude.com/docs/en/memory) and [Set up Claude Code in a monorepo or large codebase](https://code.claude.com/docs/en/large-codebases), were read directly on 2026-11-17 and every quote was re-checked against them.
+
+- **The approval prompt is now cited as documented, not expected.** Claude Code asks once per project, and a decline keeps the imports disabled with no second dialog. That permanent decline is now stated in `govern-init` step 8's approval bullet, in `CLAUDE.template.md`'s banner and `README.md`'s matching copy-table row (identically), and in guideline §12's monorepo paragraph (v1.17, one-pager bumped in step).
+- **`docs/design/package-shape.md` names a second measured cost:** B-P4's governed arm could not `Read` the linked rule files from a subfolder launch. It also records that the vendor guide recommends that launch for scoped work, and that under this package it needs the approval first. The guideline carries the same point for developers.
+- **Root `AGENTS.md` is unchanged.** Its fidelity-caveat bullet already says a subfolder session gets less, and the detail is in `package-shape.md`.
+
+**What this leaves open.** The decline warning sits in `govern-init` step 8, a tool-neutral procedure, though root `AGENTS.md` says *"A change that only works under Claude Code belongs in the launcher, not the procedure."* Step 8 already carried the Claude Code approval keys, so the warning went where the offer is made; the tension is recorded, not resolved. The denied-read cost has no fix, and the proposal's Piece 2 probes (`claudeMdExcludes`, ancestor `.claude/rules/`, `additionalDirectories`, the Windows `settings.local.json` case, `claude-md-and-agents-md`) are unrun.

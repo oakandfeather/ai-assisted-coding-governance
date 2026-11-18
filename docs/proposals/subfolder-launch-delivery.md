@@ -1,8 +1,10 @@
 # Proposal — subfolder launches: aligning the monorepo setup with Claude Code's large-codebases guide
 
-**Version:** 1.0 · **Last reviewed:** 2026-11-17 · **Status:** **Proposed, not implemented** · **Review cycle:** None; revisit when `govern-init.md` step 8 or `CLAUDE.template.md` is next edited.
+**Version:** 1.0 · **Last reviewed:** 2026-11-17 · **Status:** **Superseded — Piece 1 implemented 2026-11-17; Pieces 2 and 3 not started** · **Review cycle:** None; revisit when `govern-init.md` step 8 or `CLAUDE.template.md` is next edited.
 
-> **Proposed, not implemented.** The *Context* below describes the package as it stands today, which is the problem; everything from *Decisions proposed* onward is written in the conditional and describes a change that has not been made. Where this file and a rule file disagree, the rule file is current. The parent proposal is [`monorepo-support.md`](./monorepo-support.md), implemented in full: its shape shipped 2026-11-06 and B-P4 ran 2026-11-17. This one is a follow-up, not an amendment to it.
+> **Superseded, 2026-11-17.** Piece 1 (the text) landed as recommended; [`CHANGELOG.md`](../../CHANGELOG.md), entry of 2026-11-17 *the subfolder-launch caveat names the one-time prompt and the denied reads*, holds the record. The placement question went to the recommendation: the decline warning is a sub-bullet of `govern-init` step 8. Root `AGENTS.md` was left unchanged. Both vendor pages were read directly that day and every quote below checked out. Pieces 2 and 3 are not started; their sections still stand as written. The text below is kept as proposed, not edited to match what shipped.
+>
+> **Originally: Proposed, not implemented.** The *Context* below describes the package as it stands today, which is the problem; everything from *Decisions proposed* onward is written in the conditional and describes a change that has not been made. Where this file and a rule file disagree, the rule file is current. The parent proposal is [`monorepo-support.md`](./monorepo-support.md), implemented in full: its shape shipped 2026-11-06 and B-P4 ran 2026-11-17. This one is a follow-up, not an amendment to it.
 
 ---
 
