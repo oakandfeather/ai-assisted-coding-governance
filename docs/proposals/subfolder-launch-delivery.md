@@ -1,8 +1,8 @@
 # Proposal — subfolder launches: aligning the monorepo setup with Claude Code's large-codebases guide
 
-**Version:** 1.0 · **Last reviewed:** 2026-11-17 · **Status:** **Superseded — Piece 1 implemented 2026-11-17; Pieces 2 and 3 not started** · **Review cycle:** None; revisit when `govern-init.md` step 8 or `CLAUDE.template.md` is next edited.
+**Version:** 1.0 · **Last reviewed:** 2026-11-18 · **Status:** **Superseded — Piece 1 implemented 2026-11-17; Piece 2 run 2026-11-18, headless half only (probe 1 and the real-decline half of probe 2 owed, interactive); Piece 3 not started; Option F's four probes run 2026-11-18** · **Review cycle:** None; revisit when `govern-init.md` step 8 or `CLAUDE.template.md` is next edited.
 
-> **Superseded, 2026-11-17.** Piece 1 (the text) landed as recommended; [`CHANGELOG.md`](../../CHANGELOG.md), entry of 2026-11-17 *the subfolder-launch caveat names the one-time prompt and the denied reads*, holds the record. The placement question went to the recommendation: the decline warning is a sub-bullet of `govern-init` step 8. Root `AGENTS.md` was left unchanged. Both vendor pages were read directly that day and every quote below checked out. Pieces 2 and 3 are not started; their sections still stand as written. The text below is kept as proposed, not edited to match what shipped.
+> **Superseded, 2026-11-17.** Piece 1 (the text) landed as recommended; [`CHANGELOG.md`](../../CHANGELOG.md), entry of 2026-11-17 *the subfolder-launch caveat names the one-time prompt and the denied reads*, holds the record. The placement question went to the recommendation: the decline warning is a sub-bullet of `govern-init` step 8. Root `AGENTS.md` was left unchanged. Both vendor pages were read directly that day and every quote below checked out. Pieces 2 and 3 had not started when Piece 1 landed; their sections still stand as written. **2026-11-18:** Piece 2's headless probes ran; [`run-log.md`](../../testing/run-log.md), *Probes of 2026-11-18*, holds the results, including the interactive steps still owed. Piece 3 is not started. Its options, including dropping `CLAUDE.md` for `AGENTS.md` only, are drafted under *Piece 3 — the options*. Option F's four probes ran the same day; [`run-log.md`](../../testing/run-log.md), *Probes of 2026-11-18 — subfolder-launch delivery, Option F*, holds the results. The text below is kept as proposed, not edited to match what shipped.
 >
 > **Originally: Proposed, not implemented.** The *Context* below describes the package as it stands today, which is the problem; everything from *Decisions proposed* onward is written in the conditional and describes a change that has not been made. Where this file and a rule file disagree, the rule file is current. The parent proposal is [`monorepo-support.md`](./monorepo-support.md), implemented in full: its shape shipped 2026-11-06 and B-P4 ran 2026-11-17. This one is a follow-up, not an amendment to it.
 
@@ -102,6 +102,48 @@ Each is a scratch-repo probe in B-P4's sentinel style. Record each result in `ru
 5. Does `permissions.additionalDirectories`, or a `//`-absolute `Read` allow, fix the denied rule-file read, and from which settings file, given that settings aren't inherited?
 6. On Windows, does a root `.claude/settings.local.json` load in a subfolder session?
 7. Does the `claude-md-and-agents-md` value exist, and would it make the nested one-line `CLAUDE.md` unnecessary?
+
+## Piece 3 — the options, drafted 2026-11-18 from Piece 2's headless results
+
+*Added after Piece 2's headless probes ran. Nothing here is decided or implemented. Everything is written in the conditional. The evidence is [`run-log.md`](../../testing/run-log.md), *Probes of 2026-11-18*.*
+
+**The constraint Piece 2 found.** No probe found a way to deliver the `ai-governance/` files themselves to an unapproved subfolder launch. Every `@` import that resolves outside the launch folder is skipped until approval is set on the git-root `~/.claude.json` entry. That holds whether the import sits in the root `CLAUDE.md`, a nested `AGENTS.md`, or an ancestor `.claude/rules/` file. Only inline text arrives unapproved, from the root `CLAUDE.md` or from an ancestor rules file without `paths:`. So Piece 3 cannot be decided by measurement alone. It is a choice between relying on the keys and making an exception to the package's invariants.
+
+| Option | What it would do | For | Against |
+| --- | --- | --- | --- |
+| **A. Keys, tightened** | Keep step 8's approval offer. Name the git-root entry, say only `hasClaudeMdExternalIncludesApproved` matters, and replace *"blocked by a missing entry"* with *create the entry*. | No invariant bends, and the full rule set is delivered. | It relies on undocumented internal state, set per clone and per machine. A developer who never approves is ungoverned in subfolders, with no warning. |
+| **B. Inline core in the root `CLAUDE.md`** | Put the six non-negotiables inline in `CLAUDE.template.md`. | It reaches every subfolder launch, headless and CI included, with no setup. The delivery is measured (B-P4, `RTIN`). | It breaks *"`CLAUDE.template.md` carries no rule text"* and adds a third copy of the core. It delivers the core only, not the modules or the profile. |
+| **C. Inline core in a root `.claude/rules/` file** | Ship one rules file without `paths:` that holds the core. | It keeps `CLAUDE.md` thin. The delivery is measured (`ARUL`). | It has every drawback of B, plus a new Claude Code-only file outside `ai-governance/`. Its own imports are skipped too (`RIMP`), so it cannot pull in the rule files. |
+| **D. Keys plus an inline tripwire** | Option A, plus one line in the root `CLAUDE.md`: if no `ai-governance/` content is visible, imports were not approved, so stop and tell the user. | An ungoverned session would know it is ungoverned. The cost is one sentence. | It bends "no rule text" slightly, since the line is an instruction. It still delivers no rules. |
+| **E. Document only** | "Start at the root," with the subfolder launch accepted as a known limit. | Zero cost. | It goes against the vendor guide's recommendation and leaves the measured gap open. |
+
+**The recommendation among A–E is D.** It keeps both invariants close to intact, turns a silent failure into a visible one, and claims no delivery it lacks. B is the choice if governed headless subfolder runs, such as CI, matter more than the no-rule-text invariant. **Both A and D depend on the keys restoring delivery after a *real* decline.** Probe 2's interactive half should run before either lands.
+
+### Option F — drop `CLAUDE.md`, ship `AGENTS.md` only
+
+Claude Code now reads `AGENTS.md` natively, under the default *Project instructions* value `claude-md-or-agents-md`, but *"only when you have no `CLAUDE.md` in your working directory or above it"* (memory page, via a fetch subagent). If the package shipped no `CLAUDE.md`, the root `AGENTS.md` would be read as a discovered file, not as an import.
+
+**Why it could beat D.**
+
+- **The core would reach a subfolder launch without approval, and no invariant would break.** The always-on core and the mandatory-rules block already live in `AGENTS.md` by design. Under `claude-md-and-agents-md`, the root `AGENTS.md` reached an unapproved `pkg/sub` launch natively (`RAGT`, probe 7). The default value has not been measured with no `CLAUDE.md` present.
+- **Nested projects would need only their `AGENTS.md`.** The one-line nested `CLAUDE.md` in step 8 would go, and so would the *never trim the imports* maintenance rules.
+- **One entry file for every tool.** This takes the package's *one body, zero drift* principle to its end.
+
+**What it would cost.**
+
+- **Imports get worse, not better.** An `AGENTS.md`'s external imports load *"only if you already approved external imports for this project, with no prompt"* (memory page). With no `CLAUDE.md`, nothing ever shows the dialog. A subfolder session would get the `ai-governance/` files only if the key were set by hand.
+- **The imports would have to move into `AGENTS.md`** to keep the measured delivery of `core-rules.md`, `agent-workflow.md`, and `client-profiles.md`. Linked files go unread (B-F11). Codex and other tools would then see literal `@ai-governance/…` lines.
+- **It is fragile, and the failure is silent.** Claude Code stops reading `AGENTS.md` if any `CLAUDE.md` exists in the launch folder or above it. That includes one an adopter's repo already has, one a developer adds later, and a personal `CLAUDE.local.md`. It also stops if a user sets *Project instructions* to `claude-md` or `managed-only`, or runs a Claude Code version from before native `AGENTS.md` support. Today's `CLAUDE.md` withstands every one of these.
+- **It is a large change to the package's shape.** It would touch both templates, `govern-init` (copy table and step 8), and `govern-update`, which would have to remove an installed `CLAUDE.md`. It would also touch `docs/design/package-shape.md` (*Multi-tool entry points*), root `AGENTS.md`'s maintenance rules, Layer A's entry-file checks, and every Layer B fixture that carries a `CLAUDE.md`.
+
+**What would decide it.** Four headless probes, in Piece 2's sentinel style, on a scratch repo with no `CLAUDE.md` anywhere and the default *Project instructions* value:
+
+1. Does the root `AGENTS.md` reach an unapproved subfolder launch?
+2. Does the root `AGENTS.md` load its own inside-folder `@` imports on a root launch?
+3. Does a nested `AGENTS.md` load when the session works in that folder, and when?
+4. Does a stray `CLAUDE.local.md` at the root switch `AGENTS.md` off entirely?
+
+**If 1 and 2 come back yes, F would beat D.** The core would reach every launch, and the rule files would load from a root launch as they do today. The fragility would then need its own guard: a Layer A check that no `CLAUDE.md` exists in an installed tree, and a `govern-init` line saying never to add one. **If either comes back no, D stands.** F would also need its own proposal before landing, since it changes the package's shape, not just step 8.
 
 ---
 

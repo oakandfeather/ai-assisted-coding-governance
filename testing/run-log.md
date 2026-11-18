@@ -2,7 +2,7 @@
 
 *The dated record behind [`coverage-matrix.md`](./coverage-matrix.md) — every Layer A and Layer B session, the pre-registrations written before them, the method findings they produced, and the rule and package changes derived from them. The matrix states current results; this file states how they were reached. Fixture revisions recorded here are the counterpart to the current fixture specification in [`mock-app-setup.md`](./mock-app-setup.md).*
 
-**Last reviewed:** 2026-11-17 · **Append-only in spirit:** entries are the record of what was run on a date. Correct a factual error, but do not rewrite an entry to match a later result — supersede it with a new one and say so.
+**Last reviewed:** 2026-11-18 · **Append-only in spirit:** entries are the record of what was run on a date. Correct a factual error, but do not rewrite an entry to match a later result — supersede it with a new one and say so.
 
 ---
 
@@ -2705,6 +2705,103 @@ Neither arm cited the never-loosens sentence by its own words. Governed reasoned
 **The delivery finding, which matters more than the score.** A Claude Code session launched from a nested package loads the ancestor `CLAUDE.md`. But it **silently skips every `@` import that resolves outside the launch folder until the user approves external imports for that project** (`hasClaudeMdExternalIncludesApproved` in `~/.claude.json`). That covers the root `AGENTS.md` and all three `ai-governance/` imports. A headless session cannot show the approval prompt, so it never gets them. An interactive session is expected to show a one-time approval prompt instead. That is inferred from the flag's name and was not measured here. A scratch repo isolated the mechanism: of four sentinels, only the one behind an outside-the-launch-folder import was missing, and setting the flag delivered it. **The never-loosens sentence lives in the root mandatory-rules block, which is exactly what fails to arrive in the situation it exists for.** Two delivery paths survive without approval, per the same scratch repo: inline body text in the root `CLAUDE.md` itself, and anything in or imported by the nested pair. That includes the note `govern-init` step 8 writes, which restates the rule. The first collides with the invariant that `CLAUDE.template.md` carries no rule text. Which path to rely on, and whether the install guidance should name the approval, is a package decision left open for the user. Both auto-memory directories for the copies were confirmed empty and created that day, so no stale memory reached either session. It is not decided by this run. Codex's subfolder behaviour is unmeasured.
 
 **Cleanup.** Both copies were deleted after grading, and their `~/.claude.json` approval flags removed. `check-identity.ps1` and `check-layer-a.ps1`, `ctrl` included, both passed on the canonical arms afterwards.
+
+---
+
+### Probes of 2026-11-18 — subfolder-launch delivery, Piece 2 (headless half)
+
+These are the scratch-repo probes that [`docs/proposals/subfolder-launch-delivery.md`](../docs/proposals/subfolder-launch-delivery.md) owes as Piece 2. They are not a scored row, and no package file changed. They ran on CC 2.1.322 with `claude-opus-5-5`, on Windows 11. Every session was headless (`claude -p`). **Probe 1 and the real-decline half of probe 2 need an interactive terminal and were not run.** They are owed to a human operator.
+
+**Provenance of the vendor statements cited here.** These are the trust-gated settings list, `instructionFiles` being ignored in project and local settings, and the memory page's silence on recovering from a decline. They came that day through a fetch subagent, which returned verbatim quotes from full reads of the [memory](https://code.claude.com/docs/en/memory) and [settings](https://code.claude.com/docs/en/settings) pages. They were not re-read directly.
+
+**The scratch repo.** The repo was a `git init`'d `probe-root/` in the session scratchpad. No ancestor of it held a `CLAUDE.md`, `AGENTS.md`, `CLAUDE.local.md`, or `.claude/rules/`, and no `~/.claude/CLAUDE.md` existed. Each file carried one random sentinel:
+
+| File | Sentinel | Role |
+| --- | --- | --- |
+| `CLAUDE.md` (inline text, then `@AGENTS.md` and `@gov/rule.md`) | `RTIN` | root body, like the template's |
+| `AGENTS.md` | `RAGT` | root entry file, imported |
+| `gov/rule.md` | `GOVR` | a rule file, imported, like `ai-governance/` |
+| `.claude/rules/always.md`, no `paths:` | `ARUL` | ancestor rules directory; later given an `@../../gov/rules-import.md` import (`RIMP`) |
+| `pkg/sub/CLAUDE.md` | `NEST` | positive control for a `pkg/sub` launch |
+| `pkg/agentsonly/AGENTS.md`, importing `gov/nested-only.md` (`NGOV`) | `NAGT` | a nested `AGENTS.md` with no `CLAUDE.md` |
+
+**Instrument.** Every session got the same prompt, telling it to use no tools and to list every sentinel in its context. Read, Glob, Grep, Bash, PowerShell, Edit and Write were all disallowed, so a sentinel could arrive only by delivery. Probe 5 used a second prompt instead: it told the session to `Read` `gov/rule.md` once, under `acceptEdits`, and to report the sentinel or `DENIED`. That outcome was cross-checked against the JSON output's `permission_denials`. The `~/.claude.json` entries were logged before each launch. Every edit survived to the next launch, so this session's own writes never overwrote one in the window used. A `--settings` JSON string was used for each user-scope setting, so `~/.claude/settings.json` was never touched. There were 44 sessions in all. A `pkg/sub` run with `NEST` missing would have been void, and none was, except where an exclusion targeted `NEST` on purpose.
+
+**Baselines.** A root launch got `RTIN RAGT GOVR ARUL`. A `pkg/sub` launch got `RTIN ARUL NEST`. This reproduces B-P4's finding that both imports are skipped.
+
+**Instrument findings for any later approval step.** These confirm and extend B-P4's recipe, which already keys the flags by the copy's root path.
+
+- **A headless run writes no `~/.claude.json` project entry.** None existed after the baselines, so a flag has to be created, not just flipped.
+- **Approval is read from the git-root entry, not the launch folder's.** An entry keyed `…/probe-root/pkg/sub` with approval set delivered nothing. The same flags keyed `…/probe-root` delivered `RAGT` and `GOVR`. Keys used forward slashes, matching the existing entries.
+- **Trust is read from the git-root entry too.** The CLI's own stderr names it: *"Ignoring 1 permissions.additionalDirectories entry from .claude/settings.json: this workspace has not been trusted. … or set projects["…/probe-root"].hasTrustDialogAccepted: true"*. Trust set on the `pkg/sub` key alone did not count.
+
+**Results, by the proposal's numbering.**
+
+1. **Not run (interactive).** It is owed as a manual step; see *Owed* below.
+2. **Headless half: `hasClaudeMdExternalIncludesApproved` alone decides delivery.** `WarningShown` has no effect either way. Approved with WarningShown false delivered. Not approved with WarningShown true did not deliver; this is a **simulated** decline, hand-set. Approved with WarningShown true delivered, which is the keys restoring delivery from that simulated state. **Whether a real decline in the dialog writes anything beyond these two flags is unmeasured.** Until a TTY run diffs the entry, "the keys restore delivery after a decline" is shown only for the simulated state. The memory page says nothing about recovering from a decline, so this probe is the only evidence.
+3. **`claudeMdExcludes` suppresses an `@`-imported file by its own path,** not only discovered files. `**/gov/rule.md` dropped `GOVR`, and `**/probe-root/AGENTS.md` dropped `RAGT`, from a root launch where both imports otherwise arrive. That was set via `--settings`, not at user scope. The memory page says the setting works at any layer and that *"Arrays merge across layers,"* so a pattern set at any layer could plausibly drop an `ai-governance/` rule file without notice; this run did not test the user-scope layer directly. Excluding the root `CLAUDE.md` dropped `RTIN` and `GOVR`, but `RAGT` survived through the native `AGENTS.md` fallback. Setting `instructionFiles` to `claude-md` with the same exclusion removed `RAGT`, which confirms that reading.
+4. **Yes. An ancestor's `.claude/rules/` file without `paths:` reached the unapproved `pkg/sub` launch** (`ARUL`, in every subfolder run). **Only its inline text arrives, though: an `@` import inside it is external like any other.** When `always.md` imported `gov/rules-import.md`, `RIMP` was missing from the unapproved `pkg/sub` launch. It arrived from a root launch, the control, and from `pkg/sub` once approval was set. So the rules file needs no approval only for text written into it, just like the inline body of the root `CLAUDE.md` (`RTIN`). Only a git repo was tested; a non-git ancestor was not.
+5. **The denied read is a permission, and these opened it:**
+   - `--add-dir <root>/gov`, from the CLI.
+   - `permissions.additionalDirectories` via `--settings`.
+   - `Read(//c/…/gov/**)` via `--settings`. The `//C:/…` drive-letter form did **not** match and was denied.
+   - `additionalDirectories` in **`pkg/sub/.claude/settings.json`, only once the git-root entry was trusted.** Untrusted, it was ignored with the stderr warning above. The same `Read` allow in that file also worked trusted; it was not run untrusted, though the settings page lists `permissions.allow` as trust-gated too. A relative path (`../../gov`) was tested only while untrusted, so it is unresolved.
+
+   **A root `.claude/settings.json` or `.claude/settings.local.json` did not reach the `pkg/sub` session, even trusted.** That fits the settings page's *"start Claude Code there"* for shared settings.
+6. **No. On Windows, a root `.claude/settings.local.json` does not load in a subfolder session.** The observable was a `claudeMdExcludes` that drops `ARUL`, which is not trust-gated. In the root file it worked from a root launch (the control) but not from `pkg/sub`. In `pkg/sub/.claude/settings.local.json` it worked from `pkg/sub`. A root `settings.json` behaved the same way.
+7. **The value exists and works on 2.1.322,** set as `pluginConfigs["cc-plugin-agents-md@builtin"].options.instructionFiles` via `--settings`. Under the default, `pkg/agentsonly` did not get its own `AGENTS.md`, because a `CLAUDE.md` sits above it. This confirms the reason for step 8's one-line nested `CLAUDE.md`. Under `claude-md-and-agents-md` it got `NAGT`, and also **the root `AGENTS.md` natively, with no approval** (`RAGT` in both `pkg/sub` and `pkg/agentsonly`). The nested `AGENTS.md`'s external import (`NGOV`) arrived only with approval set, as the memory page says. **The memory page says the value is ignored in project and local settings, so a package can't ship it.** It would remove the need for the nested `CLAUDE.md` only on machines whose user settings opt in. Whether a root launch then loads `AGENTS.md` twice is **not measurable with this instrument**, which deduplicates tokens.
+
+**Beyond the seven: `--add-dir` plus `CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1` is not a delivery path for the root.** With the root as the added directory, `pkg/sub` still got only `RTIN ARUL NEST`. The env var itself works: an outside directory with its own `CLAUDE.md` delivered its sentinel (`OUTS`) under the same flags.
+
+**What this means for Piece 3. These are inferences, not measured package behavior.**
+
+- Two mechanisms reach an unapproved subfolder launch with no adopter action beyond install: inline text in the root `CLAUDE.md`, which B-P4 found, and inline text in an ancestor `.claude/rules/` file without `paths:`. **Neither carries an import,** so either one delivers rules only by holding rule text.
+- That collides with two invariants: `CLAUDE.template.md` carries no rule text, and each rule lives in one owning file. A rules file is also Claude Code-only and sits outside `ai-governance/`. **No probe found a path that delivers the `ai-governance/` files themselves unapproved.** Piece 3's choice is therefore between the approval keys and a deliberate exception to those invariants, which is a package decision, not a measurement.
+- Step 8 already puts the keys under the repo root's entry, which is now confirmed as the entry that counts. Only `…Approved` is needed, and setting `…WarningShown` too is harmless. Step 8's hand-off treats a missing `~/.claude.json` entry as *blocked*, but the probes created one by hand and it worked. Piece 3 should decide whether that wording stands.
+- Fixing the denied rule-file read needs a per-subfolder settings file plus trust, or a user-scope grant. Neither can ship in the root.
+
+**Owed, interactive, for a human operator.** In a fresh scratch repo with this layout, confirm first that `~/.claude.json` has no entry for its root. From a separate terminal, launch `claude` in `pkg/sub`. Accept the trust dialog if it appears first, so the decline isn't confounded with an untrusted workspace. Record whether the import dialog appears and which files it lists (probe 1). Then decline, quit, and record in full the git-root entry the launch created, plus any `pkg/sub` entry. Relaunch, confirm no dialog appears, and check for `GOVR` (probe 2). Then set `hasClaudeMdExternalIncludesApproved: true` and re-run a headless sentinel probe. That last step is what turns "restores from a simulated decline" into "restores from a real one."
+
+**Cleanup.** The scratch repo stayed in the session scratchpad, outside this repository. Every `~/.claude.json` entry created for it was removed by key, and the file still parsed afterward. A whole-file backup was taken first but not restored, so this session's own writes in the meantime were kept.
+
+---
+
+### Probes of 2026-11-18 — subfolder-launch delivery, Option F (`AGENTS.md` only)
+
+These are the four headless probes that [`docs/proposals/subfolder-launch-delivery.md`](../docs/proposals/subfolder-launch-delivery.md), *Option F — drop `CLAUDE.md`, ship `AGENTS.md` only*, names as deciding it. They are not a scored row, and no package file changed. They ran on CC 2.1.322 with `claude-opus-5-5`, on Windows 11, in a session separate from the Piece 2 entry above. All were headless (`claude -p`). There were 10 sessions.
+
+**The scratch repo.** A fresh `git init`'d `probe-f/` in the session scratchpad, with **no `CLAUDE.md` or `CLAUDE.local.md` anywhere** in it or above it. No ancestor held an `AGENTS.md` or `.claude/` directory other than the user directory, there was no `~/.claude/CLAUDE.md` or `~/.claude/rules/`, and the user settings set neither `instructionFiles` nor `claudeMdExcludes`. So the default *Project instructions* value, `claude-md-or-agents-md`, was in force. Each file carried one random sentinel:
+
+| File | Sentinel | Role |
+| --- | --- | --- |
+| `AGENTS.md` (body, then `@gov/rule.md`) | `ZQVKAGT` | root entry file, read natively |
+| `gov/rule.md` | `XJWPGOV` | a rule file, imported, like `ai-governance/` |
+| `pkg/sub/AGENTS.md` | `TBNHSUBA` | nested entry file in the launch folder |
+| `pkg/sub/.claude/rules/here.md`, no `paths:` | `MLRCSUBR` | positive control for a `pkg/sub` launch; it does not depend on `AGENTS.md` being read |
+| `pkg/lazy/AGENTS.md` | `YDFELAZA` | nested entry file in a folder the session later works in |
+| `pkg/lazy/notes.txt` | `KUOSTXT` | the file read in probe 3 |
+
+**Instrument.** The same as the Piece 2 entry: one prompt telling the session to use no tools and to list every sentinel in its context, with Read, Glob, Grep, Bash, PowerShell, Edit, Write, WebFetch, WebSearch and Agent disallowed. Probe 3 used a second prompt, run with `--output-format stream-json` under `acceptEdits` with only `Read` allowed: read `pkg/lazy/notes.txt` once, then list every sentinel and say where each appeared. The transcript confirms exactly one `Read`, of that file, and no permission denials. `~/.claude.json` had no entry for the repo before, during or after the probes, so every session ran untrusted and unapproved. A `pkg/sub` run with `MLRCSUBR` missing would have been void; none was. The first root and `pkg/sub` baselines ran without `< /dev/null` and printed a stdin-wait warning; their repeats ran with it and matched.
+
+**Results, by Option F's numbering.**
+
+1. **Yes, the body only. The root `AGENTS.md` reached the unapproved `pkg/sub` launch** (`ZQVKAGT`, n=3). Its own import did not: `XJWPGOV` was missing from every `pkg/sub` run. This is the proposal's *"imports get worse"* cost, now measured with no `CLAUDE.md` present: an `AGENTS.md`-only install delivers the always-on core to a subfolder launch, and none of the `ai-governance/` files.
+2. **Yes. On a root launch, the root `AGENTS.md` loaded its inside-folder `@` import** (`ZQVKAGT XJWPGOV`, n=2). The import is inside the launch folder, so no approval is involved.
+3. **Yes, lazily, on the first `Read` of a file in that folder.** A root launch had no `YDFELAZA` at startup (n=2). After one `Read` of `pkg/lazy/notes.txt`, the session reported `YDFELAZA`, which appears in no file the session read, alongside `KUOSTXT` from the read itself. **The delivery is proven; the channel is not.** The session said the token came in *"hook context after the Read,"* but stream-json does not log that injection, so this is the model's own account. Separately, a launch in `pkg/sub` got `pkg/sub/AGENTS.md` (`TBNHSUBA`) at startup in every clean run. Only `Read` was tested as the trigger; a write or edit in the folder was not.
+4. **Yes, and wider than the memory page says. A root `CLAUDE.local.md` switched `AGENTS.md` off entirely.** With one holding sentinel `PWGALOC`, a root launch got only `PWGALOC`, and a `pkg/sub` launch got only `PWGALOC MLRCSUBR`. Both the root `AGENTS.md` and the nested `pkg/sub/AGENTS.md` were gone. The memory page's condition, as the fetch subagent quoted it, names only `CLAUDE.md`; a `CLAUDE.local.md` doing the same is measured here, not documented there. The file was removed after the probe.
+
+**Beyond the four: an adopter's package-level `CLAUDE.md` does the same, for that package.** With `pkg/sub/CLAUDE.md` holding `HNEXPKGC`, a `pkg/sub` launch got `HNEXPKGC MLRCSUBR`: both the root and the nested `AGENTS.md` were gone. A root launch in the same state was unaffected (`ZQVKAGT XJWPGOV`), because that `CLAUDE.md` sits below it. The file was removed and a clean `pkg/sub` re-run restored `ZQVKAGT MLRCSUBR TBNHSUBA`.
+
+**What this means for Option F. These are inferences, not measured package behavior.**
+
+- **The proposal's stated condition is met:** probes 1 and 2 both came back yes.
+- **But the guard the proposal names would not cover the failure probe 4 found.** A Layer A check for `CLAUDE.md` in the installed tree runs on the committed tree. A personal `CLAUDE.local.md` is normally gitignored, so the check would never see it, yet it disables every `AGENTS.md` in the repo for that developer, silently. The same holds for a `CLAUDE.md` an adopter adds to one package later. Under today's shape, neither file removes anything: the root `CLAUDE.md` imports still load.
+- **Option F trades the subfolder gap for a different one.** Unapproved subfolder sessions would gain the always-on core and lose nothing they have today, but every session, root launches included, would depend on no `CLAUDE.md` or `CLAUDE.local.md` existing at or above the launch folder.
+- **D vs F is not resolved here.** The proposal reserves that for F's own proposal.
+
+**Owed, interactive, beyond the Piece 2 list.** Whether an interactive subfolder launch of an `AGENTS.md`-only repo ever shows the import dialog is unmeasured. The memory page, via the fetch subagent, says such imports load *"only if you already approved external imports for this project, with no prompt."*
+
+**Cleanup.** The scratch repo stayed in the session scratchpad, outside this repository. No `~/.claude.json` entry was created for it, checked before and after the probes.
 
 ## Fixture revisions
 
